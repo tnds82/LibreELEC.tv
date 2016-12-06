@@ -1,0 +1,343 @@
+diff --git a/drivers/amlogic/wifi/Kconfig b/drivers/amlogic/wifi/Kconfig
+index 4be720a..5e6e546 100755
+--- a/drivers/amlogic/wifi/Kconfig
++++ b/drivers/amlogic/wifi/Kconfig
+@@ -8,6 +8,10 @@ config AM_WIFI_SD_MMC
+	depends on AM_WIFI
+	default n
+
++config AM_WIFI_DUMMY
++	tristate "Amlogic SDIO WiFi turn on and rescan module"
++	depends on AM_WIFI_SD_MMC
++	default m
+ config DHD_USE_STATIC_BUF
+     bool "broadcom wifi static buff support"
+     default n
+diff --git a/drivers/amlogic/wifi/Makefile b/drivers/amlogic/wifi/Makefile
+index d214194..d1540da 100755
+--- a/drivers/amlogic/wifi/Makefile
++++ b/drivers/amlogic/wifi/Makefile
+@@ -1,4 +1,5 @@
+ obj-$(CONFIG_AM_WIFI_SD_MMC) +=  wifi_dt.o
++obj-$(CONFIG_AM_WIFI_DUMMY) += wifi_dummy.o
+ obj-$(CONFIG_AM_WIFI) += wifi_power.o
+ obj-$(CONFIG_DHD_USE_STATIC_BUF) += dhd_static_buf.o
+ obj-$(CONFIG_RTL8189ES) += rtl8189ES/
+diff --git a/drivers/amlogic/wifi/broadcm_40181/dhd_config.c b/drivers/amlogic/wifi/broadcm_40181/dhd_config.c
+index fc51d34..dcbfb27 100755
+--- a/drivers/amlogic/wifi/broadcm_40181/dhd_config.c
++++ b/drivers/amlogic/wifi/broadcm_40181/dhd_config.c
+@@ -109,6 +109,16 @@ const static char *bcm4339a0ag_fw_name[] = {
+	"fw_bcm4339a0_ag_mfg.bin"
+ };
+
++const static char *nv_name[] = {
++	"ap6210_nvram.txt",
++	"ap6330_nvram.txt",
++	"ap6181_nvram.txt",
++	"ap6335e_nvram.txt",
++	"ap6234_nvram.txt",
++	"ap62x2_nvram.txt",
++	"ap6212_nvram.txt",
++};
++
+ #define htod32(i) i
+ #define htod16(i) i
+ #define dtoh32(i) i
+@@ -323,6 +333,70 @@ dhd_conf_set_nv_name_by_mac(dhd_pub_t *dhd, bcmsdh_info_t *sdh, char *nv_path)
+ }
+
+ void
++dhd_conf_set_nv_name_by_chip(dhd_pub_t *dhd, char *dst, char *src)
++{
++	int fw_type, ag_type;
++	static uint chip, chiprev, first=1;
++	int i;
++
++	if (first) {
++		chip = dhd_bus_chip_id(dhd);
++		chiprev = dhd_bus_chiprev_id(dhd);
++		first = 0;
++	}
++
++	if (src[0] == '\0') {
++#ifdef CONFIG_BCMDHD_NVRAM_PATH
++		bcm_strncpy_s(src, sizeof(nvram_path), CONFIG_BCMDHD_NVRAM_PATH, MOD_PARAM_PATHLEN-1);
++		if (src[0] == '\0')
++#endif
++		{
++			printf("src nvram path is null\n");
++			return;
++		}
++	}
++
++		strcpy(dst, src);
++	#ifndef FW_PATH_AUTO_SELECT
++		return;
++	#endif
++
++	/* find out the last '/' */
++	i = strlen(dst);
++	while (i>0){
++		if (dst[i] == '/') break;
++		i--;
++	}
++	switch (chip) {
++		case BCM4330_CHIP_ID:
++					strcpy(&dst[i+1], nv_name[1]);
++						break;
++		case BCM43362_CHIP_ID:
++					strcpy(&dst[i+1], nv_name[0]);
++						break;
++		case BCM43340_CHIP_ID: //bcm43341b0ag BCM43340B0
++			//if (chiprev == BCM43340B0_CHIP_REV)
++				strcpy(&dst[i+1], nv_name[4]);
++			//else
++			//	strcpy(&dst[i+1], nv_name[0]);
++						break;
++		case BCM43341_CHIP_ID: //bcm43341b0ag BCM43341B0
++					strcpy(&dst[i+1], nv_name[4]);
++						break;
++		case BCM4324_CHIP_ID: //bcm43241b4ag BCM43241B4
++					strcpy(&dst[i+1], nv_name[5]);
++						break;
++		case BCM4335_CHIP_ID: //bcm4339a0ag BCM4335A0
++					strcpy(&dst[i+1], nv_name[3]);
++						break;
++		case BCM4339_CHIP_ID: //bcm4339a0ag
++					strcpy(&dst[i+1], nv_name[3]);
++						break;
++	}
++	printf("%s: nvram_path=%s\n", __FUNCTION__, dst);
++}
++
++void
+ dhd_conf_set_fw_name_by_chip(dhd_pub_t *dhd, char *dst, char *src)
+ {
+	int fw_type, ag_type;
+@@ -1671,6 +1745,7 @@ dhd_conf_detach(dhd_pub_t *dhd)
+ }
+
+ #ifdef POWER_OFF_IN_SUSPEND
++bool wifi_ready = true;
+ struct net_device *g_netdev;
+ #if defined(CONFIG_HAS_EARLYSUSPEND)
+ #include <linux/earlysuspend.h>
+@@ -1714,7 +1789,7 @@ dhd_conf_wifi_stop(struct net_device *dev)
+
+ }
+
+-bool wifi_ready = true;
++//bool wifi_ready = true;
+
+ void
+ dhd_conf_wifi_power(bool on)
+diff --git a/drivers/amlogic/wifi/broadcm_40181/dhd_config.h b/drivers/amlogic/wifi/broadcm_40181/dhd_config.h
+index 3e278c9..54be641 100755
+--- a/drivers/amlogic/wifi/broadcm_40181/dhd_config.h
++++ b/drivers/amlogic/wifi/broadcm_40181/dhd_config.h
+@@ -15,6 +15,7 @@
+
+ #define FW_PATH_AUTO_SELECT 1
+ extern char firmware_path[MOD_PARAM_PATHLEN];
++extern char nvram_path[MOD_PARAM_PATHLEN];
+ extern int disable_proptx;
+ extern uint dhd_doflow;
+ #ifdef POWER_OFF_IN_SUSPEND
+@@ -111,6 +112,7 @@ typedef struct dhd_conf {
+ extern void *bcmsdh_get_drvdata(void);
+ void dhd_conf_set_fw_name_by_mac(dhd_pub_t *dhd, bcmsdh_info_t *sdh, char *fw_path);
+ void dhd_conf_set_nv_name_by_mac(dhd_pub_t *dhd, bcmsdh_info_t *sdh, char *nv_path);
++void dhd_conf_set_nv_name_by_chip(dhd_pub_t *dhd, char *dst, char *src);
+ void dhd_conf_set_fw_name_by_chip(dhd_pub_t *dhd, char *dst, char *src);
+ #if defined(HW_OOB)
+ void dhd_conf_set_hw_oob_intr(bcmsdh_info_t *sdh, uint chip);
+@@ -143,10 +145,11 @@ int dhd_conf_preinit(dhd_pub_t *dhd);
+ int dhd_conf_attach(dhd_pub_t *dhd);
+ void dhd_conf_detach(dhd_pub_t *dhd);
+
++extern int g_wifi_on;
+ #ifdef POWER_OFF_IN_SUSPEND
+ extern struct net_device *g_netdev;
+ #if defined(CONFIG_HAS_EARLYSUSPEND)
+-extern int g_wifi_on;
++//extern int g_wifi_on;
+ #ifdef WL_CFG80211
+ void wl_cfg80211_stop(void);
+ void wl_cfg80211_send_disconnect(void);
+diff --git a/drivers/amlogic/wifi/broadcm_40181/dhd_linux.c b/drivers/amlogic/wifi/broadcm_40181/dhd_linux.c
+index 98ef524..16ddd8f 100755
+--- a/drivers/amlogic/wifi/broadcm_40181/dhd_linux.c
++++ b/drivers/amlogic/wifi/broadcm_40181/dhd_linux.c
+@@ -2936,6 +2936,7 @@ dhd_open(struct net_device *net)
+		if (firmware_path[strlen(firmware_path)-1] == '\n')
+			firmware_path[strlen(firmware_path)-1] = '\0';
+		dhd_conf_set_fw_name_by_chip(&dhd->pub, fw_path, firmware_path);
++		dhd_conf_set_nv_name_by_chip(&dhd->pub, nv_path, nvram_path);
+	}
+
+
+@@ -3258,8 +3259,10 @@ dhd_attach(osl_t *osh, struct dhd_bus *bus, uint bus_hdrlen)
+	/* Link to bus module */
+	dhd->pub.bus = bus;
+	dhd->pub.hdrlen = bus_hdrlen;
+-	if (strlen(firmware_path) != 0)
++	if (strlen(firmware_path) != 0){
+		dhd_conf_set_fw_name_by_chip(&dhd->pub, fw_path, firmware_path);
++		dhd_conf_set_nv_name_by_chip(&dhd->pub, nv_path, nvram_path);
++	}
+
+	/* Set network interface name if it was provided as module parameter */
+	if (iface_name[0]) {
+diff --git a/drivers/amlogic/wifi/broadcm_40181/dhd_sdio.c b/drivers/amlogic/wifi/broadcm_40181/dhd_sdio.c
+index 822d9ff..12c530b 100755
+--- a/drivers/amlogic/wifi/broadcm_40181/dhd_sdio.c
++++ b/drivers/amlogic/wifi/broadcm_40181/dhd_sdio.c
+@@ -8466,6 +8466,7 @@ dhd_bus_devreset(dhd_pub_t *dhdp, uint8 flag)
+			                        bus->cl_devid)) {
+				/* Attempt to download binary to the dongle */
+				dhd_conf_set_fw_name_by_chip(dhdp, fw_path, firmware_path); // terence
++				dhd_conf_set_nv_name_by_chip(dhdp, nv_path, nvram_path);
+				if (dhdsdio_probe_init(bus, bus->dhd->osh, bus->sdh) &&
+					dhdsdio_download_firmware(bus, bus->dhd->osh, bus->sdh)) {
+
+@@ -8519,6 +8520,7 @@ dhd_bus_devreset(dhd_pub_t *dhdp, uint8 flag)
+			dhd_conf_set_hw_oob_intr(bus->sdh, bus->sih->chip); // terence 20120615: fix for OOB initial issue
+ #endif
+			dhd_conf_set_fw_name_by_chip(dhdp, fw_path, firmware_path);
++			dhd_conf_set_nv_name_by_chip(dhdp, nv_path, nvram_path);
+			if ((bcmerror = dhd_bus_start(dhdp)) != 0)
+				DHD_ERROR(("%s: dhd_bus_start fail with %d\n",
+					__FUNCTION__, bcmerror));
+diff --git a/drivers/amlogic/wifi/broadcm_40181/wl_android.c b/drivers/amlogic/wifi/broadcm_40181/wl_android.c
+index d548b0d..b2dffac 100755
+--- a/drivers/amlogic/wifi/broadcm_40181/wl_android.c
++++ b/drivers/amlogic/wifi/broadcm_40181/wl_android.c
+@@ -2846,7 +2846,7 @@ wl_release_bss_cache_ctrl(wl_bss_cache_ctrl_t *bss_cache_ctrl)
+ #endif
+
+ #if defined(CUSTOMER_HW_AMLOGIC) && defined(CONFIG_DHD_USE_STATIC_BUF)
+-extern bcmdhd_mem_prealloc(int section, unsigned long size);
++extern void *bcmdhd_mem_prealloc(int section, unsigned long size);
+ void* wl_android_prealloc(int section, unsigned long size)
+ {
+	void *alloc_ptr = NULL;
+diff --git a/drivers/amlogic/wifi/wifi_dummy.c b/drivers/amlogic/wifi/wifi_dummy.c
+new file mode 100644
+index 0000000..460e4dd
+--- /dev/null
++++ b/drivers/amlogic/wifi/wifi_dummy.c
+@@ -0,0 +1,32 @@
++#include <linux/delay.h>
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/init.h>
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("kszaq");
++MODULE_DESCRIPTION("Amlogic WiFi power on and SDIO rescan module");
++
++extern void wifi_setup_dt(void);
++extern void extern_wifi_set_enable(int);
++extern void sdio_reinit(void);
++
++static int __init wifi_dummy_init(void)
++{
++	printk(KERN_INFO "Triggered SDIO WiFi power on and bus rescan.\n");
++	wifi_setup_dt();
++	msleep(300);
++	extern_wifi_set_enable(0);
++	msleep(300);
++	extern_wifi_set_enable(1);
++	sdio_reinit();
++	return 0;
++}
++
++static void __exit wifi_dummy_cleanup(void)
++{
++    printk(KERN_INFO "Cleaning up module.\n");
++}
++
++module_init(wifi_dummy_init);
++module_exit(wifi_dummy_cleanup);
+diff --git a/drivers/amlogic/wifi/wifi_power.c b/drivers/amlogic/wifi/wifi_power.c
+index 6e7e83e..3e4ad69 100755
+--- a/drivers/amlogic/wifi/wifi_power.c
++++ b/drivers/amlogic/wifi/wifi_power.c
+@@ -89,8 +89,24 @@ static struct class wifi_power_class = {
+
+ void set_bt_power(int is_power)
+ {
++    struct wifi_power_platform_data *pdata = NULL;
++
++    pdata = (struct wifi_power_platform_data*)devp->platform_data;
++    if (pdata == NULL) {
++        pr_err("%s platform data is required!\n", __FUNCTION__);
++        return;
++    }
++
++    amlogic_gpio_request(pdata->power_gpio, WIFI_POWER_MODULE_NAME);
++
++    if (wifi_power_on_pin2) {
++        amlogic_gpio_request(pdata->power_gpio2,WIFI_POWER_MODULE_NAME);
++    }
+	usb_power_control(is_power, BT_BIT);
+ }
++
++EXPORT_SYMBOL(set_bt_power);
++
+ void set_wifi_power(int is_power)
+ {
+	usb_power_control(is_power, WIFI_BIT);
+@@ -132,25 +148,6 @@ static int  wifi_power_open(struct inode *inode,struct file *file)
+
+ static int  wifi_power_release(struct inode *inode,struct file *file)
+ {
+-    return 0;
+-}
+-
+-static long wifi_power_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+-{
+-	switch (cmd)
+-	{
+-		case POWER_UP:
+-			wifi_power_control(1);
+-			break;
+-
+-		case POWER_DOWN:
+-			wifi_power_control(0);
+-			break;
+-
+-		default:
+-			pr_err("usb wifi_power_ioctl: default !!!\n");
+-			return -EINVAL;
+-	}
+	return 0;
+ }
+
+@@ -181,6 +178,25 @@ int wifi_power_control(int power_up)
+ }
+ EXPORT_SYMBOL(wifi_power_control);
+
++static long wifi_power_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
++{
++	switch (cmd)
++	{
++		case POWER_UP:
++			wifi_power_control(1);
++			break;
++
++		case POWER_DOWN:
++			wifi_power_control(0);
++			break;
++
++		default:
++			pr_err("usb wifi_power_ioctl: default !!!\n");
++			return -EINVAL;
++	}
++	return 0;
++}
++
+ int wifi_set_power(int val)
+ {
+	struct wifi_power_platform_data *pdata = NULL;

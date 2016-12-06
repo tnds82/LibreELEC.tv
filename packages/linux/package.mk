@@ -60,6 +60,10 @@ case "$LINUX" in
     PKG_URL="$KERNEL_URL"
     PKG_SOURCE_DIR="$KERNEL_SOURCE_DIR"
     ;;
+  x8hp-librelec)
+    PKG_VERSION="amlogic-$KERNEL_VERSION"
+    PKG_URL="https://github.com/LibreELEC/linux-amlogic/archive/$KERNEL_VERSION.tar.gz"
+    ;;
   *)
     PKG_VERSION="4.8.6"
     PKG_URL="http://www.kernel.org/pub/linux/kernel/v4.x/$PKG_NAME-$PKG_VERSION.tar.xz"

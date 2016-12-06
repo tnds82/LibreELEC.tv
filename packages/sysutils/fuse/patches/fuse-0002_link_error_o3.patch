@@ -1,0 +1,10 @@
+diff --git a/lib/mount.c b/lib/mount.c
+index ef8ffd4..ad20b6d 100644
+--- a/lib/mount.c
++++ b/lib/mount.c
+@@ -636,5 +636,3 @@ out:
+	return res;
+ }
+
+-FUSE_SYMVER(".symver fuse_mount_compat22,fuse_mount@FUSE_2.2");
+-FUSE_SYMVER(".symver fuse_unmount_compat22,fuse_unmount@FUSE_2.2");

@@ -3,7 +3,7 @@
     S805)
       LIBREELEC_VERSION="7.0.2.7"
       ;;
-    S812)
+    S812|X8HP)
       LIBREELEC_VERSION="8.0.0"
       ;;
     S905)
