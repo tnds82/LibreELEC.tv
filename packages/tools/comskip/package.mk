@@ -16,24 +16,29 @@
 #  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
-PKG_NAME="oem"
-PKG_VERSION=""
+PKG_NAME="comskip"
+PKG_VERSION="5d2202c0"
 PKG_REV="1"
 PKG_ARCH="any"
-PKG_LICENSE="various"
-PKG_SITE="http://www.openelec.tv"
-PKG_URL=""
-PKG_DEPENDS_TARGET="toolchain u-boot-tools comskip"
+PKG_LICENSE="LGPLv2.1+"
+PKG_SITE="https://github.com/erikkaashoek/Comskip"
+PKG_URL="https://github.com/erikkaashoek/$PKG_NAME/archive/$PKG_VERSION.tar.gz"
+PKG_DEPENDS_TARGET="toolchain argtable2 ffmpeg"
 PKG_PRIORITY="optional"
-PKG_SECTION="virtual"
-PKG_SHORTDESC="OEM: Metapackage for various OEM packages"
-PKG_LONGDESC="OEM: Metapackage for various OEM packages"
+PKG_SECTION="multimedia"
+PKG_SHORTDESC="comskip"
+PKG_LONGDESC="comskip"
+
+PKG_SOURCE_DIR="Comskip*"
 
 PKG_IS_ADDON="no"
-PKG_AUTORECONF="no"
+PKG_AUTORECONF="yes"
 
-post_install() {
-  if [ -n "$DEVICE" -a -d "$PROJECT_DIR/$PROJECT/devices/$DEVICE/filesystem" ]; then
-    cp -LR $PROJECT_DIR/$PROJECT/devices/$DEVICE/filesystem/* $ROOT/$BUILD/image/system
-  fi
+post_unpack () {
+  sed -i '/^.*mtune.*$/d' $PKG_BUILD/Makefile.am
+}
+
+post_makeinstall_target() {
+  mkdir -p $INSTALL/usr/config/comskip
+  cp -R $PKG_DIR/config/* $INSTALL/usr/config/comskip
 }

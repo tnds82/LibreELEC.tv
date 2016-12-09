@@ -16,24 +16,18 @@
 #  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
-PKG_NAME="oem"
-PKG_VERSION=""
+PKG_NAME="argtable2"
+PKG_VERSION="13"
 PKG_REV="1"
 PKG_ARCH="any"
-PKG_LICENSE="various"
-PKG_SITE="http://www.openelec.tv"
-PKG_URL=""
-PKG_DEPENDS_TARGET="toolchain u-boot-tools comskip"
+PKG_LICENSE="GPL"
+PKG_SITE="https://sourceforge.net/projects/argtable/"
+PKG_URL="http://pkgs.fedoraproject.org/repo/pkgs/argtable/argtable2-13.tar.gz/156773989d0d6406cea36526d3926668/argtable2-13.tar.gz"
+PKG_DEPENDS_TARGET="toolchain"
 PKG_PRIORITY="optional"
-PKG_SECTION="virtual"
-PKG_SHORTDESC="OEM: Metapackage for various OEM packages"
-PKG_LONGDESC="OEM: Metapackage for various OEM packages"
+
+PKG_SHORTDESC="enca: parsing GNU style command line arguments."
+PKG_LONGDESC="Argtable is an ANSI C library for parsing GNU style command line arguments."
 
 PKG_IS_ADDON="no"
-PKG_AUTORECONF="no"
-
-post_install() {
-  if [ -n "$DEVICE" -a -d "$PROJECT_DIR/$PROJECT/devices/$DEVICE/filesystem" ]; then
-    cp -LR $PROJECT_DIR/$PROJECT/devices/$DEVICE/filesystem/* $ROOT/$BUILD/image/system
-  fi
-}
+PKG_AUTORECONF="yes"
