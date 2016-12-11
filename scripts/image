@@ -494,7 +494,6 @@ fi
         popd > /dev/null
 
         popd > /dev/null
-
         # cleanup release dir
         rm -rf $RELEASE_DIR
 
