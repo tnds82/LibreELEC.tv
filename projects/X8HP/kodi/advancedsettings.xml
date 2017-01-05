@@ -2,6 +2,8 @@
 <advancedsettings>
   <showexitbutton>false</showexitbutton>
 
+  <cputempcommand>cputemp</cputempcommand>
+  <gputempcommand>gputemp</gputempcommand>
   <samba>
     <clienttimeout>30</clienttimeout>
   </samba>
