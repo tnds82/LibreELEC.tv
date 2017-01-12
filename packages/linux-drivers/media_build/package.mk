@@ -1,5 +1,5 @@
 ################################################################################
-#      This file is part of LibreELEC - https://LibreELEC.tv
+#      This file is part of LibreELEC - https://libreelec.tv
 #      Copyright (C) 2016 Team LibreELEC
 #
 #  LibreELEC is free software: you can redistribute it and/or modify
@@ -17,29 +17,17 @@
 ################################################################################
 
 PKG_NAME="media_build"
-PKG_VERSION="526f51c"
-
-# choose "LATEST" or a date like "2014-12-01-e8bd888" for the driver package
-# chose from here http://linuxtv.org/downloads/drivers/
-
-# working
-# 2016-03-29-d3f519301944
-# 2016-05-02-68af062b5f38
-# 2016-06-16-0db5c79989de
-# 2016-07-18-009a62084821
-MEDIA_BUILD_VERSION="2016-09-11-c3b809834db8"
-
+PKG_VERSION="2016-12-28"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
-PKG_SITE="http://git.linuxtv.org/media_build.git"
-PKG_URL="http://mycvh.de/openelec/$PKG_NAME/$PKG_NAME-${PKG_VERSION}.tar.xz"
-PKG_DEPENDS_TARGET=""
+PKG_SITE="https://github.com/crazycat69/linux_media"
+PKG_URL="$DISTRO_SRC/$PKG_NAME-$PKG_VERSION.tar.xz"
 PKG_DEPENDS_TARGET="toolchain linux"
-PKG_PRIORITY="optional"
+PKG_BUILD_DEPENDS_TARGET="toolchain linux"
 PKG_SECTION="driver"
-PKG_SHORTDESC="Build system to use the latest experimental drivers/patches from latest Kernel version"
-PKG_LONGDESC="Build system to use the latest experimental drivers/patches from latest Kernel version"
+PKG_SHORTDESC="DVB drivers that replace the version shipped with the kernel"
+PKG_LONGDESC="DVB drivers that replace the version shipped with the kernel"
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
@@ -51,37 +39,42 @@ fi
 
 pre_make_target() {
   export KERNEL_VER=$(get_module_dir)
-  # dont use our LDFLAGS, use the KERNEL LDFLAGS
   export LDFLAGS=""
 }
 
 make_target() {
-  $SED -i  -e "/^LATEST_TAR/s/-LATEST/-$MEDIA_BUILD_VERSION/g" linux/Makefile
-  make VER=$KERNEL_VER SRCDIR=$(kernel_path) -C linux/ download
-  make VER=$KERNEL_VER SRCDIR=$(kernel_path) -C linux/ untar
 
   # Amlogic AMLVIDEO driver
   if [ -e "$(kernel_path)/drivers/amlogic/video_dev" ]; then
 
     # Copy, patch and enable amlvideodri module
-    cp -a "$(kernel_path)/drivers/amlogic/video_dev" "linux/drivers/media/"
-    sed -i 's,common/,,g; s,"trace/,",g' $(find linux/drivers/media/video_dev/ -type f)
-    sed -i 's,\$(CONFIG_V4L_AMLOGIC_VIDEO),m,g' "linux/drivers/media/video_dev/Makefile"
-    echo "obj-y += video_dev/" >> "linux/drivers/media/Makefile"
-    echo "source drivers/media/video_dev/Kconfig " >> "linux/drivers/media/Kconfig"
+    cp -a "$(kernel_path)/drivers/amlogic/video_dev" "media/drivers/media/"
+    sed -i 's,common/,,g; s,"trace/,",g' $(find media/drivers/media/video_dev/ -type f)
+    sed -i 's,\$(CONFIG_V4L_AMLOGIC_VIDEO),m,g' "media/drivers/media/video_dev/Makefile"
+    echo "obj-y += video_dev/" >> "media/drivers/media/Makefile"
+    echo "source drivers/media/video_dev/Kconfig " >> "media/drivers/media/Kconfig"
 
     # Copy and enable videobuf-res module
-    cp -a "$(kernel_path)/drivers/media/v4l2-core/videobuf-res.c" "linux/drivers/media/v4l2-core/"
-    cp -a "$(kernel_path)/include/media/videobuf-res.h" "linux/include/media/"
-    echo "obj-m += videobuf-res.o" >> "linux/drivers/media/v4l2-core/Makefile"
+    cp -a "$(kernel_path)/drivers/media/v4l2-core/videobuf-res.c" "media/drivers/media/v4l2-core/"
+    cp -a "$(kernel_path)/include/media/videobuf-res.h" "media/include/media/"
+    echo "obj-m += videobuf-res.o" >> "media/drivers/media/v4l2-core/Makefile"
+
+    # Use meson-ir module from kernel tree, patch it and force to be built
+    if [ -e "$(kernel_path)/drivers/media/rc/meson-ir.c" ]; then
+      cp -a "$(kernel_path)/drivers/media/rc/meson-ir.c" "media/drivers/media/rc/"
+      sed -i 's,allowed_protos,allowed_protocols,g' "media/drivers/media/rc/meson-ir.c"
+      echo "obj-m += meson-ir.o" >> "media/drivers/media/rc/Makefile"
+    fi
 
   fi
 
-  make VER=$KERNEL_VER SRCDIR=$(kernel_path) stagingconfig
+  cd media_build
+  make dir DIR=../media
+  make VER=$KERNEL_VER SRCDIR=$(kernel_path) allyesconfig
   make VER=$KERNEL_VER SRCDIR=$(kernel_path)
 }
 
 makeinstall_target() {
-  mkdir -p $INSTALL/usr/lib/modules/$KERNEL_VER/updates/media_build
-  find $ROOT/$PKG_BUILD/v4l/ -name \*.ko -exec cp {} $INSTALL/usr/lib/modules/$KERNEL_VER/updates/media_build \;
+  mkdir -p $INSTALL/usr/lib/modules/$KERNEL_VER/updates
+  find $ROOT/$PKG_BUILD/media_build/v4l/ -name \*.ko -exec cp {} $INSTALL/usr/lib/modules/$KERNEL_VER/updates \;
 }
