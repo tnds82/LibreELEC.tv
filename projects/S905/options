@@ -31,7 +31,8 @@
     KERNEL_TARGET="Image.lzo"
 
   # Kernel extra targets to build
-    KERNEL_UBOOT_EXTRA_TARGET="gxbb_p200.dtb gxbb_p200_2G.dtb gxl_p212_1g.dtb gxl_p212_2g.dtb"
+#    KERNEL_UBOOT_EXTRA_TARGET="gxbb_p200.dtb gxbb_p200_2G.dtb gxl_p212_1g.dtb gxl_p212_2g.dtb"
+    KERNEL_UBOOT_EXTRA_TARGET="gxbb_p200.dtb"
 
   # Build Android kernel image using mkbootimg
     BUILD_ANDROID_BOOTIMG="yes"
@@ -48,7 +49,7 @@
   # Kernel to use. values can be:
   # default:  default mainline kernel
     LINUX="custom"
-    KERNEL_VERSION="d785aef"
+    KERNEL_VERSION="64cf5c2"
     KERNEL_URL="https://github.com/kszaq/linux-amlogic-le/archive/$KERNEL_VERSION.tar.gz"
     KERNEL_SOURCE_DIR="linux-amlogic-le-$KERNEL_VERSION*"
 
@@ -102,12 +103,13 @@
   # for a list of additinoal drivers see packages/linux-drivers
   # Space separated list is supported,
   # e.g. ADDITIONAL_DRIVERS="DRIVER1 DRIVER2"
-    ADDITIONAL_DRIVERS="RTL8192CU RTL8192DU RTL8192EU RTL8812AU gpu-aml qca9377-aml media_build"
+    ADDITIONAL_DRIVERS="gpu-aml"
 
   # additional Firmware to use (dvb-firmware, misc-firmware, wlan-firmware)
   # Space separated list is supported,
   # e.g. FIRMWARE="dvb-firmware misc-firmware wlan-firmware"
     FIRMWARE="misc-firmware wlan-firmware dvb-firmware brcmfmac_sdio-firmware-aml rtl8723bs_bt"
+
 
   # build and install ATV IR remote support (yes / no)
     ATVCLIENT_SUPPORT="no"

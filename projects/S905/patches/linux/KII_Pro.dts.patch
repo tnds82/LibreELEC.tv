@@ -1,0 +1,118 @@
+--- a/arch/arm64/boot/dts/amlogic/gxbb_p200_2G.dts	2016-11-30 15:43:57.000000000 +0100
++++ b/arch/arm64/boot/dts/amlogic/gxbb_p200_2G.dts	2016-12-05 19:24:47.244026999 +0100
+@@ -190,15 +190,15 @@
+ 			status = "okay";
+ 	};
+ 	ethmac: ethernet@0xc9410000{
+-                compatible = "amlogic, gxbb-rgmii-dwmac";
++                compatible = "amlogic, gxbb-rmii-dwmac";
+                 reg = <0x0 0xc9410000 0x0 0x10000
+                 0x0 0xc8834540 0x0 0x8>;
+                 interrupts = <0 8 1>;
+-                phy-mode= "rgmii";
++                phy-mode= "rmii";
+                 pinctrl-names = "eth_pins";
+                 pinctrl-0 = <&eth_pins>;
+                 rst_pin-gpios = <&gpio GPIOZ_14 0>;
+-                mc_val = <0x1621>;
++                mc_val = <0x1800>;
+                 resets = <&clock GCLK_IDX_ETHERNET>;
+                 reset-names = "ethpower";
+                 interrupt-names = "macirq";
+@@ -465,7 +471,7 @@
+ 				"MMC_CAP_SD_HIGHSPEED", "MMC_CAP_NONREMOVABLE",
+ 				"MMC_CAP_UHS_SDR12","MMC_CAP_UHS_SDR25",
+ 				"MMC_CAP_UHS_SDR50","MMC_CAP_UHS_SDR104",
+-				"MMC_PM_KEEP_POWER","MMC_CAP_SDIO_IRQ";
++				"MMC_PM_KEEP_POWER";
+ 				f_min = <400000>;
+ 				f_max = <200000000>;
+ 				max_req_size = <0x20000>;          /**128KB*/
+@@ -711,8 +717,8 @@
+ 		status = "okay";
+ 		vendor_name = "Amlogic"; /* Max Chars: 8     */
+ 		vendor_id = <0x000000>; /* Refer to http://standards.ieee.org/develop/regauth/oui/oui.txt   */
+-		product_desc = "GXBB Mbox"; /* Max Chars: 16    */
+-		cec_osd_string = "MBox"; /* Max Chars: 14    */
++		product_desc = "KII Pro"; /* Max Chars: 16    */
++		cec_osd_string = "K2pro"; /* Max Chars: 14    */
+ 		port_num = <1>;
+ 		arc_port_mask = <0x0>;
+ 		interrupts = <0 199 1>;
+@@ -1092,11 +1098,12 @@
+ 			};
+ 		};
+ 	};
+-
+-/*
+ 	dvb {
+-		compatible = "amlogic, dvb";
++		compatible = "amlogic,dvb";
+ 		dev_name = "dvb";
++		status = "okay";
++		fec_reset_gpio-gpios = <&gpio GPIOY_13 GPIO_ACTIVE_HIGH>;
++		power_ctrl_gpio-gpios = <&gpio GPIOY_11 GPIO_ACTIVE_LOW>;
+ 		//"parallel","serial","disable"
+ 		ts0 = "parallel";
+ 		ts0_control = <0>;
+@@ -1111,28 +1118,36 @@
+ 		reset-names = "demux", "asyncfifo", "ahbarb0", "uparsertop";
+ 	};
+ 	dvbfe {
+-		compatible = "amlogic, dvbfe";
+-		dev_name = "dvbfe";
+-		dtv_demod0 = "Mxl241";
+-		dtv_demod0_i2c_adap_id = <2>;
+-		dtv_demod0_i2c_addr = <0x60>;
+-		dtv_demod0_reset_value = <0>;
+-		dtv_demod0_reset_gpio-gpios = <&gpio GPIOY_12 GPIO_ACTIVE_HIGH>;
++		compatible = "amlogic,dvbfe";
++		//dev_name = "avl6211";
++		status = "okay";
++		dtv_demod0 = "Avl6211";
++		dtv_demod0_i2c_adap_id = <1>;
++		dtv_demod0_i2c_addr = <0xC0>;
++ 		dtv_demod0_reset_value = <0>;
++		//dtv_demod0_reset_gpio = <&gpio GPIOY_13 GPIO_ACTIVE_HIGH>;
++		dtv_demod0_reset_gpio-gpios = <&gpio GPIOY_13 GPIO_ACTIVE_LOW>;
++		dtv_demod0_power_gpio-gpios = <&gpio GPIOY_11 GPIO_ACTIVE_LOW>;
+ 		fe0_dtv_demod = <0>;
+ 		fe0_ts = <0>;
+ 		fe0_dev = <0>;
+ 	};
+-*/
+ };
+ &i2c_a {
+-  status = "disabled";
+-  /*p200: multiplex with usb PWR, disbaled*/
++  status = "okay";
+ };
+-/*
+ &i2c_b {
+   status = "okay";
+ };
+-*/
++&i2c_c {
++  status = "okay";
++};
++&i2c_d {
++  status = "okay";
++};
++&i2c_slave {
++	status = "disabled";
++};
+ 
+ &pinmux {
+ 	audio_pins:audio_pin{
+--- a/arch/arm64/boot/dts/amlogic/mesongxbb.dtsi	2016-12-23 10:16:30.000000000 +0100
++++ b/arch/arm64/boot/dts/amlogic/mesongxbb.dtsi	2017-01-02 21:07:45.607259000 +0100
+@@ -465,7 +465,7 @@
+ 	i2c_a: i2c@c1108500{ /*I2C-A*/
+ 		compatible = "amlogic, meson-i2c";
+ 		dev_name = "i2c-A";
+-		status = "disabled";
++		status = "okay";
+ 		reg = <0x0 0xc1108500 0x0 0x20>;
+ 		device_id = <1>;
+ 		pinctrl-names="default";
+

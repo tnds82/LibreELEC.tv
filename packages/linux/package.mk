@@ -88,7 +88,13 @@ if [ "$BUILD_ANDROID_BOOTIMG" = "yes" ]; then
 fi
 
 post_patch() {
-  if [ -n "$DEVICE" -a -f $PROJECT_DIR/$PROJECT/devices/$DEVICE/$PKG_NAME/$PKG_VERSION/$PKG_NAME.$TARGET_ARCH.conf ]; then
+
+  if [ -d $PROJECT_DIR/$PROJECT/dvb_tv ]; then
+   rm -fR $PKG_BUILD/drivers/amlogic/dvb_tv/*
+   cp -f $PROJECT_DIR/$PROJECT/dvb_tv/* $PKG_BUILD/drivers/amlogic/dvb_tv/	
+  fi
+
+ if [ -n "$DEVICE" -a -f $PROJECT_DIR/$PROJECT/devices/$DEVICE/$PKG_NAME/$PKG_VERSION/$PKG_NAME.$TARGET_ARCH.conf ]; then
     KERNEL_CFG_FILE=$PROJECT_DIR/$PROJECT/devices/$DEVICE/$PKG_NAME/$PKG_VERSION/$PKG_NAME.$TARGET_ARCH.conf
   elif [ -n "$DEVICE" -a -f $PROJECT_DIR/$PROJECT/devices/$DEVICE/$PKG_NAME/$PKG_NAME.$TARGET_ARCH.conf ]; then
     KERNEL_CFG_FILE=$PROJECT_DIR/$PROJECT/devices/$DEVICE/$PKG_NAME/$PKG_NAME.$TARGET_ARCH.conf
