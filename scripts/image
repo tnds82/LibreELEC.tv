@@ -54,10 +54,24 @@ else
   LIBREELEC_BUILD="community"
 fi
 
-TARGET_VERSION="$PROJECT.$TARGET_ARCH-$LIBREELEC_VERSION"
+if [ -z "$DEVICE" ]; then
+  TARGET_VERSION="$PROJECT.$TARGET_ARCH-$LIBREELEC_VERSION"
+else
+  TARGET_VERSION="$PROJECT.$DEVICE.$TARGET_ARCH-$LIBREELEC_VERSION"
+fi
 IMAGE_NAME="$DISTRONAME-$TARGET_VERSION"
+
+# Set Amlogic update package name
+AML_UPDATE_NAME="$IMAGE_NAME"
+
 if [ "$DEVEL_VERSION" = "devel" ] ; then
-  IMAGE_NAME="$DISTRONAME-$PROJECT.$TARGET_ARCH-$OS_VERSION-$LIBREELEC_VERSION"
+  if [ -z "$DEVICE" ]; then
+    IMAGE_NAME="$DISTRONAME-$PROJECT.$TARGET_ARCH-$OS_VERSION-$LIBREELEC_VERSION"
+    AML_UPDATE_NAME="$DISTRONAME-$PROJECT.$TARGET_ARCH-$OS_VERSION-$DEVEL_VERSION"
+  else
+    IMAGE_NAME="$DISTRONAME-$PROJECT.$DEVICE.$TARGET_ARCH-$OS_VERSION-$LIBREELEC_VERSION"
+    AML_UPDATE_NAME="$DISTRONAME-$PROJECT.$DEVICE.$TARGET_ARCH-$OS_VERSION-$DEVEL_VERSION"
+  fi
 fi
 
 if [ "$PROJECT" == "imx6" -a -n "$SYSTEM" ]; then
@@ -213,6 +227,17 @@ fi
     done
   fi
 
+# copy board related files to filesystem
+  if [ -n "$DEVICE" -a -d "$PROJECT_DIR/$PROJECT/devices/$DEVICE/filesystem" ]; then
+    cp -PR $PROJECT_DIR/$PROJECT/devices/$DEVICE/filesystem/* $INSTALL
+    # install device specific systemd services
+    for service in $PROJECT_DIR/$PROJECT/devices/$DEVICE/filesystem/usr/lib/systemd/system/*.service ; do
+      if [ -f "$service" ] ; then
+        enable_service $(basename $service)
+      fi
+    done
+  fi
+
 # run depmod
   MODVER=$(basename $(ls -d $INSTALL/lib/modules/*))
   find $INSTALL/lib/modules/$MODVER/ -name *.ko | \
@@ -220,6 +245,9 @@ fi
   $ROOT/$TOOLCHAIN/bin/depmod -b $INSTALL $MODVER 2> /dev/null
 
 # strip kernel modules
+  if [ "$TARGET_KERNEL_ARCH" = "arm64" -a "$TARGET_ARCH" = "arm" ]; then
+    STRIP=$ROOT/$TOOLCHAIN/lib/gcc-linaro-aarch64-linux-gnu/bin/aarch64-linux-gnu-strip
+  fi
   for MOD in `find $INSTALL/lib/modules/ -type f -name *.ko`; do
     $STRIP --strip-debug $MOD
   done
@@ -233,6 +261,37 @@ fi
     echo "injecting DeviceTreeBlobs to kernel..."
     perl $BUILD/linux-$(kernel_version)/scripts/mkknlimg $BUILD/linux-$(kernel_version)/arch/$TARGET_KERNEL_ARCH/boot/$KERNEL_TARGET $TARGET_IMG/$IMAGE_NAME.kernel
     echo "...done"
+  elif [ "$BUILD_ANDROID_BOOTIMG" = "yes" ]; then
+    echo "Building Amlogic DeviceTreeBlobs and injecting them to kernel..."
+    pushd "$BUILD/linux-$(kernel_version)" > /dev/null
+    rm -rf arch/$TARGET_KERNEL_ARCH/boot/dts/amlogic/*.dtb arch/$TARGET_KERNEL_ARCH/boot/dtb.img arch/$TARGET_KERNEL_ARCH/boot/boot.img
+    if [ "$TARGET_KERNEL_ARCH" = "arm64" -a "$TARGET_ARCH" = "arm" ]; then
+      PATH=$ROOT/$TOOLCHAIN/lib/gcc-linaro-aarch64-linux-gnu/bin/:$PATH
+      TARGET_PREFIX=aarch64-linux-gnu-
+    fi
+    for extra_target in $KERNEL_UBOOT_EXTRA_TARGET; do
+      LDFLAGS="" make $extra_target > /dev/null
+    done
+    DTB_BLOBS=($(ls arch/$TARGET_KERNEL_ARCH/boot/dts/amlogic/*.dtb 2>/dev/null || true))
+    DTB_BLOBS_COUNT="${#DTB_BLOBS[@]}"
+    DTB_BLOB_OUTPUT="arch/$TARGET_KERNEL_ARCH/boot/dtb.img"
+    MKBOOTIMG_SECOND="--second $DTB_BLOB_OUTPUT"
+    if [ "$DTB_BLOBS_COUNT" -gt 1 ]; then
+      $ROOT/tools/dtbTool/dtbTool -o $DTB_BLOB_OUTPUT -p scripts/dtc/ arch/$TARGET_KERNEL_ARCH/boot/dts/amlogic/
+    elif [ "$DTB_BLOBS_COUNT" -eq 1 ]; then
+      cp -f arch/$TARGET_KERNEL_ARCH/boot/dts/amlogic/*.dtb $DTB_BLOB_OUTPUT
+    else
+      MKBOOTIMG_SECOND=""
+    fi
+    mkbootimg --kernel arch/$TARGET_KERNEL_ARCH/boot/$KERNEL_TARGET --ramdisk $ROOT/$BUILD/image/initramfs.cpio \
+      $MKBOOTIMG_SECOND $MKBOOTIMG_OPTIONS --output arch/$TARGET_KERNEL_ARCH/boot/boot.img
+    echo "...done"
+    if [ -f $DTB_BLOB_OUTPUT ]; then
+      cp -f $DTB_BLOB_OUTPUT $TARGET_IMG/$IMAGE_NAME.dtb
+    fi
+    popd > /dev/null
+
+    cp -PR $BUILD/linux-$(kernel_version)/arch/$TARGET_KERNEL_ARCH/boot/boot.img $TARGET_IMG/$IMAGE_NAME.kernel
   else
     cp -PR $BUILD/linux-$(kernel_version)/arch/$TARGET_KERNEL_ARCH/boot/$KERNEL_TARGET $TARGET_IMG/$IMAGE_NAME.kernel
   fi
@@ -243,8 +302,16 @@ fi
     SQUASHFS_COMPRESSION="gzip"
   fi
 
+  if [ "$SQUASHFS_COMPRESSION" = "lz4" ]; then
+    SQUASHFS_COMPRESSION_LEVEL="-Xhc"
+  fi
+
+  if [ -z "$SQUASHFS_BLOCK_SIZE" ]; then
+    SQUASHFS_BLOCK_SIZE="131072"
+  fi
+
   echo "rm -rf $TARGET_IMG/$IMAGE_NAME.system" >> $FAKEROOT_SCRIPT
-  echo "$ROOT/$TOOLCHAIN/bin/mksquashfs $BUILD/image/system $TARGET_IMG/$IMAGE_NAME.system -noappend -comp $SQUASHFS_COMPRESSION" >> $FAKEROOT_SCRIPT
+  echo "$ROOT/$TOOLCHAIN/bin/mksquashfs $BUILD/image/system $TARGET_IMG/$IMAGE_NAME.system -noappend -b $SQUASHFS_BLOCK_SIZE -comp $SQUASHFS_COMPRESSION $SQUASHFS_COMPRESSION_LEVEL" >> $FAKEROOT_SCRIPT
 
 # run fakeroot
   $ROOT/$TOOLCHAIN/bin/fakeroot -- $FAKEROOT_SCRIPT
@@ -256,6 +323,14 @@ fi
   if [ "$1" = "release" -o "$1" = "mkimage" -o "$1" = "amlpkg" -o "$1" = "noobs" ]; then
 
     RELEASE_DIR="target/$IMAGE_NAME"
+
+    if [ -n "$DEVICE" -a -d "$PROJECT_DIR/$PROJECT/devices/$DEVICE/install" ]; then
+      INSTALL_SRC_DIR="$PROJECT_DIR/$PROJECT/devices/$DEVICE/install"
+    else
+      INSTALL_SRC_DIR="$PROJECT_DIR/$PROJECT/install"
+    fi
+
+    MKIMAGE_TOOL_CMD="$(which mkimage) -A $TARGET_KERNEL_ARCH -O linux -T script -C none -d"
 
     # cleanup
       rm -rf $RELEASE_DIR
@@ -360,8 +435,10 @@ fi
           TOOLCHAIN="$TOOLCHAIN" \
           TARGET_IMG="$TARGET_IMG" \
           IMAGE_NAME="$IMAGE_NAME" \
+          INSTALL_SRC_DIR="$INSTALL_SRC_DIR" \
           BOOTLOADER="$BOOTLOADER" \
           KERNEL_NAME="$KERNEL_NAME" \
+          MKIMAGE_TOOL_CMD="$MKIMAGE_TOOL_CMD" \
           RELEASE_DIR="$RELEASE_DIR" \
           UUID_SYSTEM="$(uuidgen)" \
           UUID_STORAGE="$(uuidgen)" \
@@ -379,7 +456,6 @@ fi
       if [ "$1" = "amlpkg" ]; then
         echo "Creating Amlogic ZIP update package"
 
-        INSTALL_SRC_DIR="$PROJECT_DIR/$PROJECT/install"
         AML_PKG_DIR="$RELEASE_DIR/ampl-pkg"
 
         # create package directory
@@ -409,24 +485,25 @@ fi
         echo "Signing the update package"
         mkdir -p sign
         SIGNAPK_DIR="$ROOT/tools/signapk"
-        java -Xmx1024m -jar $SIGNAPK_DIR/signapk.jar -w $SIGNAPK_DIR/testkey.x509.pem $SIGNAPK_DIR/testkey.pk8 update.zip sign/$IMAGE_NAME-update.zip
+        java -Xmx1024m -jar $SIGNAPK_DIR/signapk.jar -w $SIGNAPK_DIR/testkey.x509.pem $SIGNAPK_DIR/testkey.pk8 update.zip sign/$AML_UPDATE_NAME-update.zip
 
         # create the auto-install package
+        echo "Creating Amlogic ZIP auto-install package"
+        pushd sign > /dev/null
+        echo --update_package=/sdcard/$AML_UPDATE_NAME-update.zip > factory_update_param.aml
         if [ -f "$INSTALL_SRC_DIR/files/recovery.img" ]; then
-          echo "Creating Amlogic ZIP auto-install package"
-          pushd sign > /dev/null
-          echo --update_package=/sdcard/$IMAGE_NAME-update.zip > factory_update_param.aml
           cp $INSTALL_SRC_DIR/files/recovery.img .
-          if [ -f $INSTALL_SRC_DIR/files/aml_autoscript ]; then
-            cp $INSTALL_SRC_DIR/files/aml_autoscript .
-          fi
-          zip -q $TARGET_IMG/$IMAGE_NAME.zip *
-          popd > /dev/null
         fi
-
-        # copy update package to target directory
-        cp sign/$IMAGE_NAME-update.zip $TARGET_IMG
+        if [ -f $INSTALL_SRC_DIR/files/aml_autoscript ]; then
+          cp $INSTALL_SRC_DIR/files/aml_autoscript .
+        fi
+        zip -q $TARGET_IMG/$IMAGE_NAME.zip *
         popd > /dev/null
+
+        popd > /dev/null
+
+        # cleanup release dir
+        rm -rf $RELEASE_DIR
 
       elif [ "$1" = "noobs" ]; then
 
