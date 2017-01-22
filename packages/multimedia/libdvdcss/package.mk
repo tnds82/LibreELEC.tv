@@ -18,7 +18,6 @@
 
 PKG_NAME="libdvdcss"
 PKG_VERSION="2f12236"
-PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="https://github.com/xbmc/libdvdcss"
@@ -29,6 +28,16 @@ PKG_SHORTDESC="libdvdcss: a simple library designed for accessing DVDs as a bloc
 PKG_LONGDESC="libdvdcss is a simple library designed for accessing DVDs as a block device without having to bother about the decryption."
 
 PKG_IS_ADDON="no"
-PKG_AUTORECONF="yes"
+PKG_AUTORECONF="no"
 
-PKG_CONFIGURE_OPTS_TARGET="--enable-static --disable-shared --with-pic"
+configure_target() {
+  :
+}
+
+make_target() {
+  :
+}
+
+makeinstall_target() {
+  :
+}

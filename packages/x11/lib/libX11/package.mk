@@ -18,7 +18,6 @@
 
 PKG_NAME="libX11"
 PKG_VERSION="1.6.4"
-PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="OSS"
 PKG_SITE="http://www.x.org/"
@@ -56,4 +55,5 @@ pre_configure_target() {
   export CPPFLAGS_FOR_BUILD="$HOST_CPPFLAGS"
   export CFLAGS_FOR_BUILD="$HOST_CFLAGS"
   export LDFLAGS_FOR_BUILD="$HOST_LDFLAGS"
+  unset PKG_CONFIG_ALLOW_SYSTEM_CFLAGS
 }
