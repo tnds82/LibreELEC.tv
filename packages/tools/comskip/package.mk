@@ -17,7 +17,7 @@
 ################################################################################
 
 PKG_NAME="comskip"
-PKG_VERSION="5d2202c0"
+PKG_VERSION="b9b50f"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="LGPLv2.1+"

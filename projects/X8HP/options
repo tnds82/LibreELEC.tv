@@ -34,7 +34,7 @@
   # Kernel to use. values can be:
   # default:  default mainline kernel
     LINUX="x8hp-librelec"
-    KERNEL_VERSION="86c93aa"
+    KERNEL_VERSION="1261cae"
 
   # Root password to integrate in the target system
     ROOT_PASSWORD="toor"
