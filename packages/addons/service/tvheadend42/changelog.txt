@@ -1,12 +1,10 @@
-210
+211
+- update to Tvheadend 4.1.2415
+
+109
+- fix uprades from old 4.1.xxx versions
+- fix debug if nothing is selected ad add-on settings
 - update to Tvheadend 4.1.2414
-- fix epg in iOS Tvhclient
-
-209
--update to Tvheadend 4.1.2409
-
-208
--update to Tvheadend 4.1.2403
 
 108
 - added CA (libdvben50221) support
@@ -33,6 +31,7 @@
 - update to Tvheadend 4.1.2134
 
 102
+- update for LibreELEC 8.0
 - update to Tvheadend 4.1.1945
 - fix the XMLTV import script
 
