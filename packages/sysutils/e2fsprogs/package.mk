@@ -17,8 +17,7 @@
 ################################################################################
 
 PKG_NAME="e2fsprogs"
-PKG_VERSION="1.42.13"
-PKG_REV="1"
+PKG_VERSION="1.43.3"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://e2fsprogs.sourceforge.net/"
@@ -113,6 +112,9 @@ makeinstall_host() {
 
   rm -fr $(pwd)/.install/bin
   rm -fr $(pwd)/.install/usr/share
+
+  # Ensure installed files are writeable and not read-only, otherwise future package bumps will fail to overwrite toolchain
+  chmod -R +w $(pwd)/.install/usr/*
 
   cp -Pa $(pwd)/.install/usr/* $ROOT/$TOOLCHAIN
 }

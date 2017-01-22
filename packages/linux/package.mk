@@ -17,7 +17,6 @@
 ################################################################################
 
 PKG_NAME="linux"
-PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://www.kernel.org"
@@ -30,13 +29,13 @@ PKG_SHORTDESC="linux26: The Linux kernel 2.6 precompiled kernel binary image and
 PKG_LONGDESC="This package contains a precompiled kernel image and the modules."
 case "$LINUX" in
   amlogic-3.10)
-    PKG_VERSION="0268c8e"
+    PKG_VERSION="1261cae"
     PKG_URL="https://github.com/LibreELEC/linux-amlogic/archive/$PKG_VERSION.tar.gz"
     PKG_SOURCE_DIR="$PKG_NAME-amlogic-$PKG_VERSION*"
     PKG_PATCH_DIRS="amlogic-3.10"
     ;;
   amlogic-3.14)
-    PKG_VERSION="6eaacba"
+    PKG_VERSION="33aa3be"
     PKG_URL="https://github.com/LibreELEC/linux-amlogic/archive/$PKG_VERSION.tar.gz"
     PKG_SOURCE_DIR="$PKG_NAME-amlogic-$PKG_VERSION*"
     PKG_PATCH_DIRS="amlogic-3.14"
