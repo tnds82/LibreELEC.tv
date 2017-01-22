@@ -17,7 +17,7 @@
 ################################################################################
 
 PKG_NAME="tvheadend42"
-PKG_VERSION="	e5f5a42"
+PKG_VERSION="e5f5a42"
 PKG_VERSION_NUMBER="4.1.2415"
 PKG_REV="211"
 PKG_ARCH="any"
