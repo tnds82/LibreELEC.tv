@@ -1,0 +1,20 @@
+--- a/drivers/media/tuners/r848.c	2017-01-23 14:22:37.829464575 +0100
++++ b/drivers/media/tuners/r848.c	2017-01-23 14:39:24.541464575 +0100
+@@ -27,14 +27,12 @@
+ {
+ 	int ret, i;
+ 	struct i2c_msg msg[] = {
+-		{ .addr = priv->cfg->i2c_address, .flags = 0,
+-			.buf = &addr, .len = 1 },
+ 		{ .addr = priv->cfg->i2c_address, .flags = I2C_M_RD,
+ 			.buf = buf, .len = len }
+ 	};
+ 
+-	ret = i2c_transfer(priv->i2c, msg, 2);
+-	if (ret == 2) {
++	ret = i2c_transfer(priv->i2c, msg, 1);
++	if (ret == 1) {
+ 		for (i = 0; i < len; i++)
+ 			buf[i] = bitrev8(buf[i]);
+ 		ret = 0;
+

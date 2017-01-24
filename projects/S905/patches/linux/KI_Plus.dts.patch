@@ -1,5 +1,5 @@
---- a/arch/arm64/boot/dts/amlogic/gxbb_p200.dts	2016-11-30 15:43:57.000000000 +0100
-+++ b/arch/arm64/boot/dts/amlogic/gxbb_p200.dts	2016-12-05 19:24:47.244026999 +0100
+--- a/arch/arm64/boot/dts/amlogic/gxbb_p200.dts	2017-01-01 22:42:58.000000000 +0100
++++ b/arch/arm64/boot/dts/amlogic/gxbb_p200.dts	2017-01-15 17:33:30.849926000 +0100
 @@ -190,15 +190,15 @@
  			status = "okay";
  	};
@@ -19,7 +19,31 @@
                  resets = <&clock GCLK_IDX_ETHERNET>;
                  reset-names = "ethpower";
                  interrupt-names = "macirq";
-@@ -371,13 +371,13 @@
+@@ -206,23 +206,6 @@
+                 clock-names = "ethclk81";
+         };
+ 
+-	pwm {
+-		compatible = "amlogic, gx-pwm";
+-		status = "okay";
+-		pwm-outputs = <0>,<1>,<2>,<3>,<4>,<5>,<6>,<7>;
+-		reg = <0x0 0xc1108550 0x0 0x30>,
+-				<0x0 0xc8100550 0x0 0x10>;
+-		clocks = <&clock CLK_XTAL>,
+-				<&clock CLK_VID_PLL>,
+-				<&clock CLK_FPLL_DIV4>,
+-				<&clock CLK_FPLL_DIV3>;
+-		clock-names = "xtal",
+-				"vid_pll_clk",
+-				"fclk_div4",
+-				"fclk_div3";
+-		clock-select = <0x0>,<0x0>,<0x0>,<0x0>,<0x3>,<0x0>,<0x0>,<0x0>;
+-	};
+-
+ 	mesonstream {
+ 		compatible = "amlogic, codec, streambuf";
+ 		dev_name = "mesonstream";
+@@ -371,13 +354,13 @@
  			3: 250.0M    4: 333.3M    5: 400.0M
  			6: 500.0M    7: 666.7M */
  	};
@@ -40,7 +64,7 @@
  	bluesleep{
  		compatible = "amlogic, bluesleep";
  		dev_name = "bluesleep";
-@@ -402,9 +402,9 @@
+@@ -402,9 +385,9 @@
  		status = "okay";
  		interrupt_pin = <&gpio       GPIOX_7       GPIO_ACTIVE_HIGH>;
  		interrupts = <	0 68 4>;
@@ -52,7 +76,27 @@
  		pinctrl-names = "wifi_32k_pins";
  		pinctrl-0 = <&wifi_32k_pins>;
  	};
-@@ -1137,11 +1137,12 @@
+@@ -480,7 +463,7 @@
+ 		dev_name = "aml_newsd.0";
+ 		status = "okay";
+ 		reg = <0x0 0xd0070000 0x0 0x2000>;
+-		interrupts = <	0 216 1>;
++		interrupts = <	0 216 4>;
+ 		pinctrl-names =  "sdio_clk_cmd_pins", "sdio_all_pins";
+ 		pinctrl-0 = <&sdio_clk_cmd_pins>;
+ 		pinctrl-1 = <&sdio_all_pins>;
+@@ -871,9 +854,7 @@
+ 		port-speed = <0>; /** 0: default, high, 1: full */
+ 		port-config = <0>; /** 0: default */
+ 		port-dma = <0>; /** 0: default, 1: single, 2: incr, 3: incr4, 4: incr8, 5: incr16, 6: disable*/
+-		port-id-mode = <1>; /** 0: hardware, 1: sw_host, 2: sw_slave*/
+-		gpio-vbus-power = "GPIODV_24";
+-		gpios = <&gpio       GPIODV_24       GPIO_ACTIVE_HIGH>;
++		port-id-mode = <0>; /** 0: hardware, 1: sw_host, 2: sw_slave*/
+ 		gpio-work-mask	= <1>; /**0: work on pulldown,1:work on pullup*/
+ 		phy-reg = <0xc0000000>;
+ 		phy-reg-size = <0x20>;
+@@ -1137,11 +1118,12 @@
  			};
  		};
  	};
@@ -68,7 +112,7 @@
  		//"parallel","serial","disable"
  		ts0 = "parallel";
  		ts0_control = <0>;
-@@ -1156,28 +1157,33 @@
+@@ -1156,28 +1138,33 @@
  		reset-names = "demux", "asyncfifo", "ahbarb0", "uparsertop";
  	};
  	dvbfe {

@@ -49,9 +49,13 @@
   # Kernel to use. values can be:
   # default:  default mainline kernel
     LINUX="custom"
-    KERNEL_VERSION="3f3c6f3"
+    KERNEL_VERSION="ad9e952"
+#    KERNEL_VERSION="7b8bfae"
+    BUILD_DATE=`date +%Y%m%d%H%M%S`
+    CUSTOM_VERSION=$LIBREELEC_VERSION-7.90.beta3-$BUILD_DATE
     KERNEL_URL="https://github.com/kszaq/linux-amlogic-le/archive/$KERNEL_VERSION.tar.gz"
     KERNEL_SOURCE_DIR="linux-amlogic-le-$KERNEL_VERSION*"
+    KERNEL_PATCH_DIRS="amlogic-3.14"
 
 ################################################################################
 # setup build defaults
@@ -97,19 +101,18 @@
     KODIPLAYER_DRIVER="libamcodec"
 
   # Modules to install in initramfs for early boot
-    INITRAMFS_MODULES="font softcursor bitblit fbcon aml_nftl_dev"
+    INITRAMFS_MODULES="dwc_otg dwc3 font softcursor bitblit fbcon aml_nftl_dev"
 
   # additional drivers to install:
   # for a list of additinoal drivers see packages/linux-drivers
   # Space separated list is supported,
   # e.g. ADDITIONAL_DRIVERS="DRIVER1 DRIVER2"
-    ADDITIONAL_DRIVERS="gpu-aml"
+    ADDITIONAL_DRIVERS="gpu-aml media_build"
 
   # additional Firmware to use (dvb-firmware, misc-firmware, wlan-firmware)
   # Space separated list is supported,
   # e.g. FIRMWARE="dvb-firmware misc-firmware wlan-firmware"
-    FIRMWARE="misc-firmware wlan-firmware dvb-firmware brcmfmac_sdio-firmware-aml rtl8723bs_bt"
-
+    FIRMWARE="misc-firmware wlan-firmware dvb-firmware brcmfmac_sdio-firmware-aml rtl8723bs_bt qca9377-firmware-aml"
 
   # build and install ATV IR remote support (yes / no)
     ATVCLIENT_SUPPORT="no"

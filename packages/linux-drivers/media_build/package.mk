@@ -25,6 +25,7 @@ PKG_SITE="https://github.com/crazycat69/linux_media"
 PKG_URL="$DISTRO_SRC/$PKG_NAME-$PKG_VERSION.tar.xz"
 PKG_DEPENDS_TARGET="toolchain linux"
 PKG_BUILD_DEPENDS_TARGET="toolchain linux"
+PKG_NEED_UNPACK="$LINUX_DEPENDS"
 PKG_SECTION="driver"
 PKG_SHORTDESC="DVB drivers that replace the version shipped with the kernel"
 PKG_LONGDESC="DVB drivers that replace the version shipped with the kernel"
@@ -43,7 +44,7 @@ pre_make_target() {
 }
 
 make_target() {
-
+set -x
   # Amlogic AMLVIDEO driver
   if [ -e "$(kernel_path)/drivers/amlogic/video_dev" ]; then
 
@@ -66,6 +67,12 @@ make_target() {
       echo "obj-m += meson-ir.o" >> "media/drivers/media/rc/Makefile"
     fi
 
+  fi
+# avl6862 driver
+  if [ -d $PROJECT_DIR/$PROJECT/dvb_tv ]; then
+    cp -a $PROJECT_DIR/$PROJECT/dvb_tv "media/drivers/media/"	
+    cp -a $PROJECT_DIR/$PROJECT/dvb_tv/*.o "media_build/v4l/"	
+   echo "obj-y += dvb_tv/" >> "media/drivers/media/Makefile"
   fi
 
   cd media_build
