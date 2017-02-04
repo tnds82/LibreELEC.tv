@@ -17,7 +17,7 @@
 ################################################################################
 
 PKG_NAME="alsa-utils"
-PKG_VERSION="1.1.2"
+PKG_VERSION="1.1.3"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://www.alsa-project.org/"
@@ -37,7 +37,8 @@ PKG_CONFIGURE_OPTS_TARGET="--disable-dependency-tracking \
                            --disable-alsaloop \
                            --enable-alsatest \
                            --disable-bat \
-                           --disable-nls"
+                           --disable-nls \
+                           --disable-rst2man"
 
 
 post_makeinstall_target() {
