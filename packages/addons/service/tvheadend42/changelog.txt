@@ -1,10 +1,8 @@
-211
-- update to Tvheadend 4.1.2415
-
 109
-- fix uprades from old 4.1.xxx versions
-- fix debug if nothing is selected ad add-on settings
-- update to Tvheadend 4.1.2414
+- added custom start options to addon
+- added FRITZ!Box Sat>IP server support to addon
+- update to Tvheadend 4.1.2415
+- fix debug if activated but nothing selected
 
 108
 - added CA (libdvben50221) support
