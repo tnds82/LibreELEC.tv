@@ -1,6 +1,6 @@
 ################################################################################
 #      This file is part of LibreELEC - https://LibreELEC.tv
-#      Copyright (C) 2016 Team LibreELEC
+#      Copyright (C) 2016-2017 Team LibreELEC
 #
 #  LibreELEC is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 PKG_NAME="tvheadend42"
 PKG_VERSION="e5f5a42"
 PKG_VERSION_NUMBER="4.1.2415"
-PKG_REV="211"
+PKG_REV="109"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://www.tvheadend.org"
