@@ -87,7 +87,7 @@ if [ "$DEVEL_VERSION" = "devel" ] ; then
   fi
 fi
 
-if [ "$PROJECT" == "imx6" -a -n "$SYSTEM" ]; then
+if [ -n "$SYSTEM" ]; then
   IMAGE_NAME="$IMAGE_NAME-$SYSTEM"
 fi
 
@@ -257,6 +257,7 @@ if [ "$BUILD_ANDROID_BOOTIMG" = "yes" ]; then
     PATH=$ROOT/$TOOLCHAIN/lib/gcc-linaro-aarch64-linux-gnu/bin/:$PATH
     TARGET_PREFIX=aarch64-linux-gnu-
   fi
+
   for extra_target in $KERNEL_UBOOT_EXTRA_TARGET; do
     LDFLAGS="" make $extra_target > /dev/null
   done
@@ -264,6 +265,7 @@ if [ "$BUILD_ANDROID_BOOTIMG" = "yes" ]; then
   DTB_BLOBS_COUNT="${#DTB_BLOBS[@]}"
   DTB_BLOB_OUTPUT="arch/$TARGET_KERNEL_ARCH/boot/dtb.img"
   ANDROID_BOOTIMG_SECOND="--second $DTB_BLOB_OUTPUT"
+
   if [ "$DTB_BLOBS_COUNT" -gt 1 ]; then
     $ROOT/tools/dtbTool/dtbTool -o arch/$TARGET_KERNEL_ARCH/boot/dtb.img -p scripts/dtc/ arch/$TARGET_KERNEL_ARCH/boot/dts/amlogic/
     ANDROID_BOOTIMG_SECOND="--second arch/$TARGET_KERNEL_ARCH/boot/dtb.img"

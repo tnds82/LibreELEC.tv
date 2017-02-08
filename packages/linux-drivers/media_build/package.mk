@@ -1,6 +1,6 @@
 ################################################################################
 #      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016 Team LibreELEC
+#      Copyright (C) 2016-2017 Team LibreELEC
 #
 #  LibreELEC is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -17,8 +17,7 @@
 ################################################################################
 
 PKG_NAME="media_build"
-PKG_VERSION="2016-12-28"
-PKG_REV="1"
+PKG_VERSION="2017-01-22"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="https://github.com/crazycat69/linux_media"
@@ -44,44 +43,55 @@ pre_make_target() {
 }
 
 make_target() {
-set -x
+  make untar
+
+  # copy config file
+  if [ "$PROJECT" = Generic ] || [ "$PROJECT" = Virtual ]; then
+    if [ -f $PKG_DIR/config/generic.config ]; then
+      cp $PKG_DIR/config/generic.config v4l/.config
+    fi
+  elif [ "$PROJECT" != "S805" ] && [ "$PROJECT" != "S905" ]; then
+    if [ -f $PKG_DIR/config/usb.config ]; then
+      cp $PKG_DIR/config/usb.config v4l/.config
+    fi
+  fi
+
+  # add menuconfig to edit .config
+
   # Amlogic AMLVIDEO driver
   if [ -e "$(kernel_path)/drivers/amlogic/video_dev" ]; then
 
     # Copy, patch and enable amlvideodri module
-    cp -a "$(kernel_path)/drivers/amlogic/video_dev" "media/drivers/media/"
-    sed -i 's,common/,,g; s,"trace/,",g' $(find media/drivers/media/video_dev/ -type f)
-    sed -i 's,\$(CONFIG_V4L_AMLOGIC_VIDEO),m,g' "media/drivers/media/video_dev/Makefile"
-    echo "obj-y += video_dev/" >> "media/drivers/media/Makefile"
-    echo "source drivers/media/video_dev/Kconfig " >> "media/drivers/media/Kconfig"
+    cp -a "$(kernel_path)/drivers/amlogic/video_dev" "linux/drivers/media/"
+    sed -i 's,common/,,g; s,"trace/,",g' $(find linux/drivers/media/video_dev/ -type f)
+    sed -i 's,\$(CONFIG_V4L_AMLOGIC_VIDEO),m,g' "linux/drivers/media/video_dev/Makefile"
+    echo "obj-y += video_dev/" >> "linux/drivers/media/Makefile"
+    echo "source drivers/media/video_dev/Kconfig " >> "linux/drivers/media/Kconfig"
 
     # Copy and enable videobuf-res module
-    cp -a "$(kernel_path)/drivers/media/v4l2-core/videobuf-res.c" "media/drivers/media/v4l2-core/"
-    cp -a "$(kernel_path)/include/media/videobuf-res.h" "media/include/media/"
-    echo "obj-m += videobuf-res.o" >> "media/drivers/media/v4l2-core/Makefile"
+    cp -a "$(kernel_path)/drivers/media/v4l2-core/videobuf-res.c" "linux/drivers/media/v4l2-core/"
+    cp -a "$(kernel_path)/include/media/videobuf-res.h" "linux/include/media/"
+    echo "obj-m += videobuf-res.o" >> "linux/drivers/media/v4l2-core/Makefile"
 
     # Use meson-ir module from kernel tree, patch it and force to be built
     if [ -e "$(kernel_path)/drivers/media/rc/meson-ir.c" ]; then
-      cp -a "$(kernel_path)/drivers/media/rc/meson-ir.c" "media/drivers/media/rc/"
-      sed -i 's,allowed_protos,allowed_protocols,g' "media/drivers/media/rc/meson-ir.c"
-      echo "obj-m += meson-ir.o" >> "media/drivers/media/rc/Makefile"
+      cp -a "$(kernel_path)/drivers/media/rc/meson-ir.c" "linux/drivers/media/rc/"
+      sed -i 's,allowed_protos,allowed_protocols,g' "linux/drivers/media/rc/meson-ir.c"
+      echo "obj-m += meson-ir.o" >> "linux/drivers/media/rc/Makefile"
     fi
 
   fi
 # avl6862 driver
   if [ -d $PROJECT_DIR/$PROJECT/dvb_tv ]; then
-    cp -a $PROJECT_DIR/$PROJECT/dvb_tv "media/drivers/media/"	
-    cp -a $PROJECT_DIR/$PROJECT/dvb_tv/*.o "media_build/v4l/"	
-   echo "obj-y += dvb_tv/" >> "media/drivers/media/Makefile"
+    cp -a $PROJECT_DIR/$PROJECT/dvb_tv "linux/drivers/media/"	
+   echo "obj-y += dvb_tv/" >> "linux/drivers/media/Makefile"
   fi
 
-  cd media_build
-  make dir DIR=../media
-  make VER=$KERNEL_VER SRCDIR=$(kernel_path) allyesconfig
+
   make VER=$KERNEL_VER SRCDIR=$(kernel_path)
 }
 
 makeinstall_target() {
   mkdir -p $INSTALL/usr/lib/modules/$KERNEL_VER/updates
-  find $ROOT/$PKG_BUILD/media_build/v4l/ -name \*.ko -exec cp {} $INSTALL/usr/lib/modules/$KERNEL_VER/updates \;
+  find $ROOT/$PKG_BUILD/v4l/ -name \*.ko -exec cp {} $INSTALL/usr/lib/modules/$KERNEL_VER/updates \;
 }

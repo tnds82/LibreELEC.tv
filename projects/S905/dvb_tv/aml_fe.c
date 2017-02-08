@@ -1,3 +1,20 @@
+/*
+
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the Free Software
+	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+*/
 
 #ifndef CONFIG_ARM64
 #include <mach/am_regs.h>
@@ -18,9 +35,10 @@
 #include "aml_fe.h"
 
 #include "avl6862.h"
-#include "r848.h"
+#include "r848x.h"
 
 #include "aml_dvb.h"
+#undef pr_err
 
 #define pr_dbg(fmt, args...) \
 	do {\
@@ -31,15 +49,16 @@
 #define pr_inf(fmt, args...)   printk("DVB FE: " fmt, ## args)
 
 MODULE_PARM_DESC(debug_fe, "\n\t\t Enable frontend debug information");
-static int debug_fe = 1;
+static int debug_fe;
+module_param(debug_fe, int, 0644);
 
 MODULE_PARM_DESC(frontend_power, "\n\t\t Power GPIO of frontend");
 static int frontend_power = -1;
-module_param(frontend_power, int, S_IRUGO);
+module_param(frontend_power, int, 0644);
 
 MODULE_PARM_DESC(frontend_reset, "\n\t\t Reset GPIO of frontend");
 static int frontend_reset = -1;
-module_param(frontend_reset, int, S_IRUGO);
+module_param(frontend_reset, int, 0644);
 
 static struct aml_fe avl6862_fe[FE_DEV_COUNT];
 
@@ -75,7 +94,7 @@ int avl6862_gpio(void)
 	pr_dbg("avl6862_gpio!\n");
 	
 	gpio_request(frontend_power,device_name);
-    gpio_direction_output(frontend_power, 1);
+	gpio_direction_output(frontend_power, 1);
 	
 	return 0;
 }
@@ -87,13 +106,13 @@ static int avl6862_fe_init(struct aml_dvb *advb, struct platform_device *pdev, s
 
 	struct i2c_adapter *i2c_handle;
 #ifdef CONFIG_ARM64
-    struct gpio_desc *desc;
+        struct gpio_desc *desc;
 	int gpio_reset, gpio_power;
 #endif
 	
 	pr_inf("Init AVL6862 frontend %d\n", id);
 	
-#if 1 //def CONFIG_OF
+#ifdef CONFIG_OF
 	desc = of_get_named_gpiod_flags(pdev->dev.of_node, "dtv_demod0_reset_gpio-gpios", 0, NULL);
 	gpio_reset = desc_to_gpio(desc);
 	pr_dbg("gpio_reset=%d\n", gpio_reset);
@@ -114,15 +133,15 @@ static int avl6862_fe_init(struct aml_dvb *advb, struct platform_device *pdev, s
 	
 	avl6862_Reset();
 	avl6862_gpio();
-
 	fe->fe = dvb_attach(avl6862_attach, &avl6862_config, i2c_handle);
+
 	if (!fe->fe) {
 		pr_err("avl6862_attach attach failed!!!\n");
 		ret = -ENOMEM;
 		goto err_resource;
 	}
 		
-	if (dvb_attach(r848_attach, fe->fe, &r848_config, i2c_handle) == NULL) {
+	if (dvb_attach(r848x_attach, fe->fe, &r848_config, i2c_handle) == NULL) {
 		dvb_frontend_detach(fe->fe);
 		fe->fe = NULL;
 		pr_err("r848_attach attach failed!!!\n");
@@ -140,7 +159,7 @@ static int avl6862_fe_init(struct aml_dvb *advb, struct platform_device *pdev, s
 		goto err_resource;
 	}
 	
-	
+
 	pr_inf("Frontend AVL6862 registred!\n");
 	
 	return 0;

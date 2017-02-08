@@ -23,7 +23,7 @@ index d66993a..b3a32ad 100644
  #endif
  
  #ifdef TARGET_POSIX
-@@ -535,12 +534,61 @@
+@@ -534,12 +535,61 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
    {
      m_passthrough   = false;
    }
@@ -32,7 +32,6 @@ index d66993a..b3a32ad 100644
 +
 +  if (device.find("M8AUDIO") != std::string::npos)
    {
--    aml_set_audio_passthrough(m_passthrough);
 +    int aml_digital_codec = 0;
 +
 +    if (m_passthrough)
@@ -47,8 +46,8 @@ index d66993a..b3a32ad 100644
 +      snd_config_delete(config);
 +      InitializeHW(m_inconfig, m_outconfig);
 +
-+      /* Passthrough is supported only by device 1 */
-+      device = "hw:AMLM8AUDIO,1";
++      /* Passthrough is supported only by HDMI (device 1) */
++      device = "hdmi:CARD=AMLM8AUDIO,DEV=0";
 +
 +      switch(format.m_streamInfo.m_type)
 +      {
@@ -82,21 +81,20 @@ index d66993a..b3a32ad 100644
 +      device = "@:CARD=AMLM8AUDIO,DEV=0";
 +    }
 +
-+    aml_set_audio_passthrough(m_passthrough);
+     aml_set_audio_passthrough(m_passthrough);
 +    SysfsUtils::SetInt("/sys/class/audiodsp/digital_codec", aml_digital_codec);
    }
 -#endif
  
    if (inconfig.channels == 0)
    {
-@@ -1549,6 +1599,12 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
+@@ -1549,6 +1599,11 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
        info.m_dataFormats.push_back(i);
    }
  
-+  if (info.m_displayName.find("M8AUDIO") != std::string::npos)
++  if (info.m_displayName.find("M8AUDIO") != std::string::npos && info.m_deviceType != AE_DEVTYPE_HDMI)
 +  {
-+    info.m_displayNameExtra = "HDMI";
-+    info.m_deviceType = AE_DEVTYPE_HDMI;
++    info.m_displayNameExtra = "PCM";
 +  }
 +
    if (info.m_deviceType == AE_DEVTYPE_HDMI)

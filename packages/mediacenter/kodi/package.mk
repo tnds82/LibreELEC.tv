@@ -17,9 +17,7 @@
 ################################################################################
 
 PKG_NAME="kodi"
-# PKG_VERSION="17.0-RC3"
-PKG_VERSION="4d93228"
-PKG_REV="1"
+PKG_VERSION="a10c504"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://www.kodi.tv"
@@ -32,6 +30,12 @@ PKG_LONGDESC="Kodi Media Center (which was formerly named Xbox Media Center or X
 
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
+
+case $PROJECT in
+  S805|S905)
+    PKG_PATCH_DIRS="amlogic-sX05"
+    ;;
+esac
 
 PKG_CMAKE_SCRIPT="$ROOT/$PKG_BUILD/project/cmake/CMakeLists.txt"
 
@@ -98,7 +102,8 @@ else
 fi
 
 if [ "$KODI_DVDCSS_SUPPORT" = yes ]; then
-  KODI_DVDCSS="-DENABLE_DVDCSS=ON"
+  KODI_DVDCSS="-DENABLE_DVDCSS=ON \
+               -DLIBDVDCSS_URL=$ROOT/$SOURCES/libdvdcss/libdvdcss-$(get_pkg_version libdvdcss).tar.gz"
 else
   KODI_DVDCSS="-DENABLE_DVDCSS=OFF"
 fi
@@ -202,6 +207,10 @@ if [ ! "$KODIPLAYER_DRIVER" = default ]; then
   fi
 fi
 
+KODI_LIBDVD="$KODI_DVDCSS \
+             -DLIBDVDNAV_URL=$ROOT/$SOURCES/libdvdnav/libdvdnav-$(get_pkg_version libdvdnav).tar.gz \
+             -DLIBDVDREAD_URL=$ROOT/$SOURCES/libdvdread/libdvdread-$(get_pkg_version libdvdread).tar.gz"
+
 PKG_CMAKE_OPTS_TARGET="-DNATIVEPREFIX=$ROOT/$TOOLCHAIN \
                        -DWITH_TEXTUREPACKER=$ROOT/$TOOLCHAIN/bin/TexturePacker \
                        -DDEPENDS_PATH=$ROOT/$PKG_BUILD/depends \
@@ -230,7 +239,7 @@ PKG_CMAKE_OPTS_TARGET="-DNATIVEPREFIX=$ROOT/$TOOLCHAIN \
                        $KODI_XORG \
                        $KODI_SAMBA \
                        $KODI_NFS \
-                       $KODI_DVDCSS \
+                       $KODI_LIBDVD \
                        $KODI_AVAHI \
                        $KODI_UPNP \
                        $KODI_MYSQL \
@@ -347,10 +356,7 @@ post_makeinstall_target() {
 }
 
 post_install() {
-  # link default.target to kodi.target
-  ln -sf kodi.target $INSTALL/usr/lib/systemd/system/default.target
-
-  # enable default services
+  enable_service kodi.target
   enable_service kodi-autostart.service
   enable_service kodi-cleanlogs.service
   enable_service kodi-halt.service
