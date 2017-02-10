@@ -13,5 +13,3 @@ PROJECT=S805 DEVICE=HD18Q ARCH=arm make image -j8
 rm target/*.kernel
 rm target/*.system
 
-done
-
