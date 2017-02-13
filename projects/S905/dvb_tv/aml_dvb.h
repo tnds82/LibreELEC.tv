@@ -38,8 +38,8 @@
 #define TS_IN_COUNT       3
 #define S2P_COUNT         2
 
-#define DMX_DEV_COUNT     2
-#define FE_DEV_COUNT      1
+#define DMX_DEV_COUNT     3
+#define FE_DEV_COUNT      2
 #define CHANNEL_COUNT     31
 #define FILTER_COUNT      31
 #define FILTER_LEN        15
@@ -48,7 +48,7 @@
 #define SEC_BUF_GRP_COUNT 4
 #define SEC_BUF_BUSY_SIZE 4
 #define SEC_BUF_COUNT     (SEC_BUF_GRP_COUNT*8)
-#define ASYNCFIFO_COUNT 1
+#define ASYNCFIFO_COUNT   2
 
 
 enum aml_dmx_id_t {

@@ -54,11 +54,11 @@
 			printk("DMX: %s: "fmt, __func__, ## _args);\
 	} while (0)
 #define pr_dbg(fmt, args...)	pr_dbg_flag(0x1, fmt, ## args)
+#define pr_dbg_sf(fmt, args...) pr_dbg_flag(0x4, fmt, ## args)
+#define pr_dbg_ss(fmt, args...) pr_dbg_flag(0x8, fmt, ## args)
 #define pr_dbg_irq(fmt, args...)pr_dbg_irq_flag(0x1, fmt, ## args)
 #define pr_dbg_irq_dvr(fmt, args...)pr_dbg_irq_flag(0x2, fmt, ## args)
-#define pr_dbg_sf(fmt, args...) pr_dbg_flag(0x4, fmt, ## args)
 #define pr_dbg_irq_sf(fmt, args...) pr_dbg_irq_flag(0x4, fmt, ## args)
-#define pr_dbg_ss(fmt, args...) pr_dbg_flag(0x8, fmt, ## args)
 #define pr_dbg_irq_ss(fmt, args...) pr_dbg_irq_flag(0x8, fmt, ## args)
 
 #define pr_error(fmt, args...) printk("DMX: " fmt, ## args)
@@ -514,7 +514,7 @@ static int section_crc(struct aml_dmx *dmx, struct aml_filter *f, u8 *p)
 		if (demux->check_crc32(feed, p, sec_len)) {
 			pr_error("section CRC check failed!\n");
 
-#if 0
+#if 1
 			int i;
 
 			for (i = 0; i < sec_len; i++) {
@@ -526,7 +526,7 @@ static int section_crc(struct aml_dmx *dmx, struct aml_filter *f, u8 *p)
 #endif
 			return 0;
 		}
-#if 0
+#if 1
 		int i;
 
 		for (i = 0; i < sec_len; i++) {
@@ -1015,6 +1015,7 @@ static void dmx_irq_bh_handler(unsigned long arg)
 	if (status)
 		DMX_WRITE_REG(dmx->id, STB_INT_STATUS, status);
 #endif
+pr_dbg_irq_ss("int_status_>%x\n", DMX_READ_REG(dmx->id, STB_INT_STATUS));
 	process_smallsection(dmx);
 	return;
 }
@@ -1264,14 +1265,14 @@ static void stb_enable(struct aml_dvb *dvb)
 	case AM_TS_SRC_DMX0:
 		src = dvb->dmx[0].source;
 		break;
-/*
+//
 	case AM_TS_SRC_DMX1:
 		src = dvb->dmx[1].source;
 		break;
 	case AM_TS_SRC_DMX2:
 		src = dvb->dmx[2].source;
 		break;
-*/
+//
 	default:
 		src = dvb->stb_source;
 		break;
@@ -1339,13 +1340,15 @@ static void stb_enable(struct aml_dvb *dvb)
 	case AM_TS_SRC_DMX0:
 		tso_src = dvb->dmx[0].source;
 		break;
-/*	case AM_TS_SRC_DMX1:
+//
+	case AM_TS_SRC_DMX1:
 		tso_src = dvb->dmx[1].source;
 		break;
 	case AM_TS_SRC_DMX2:
 		tso_src = dvb->dmx[2].source;
 		break;
-*/	default:
+//
+	default:
 		tso_src = dvb->tso_source;
 		break;
 	}
@@ -4360,16 +4363,16 @@ static struct aml_dmx *get_dmx_from_src(enum aml_ts_source_t src)
 				}
 				break;
 		case AM_TS_SRC_DMX0:
-				/*if (0 > DMX_DEV_COUNT) */
-				/*dmx = &dvb->dmx[0]; */
+				if (0 > DMX_DEV_COUNT) 
+				 dmx = &dvb->dmx[0]; 
 				break;
 		case AM_TS_SRC_DMX1:
-				/*if (1 > DMX_DEV_COUNT) */
-				/*dmx = &dvb->dmx[1]; */
+				if (1 > DMX_DEV_COUNT)
+				 dmx = &dvb->dmx[1]; 
 				break;
 		case AM_TS_SRC_DMX2:
-				/*if (2 > DMX_DEV_COUNT) */
-				/*dmx = &dvb->dmx[2]; */
+				if (2 > DMX_DEV_COUNT)
+				 dmx = &dvb->dmx[2]; 
 				break;
 		default:
 				break;

@@ -18,7 +18,6 @@
 
 PKG_NAME="bluez"
 PKG_VERSION="5.43"
-PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://www.bluez.org/"
@@ -73,6 +72,12 @@ post_makeinstall_target() {
   rm -rf $INSTALL/usr/bin/bluemoon
   rm -rf $INSTALL/usr/bin/ciptool
   rm -rf $INSTALL/usr/share/dbus-1
+
+  mkdir -p $INSTALL/etc/bluetooth
+    cp src/main.conf $INSTALL/etc/bluetooth
+    sed -i $INSTALL/etc/bluetooth/main.conf \
+        -e "s|^#\[Policy\]|\[Policy\]|g" \
+        -e "s|^#AutoEnable.*|AutoEnable=true|g"
 }
 
 post_install() {

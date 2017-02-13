@@ -17,12 +17,11 @@
 ################################################################################
 
 PKG_NAME="lirc"
-PKG_VERSION="0.9.4"
-PKG_REV="1"
+PKG_VERSION="0.9.4c"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://www.lirc.org"
-PKG_URL="$SOURCEFORGE_SRC/lirc/$PKG_NAME-$PKG_VERSION.tar.bz2"
+PKG_URL="https://sourceforge.net/projects/lirc/files/LIRC/$PKG_VERSION/$PKG_NAME-$PKG_VERSION.tar.bz2"
 PKG_DEPENDS_TARGET="toolchain libftdi1 libusb-compat libxslt"
 PKG_SECTION="sysutils/remote"
 PKG_SHORTDESC="lirc: Linux Infrared Remote Control"
@@ -31,19 +30,20 @@ PKG_LONGDESC="LIRC is a package that allows you to decode and send infra-red sig
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="yes"
 
-PKG_CONFIGURE_OPTS_TARGET="ac_cv_path_LIBUSB_CONFIG= /
-                           ac_cv_func_forkpty=no \
+PKG_CONFIGURE_OPTS_TARGET="ac_cv_func_forkpty=no \
                            ac_cv_lib_util_forkpty=no \
                            ac_cv_prog_HAVE_PYTHON3=no \
                            --localstatedir=/ \
                            --with-gnu-ld \
                            --without-x"
 
+pre_configure_target() {
+  # patch lirc-make-devinput to use target kernel include
+  sed -e "s|/usr/include/linux/|${SYSROOT_PREFIX}/usr/include/linux/|g" \
+      -i ${ROOT}/${PKG_BUILD}/tools/lirc-make-devinput
+}
+
 post_makeinstall_target() {
-  rm -rf $INSTALL/usr/bin/pronto2lirc
-  rm -rf $INSTALL/usr/bin/lirc-setup
-  rm -rf $INSTALL/usr/sbin/lircd-setup
-  rm -rf $INSTALL/usr/lib/python3.4
   rm -rf $INSTALL/usr/lib/systemd
   rm -rf $INSTALL/lib
   rm -rf $INSTALL/usr/share
