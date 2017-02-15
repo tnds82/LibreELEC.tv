@@ -28,6 +28,11 @@ PKG_SECTION="linux"
 PKG_SHORTDESC="linux26: The Linux kernel 2.6 precompiled kernel binary image and modules"
 PKG_LONGDESC="This package contains a precompiled kernel image and the modules."
 case "$LINUX" in
+  linux-sun8i)
+    PKG_VERSION="f143b8a"
+    PKG_URL="$LAKKA_MIRROR/$PKG_NAME-$PKG_VERSION.tar.xz"
+    PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET sunxi-tools:host sunxi-sys-utils"
+    ;;
   amlogic-3.10)
     PKG_VERSION="de626d8"
     PKG_URL="https://github.com/LibreELEC/linux-amlogic/archive/$PKG_VERSION.tar.gz"
@@ -192,6 +197,17 @@ pre_make_target() {
 make_target() {
   LDFLAGS="" make modules
   LDFLAGS="" make INSTALL_MOD_PATH=$INSTALL/usr DEPMOD="$ROOT/$TOOLCHAIN/bin/depmod" modules_install
+
+  if [ "$LINUX" = "linux-sun8i" ]; then
+    for all_fex in $PROJECT_DIR/$PROJECT/sys_config/*.fex; do
+      fex=$(basename $all_fex)
+      echo $all_fex
+      echo $fex
+      pwd
+      $ROOT/$TOOLCHAIN/bin/fexc $all_fex $fex
+    done
+  fi
+
   rm -f $INSTALL/usr/lib/modules/*/build
   rm -f $INSTALL/usr/lib/modules/*/source
 
