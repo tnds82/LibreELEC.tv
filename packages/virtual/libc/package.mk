@@ -34,6 +34,7 @@ PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 if [ "$BOOTLOADER" = "bcm2835-bootloader" ] \
+  || [ "$PROJECT" = "S802" ] \
   || [ "$PROJECT" = "S805" ] \
   || [ "$PROJECT" = "S905" -a "$ARCH" = "arm" ] ; then
   PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET arm-mem"
