@@ -21,15 +21,6 @@ index cf3beb3..aa83b0e 100644
      {
 --- a/system/settings/settings.xml	2016-10-25 08:15:32.331928019 +0200
 +++ b/system/settings/settings.xml	2016-10-25 12:49:06.077160262 +0200
-@@ -111,7 +111,7 @@
-         <setting id="videoplayer.useamcodecmpeg2" type="integer" label="39001" >
-           <requirement>HAVE_AMCODEC</requirement>
-           <level>2</level>
--          <default>0</default>
-+          <default>800</default>
-           <constraints>
-             <options>
-               <option label="20420">9999</option>   <!-- Never -->
 @@ -3147,7 +3147,7 @@
        <group id="2" label="14270">
          <setting id="locale.country" type="string" label="14271" help="36115">

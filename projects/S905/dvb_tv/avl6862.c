@@ -1446,7 +1446,7 @@ static int avl6862fe_algo(struct dvb_frontend *fe)
 	return DVBFE_ALGO_HW;
 }
 			
-static  struct dtv_frontend_properties _last_dtv;
+//static  struct dtv_frontend_properties _last_dtv;
 
 static int avl6862_set_frontend(struct dvb_frontend *fe)
 {
@@ -1462,7 +1462,7 @@ static int avl6862_set_frontend(struct dvb_frontend *fe)
 		return ret;
 
 	/* setup tuner */
-	if (memcmp(&_last_dtv, c, sizeof(struct dtv_frontend_properties))) {
+//	if (memcmp(&_last_dtv, c, sizeof(struct dtv_frontend_properties))) {
 	    if (fe->ops.tuner_ops.set_params) {
 		if (fe->ops.i2c_gate_ctrl)
 			fe->ops.i2c_gate_ctrl(fe, 1);
@@ -1473,8 +1473,8 @@ static int avl6862_set_frontend(struct dvb_frontend *fe)
 		if (ret)
 			return ret;
 	    }
-	}
-	memcpy(&_last_dtv, c, sizeof(struct dtv_frontend_properties));
+//	}
+//	memcpy(&_last_dtv, c, sizeof(struct dtv_frontend_properties));
 
 	switch (c->delivery_system) {
 	case SYS_DVBT:
