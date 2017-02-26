@@ -49,11 +49,10 @@
   # Kernel to use. values can be:
   # default:  default mainline kernel
     LINUX="custom"
-    KERNEL_VERSION="c1b4b3f"
-#    KERNEL_VERSION="92ab78c"
+#   KERNEL_VERSION="c1b4b3f"
+    KERNEL_VERSION="f353216"
     BUILD_DATE=`date +%Y%m%d%H%M%S`
-#    CUSTOM_VERSION=$LIBREELEC_VERSION-7.95.beta6Z-$BUILD_DATE
-    CUSTOM_VERSION="8.0.0a-I"
+    CUSTOM_VERSION="8.0.0c-I"
     KERNEL_URL="https://github.com/kszaq/linux-amlogic-le/archive/$KERNEL_VERSION.tar.gz"
     KERNEL_SOURCE_DIR="linux-amlogic-le-$KERNEL_VERSION*"
     KERNEL_PATCH_DIRS="amlogic-3.14"

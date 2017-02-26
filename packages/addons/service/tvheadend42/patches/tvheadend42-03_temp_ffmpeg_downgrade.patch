@@ -1,4 +1,4 @@
-Subject: [PATCH] tvheadend: HACK ffmpeg 3.1.5 instead of 3.2
+Subject: [PATCH] tvheadend: HACK ffmpeg 3.1.6 instead of 3.2
 
 diff --git a/Makefile.ffmpeg b/Makefile.ffmpeg
 --- a/Makefile.ffmpeg

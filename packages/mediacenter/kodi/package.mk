@@ -17,8 +17,7 @@
 ################################################################################
 
 PKG_NAME="kodi"
-PKG_VERSION="a10c504"
-PKG_VERSION="b0bc68b"
+PKG_VERSION="1a80820"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://www.kodi.tv"
