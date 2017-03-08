@@ -57,14 +57,9 @@
 #include "aml_dvb.h"
 #include "aml_dvb_reg.h"
 
-//#define pr_dbg(fmt, args...) printk("%s: " fmt, __func__, ## args)
+#define pr_dbg(fmt, args...) printk("%s: " fmt, __func__, ## args)
 #define pr_error(fmt, args...) printk("%s: " fmt, __func__, ## args)
 #define pr_inf(fmt, args...)   printk("%s: " fmt, __func__, ## args)
-#define pr_dbg(fmt, args...) \
-	do {\
-		if (debug_dvb)\
-			printk("DVB: " fmt, ##args);\
-	} while (0)
 //#define pr_error(fmt, args...) printk("DVB: " fmt, ## args)
 //#define pr_inf(fmt, args...)   printk("DVB: " fmt, ## args)
 
@@ -175,12 +170,13 @@ static int aml_dvb_dmx_init(struct aml_dvb *advb, struct aml_dmx *dmx, int id)
 	dmx->source  = 0;
 	dmx->dump_ts_select = 0;
 	dmx->dvr_irq = -1;
-	dmx->demux.dmx.capabilities = (DMX_TS_FILTERING | DMX_SECTION_FILTERING | DMX_MEMORY_BASED_FILTERING);
-	dmx->demux.filternum = dmx->demux.feednum = FILTER_COUNT;
-	dmx->demux.priv = advb;
-	dmx->demux.start_feed = aml_dmx_hw_start_feed;
-	dmx->demux.stop_feed = aml_dmx_hw_stop_feed;
-	dmx->demux.write_to_decoder = NULL;
+
+	dmx->demux.dmx.capabilities 	= (DMX_TS_FILTERING | DMX_SECTION_FILTERING | DMX_MEMORY_BASED_FILTERING);
+	dmx->demux.filternum 		= dmx->demux.feednum = FILTER_COUNT;
+	dmx->demux.priv 		= advb;
+	dmx->demux.start_feed 		= aml_dmx_hw_start_feed;
+	dmx->demux.stop_feed 		= aml_dmx_hw_stop_feed;
+	dmx->demux.write_to_decoder 	= NULL;
 
 	if ((ret = dvb_dmx_init(&dmx->demux)) < 0) {
 		pr_error("dvb_dmx failed: error %d\n",ret);
@@ -284,6 +280,7 @@ static int aml_dvb_asyncfifo_init(struct aml_dvb *advb, struct aml_asyncfifo *as
 		asyncfifo->asyncfifo_irq = res->start;
 	}
 #endif
+pr_inf("af:%d irq:%d\n", id, asyncfifo->asyncfifo_irq);
 
 	asyncfifo->dvb = advb;
 	asyncfifo->id = id;
@@ -347,7 +344,7 @@ static ssize_t stb_show_source(struct class *class, struct class_attribute *attr
 static ssize_t stb_store_source(struct class *class,struct class_attribute *attr, const char *buf, size_t size)
 {
     dmx_source_t src = -1;
-
+pr_inf("inp:%s\n", buf);
     if(!strncmp("ts0", buf, 3)) {
     	src = DMX_SOURCE_FRONT0;
     } else if(!strncmp("ts1", buf, 3)) {
@@ -403,6 +400,7 @@ static ssize_t dsc_store_source(struct class *class, struct class_attribute *att
                           size_t size)
 {
 	dmx_source_t src = -1;
+pr_inf("inp:%s\n", buf);
 
 	if(!strncmp("dmx0", buf, 4)) {
 		src = DMX_SOURCE_FRONT0; 	//	src = DMX_SOURCE_FRONT0+100;
@@ -489,6 +487,7 @@ static ssize_t tso_store_source(struct class *class,struct class_attribute *attr
                           size_t size)
 {
     dmx_source_t src = -1;
+pr_inf("inp:%s\n", buf);
 
     if(!strncmp("ts0", buf, 3)) {
     	src = DMX_SOURCE_FRONT0;
@@ -559,7 +558,7 @@ static ssize_t demux##i##_show_source(struct class *class,  struct class_attribu
 static ssize_t demux##i##_store_source(struct class *class,  struct class_attribute *attr,const char *buf, size_t size)\
 {\
     dmx_source_t src = -1;\
-    \
+pr_inf("inp:%s\n", buf);    \
 	if(!strncmp("ts0", buf, 3)) {\
     	src = DMX_SOURCE_FRONT0;\
     } else if(!strncmp("ts1", buf, 3)) {\
@@ -758,7 +757,7 @@ static ssize_t asyncfifo##i##_show_source(struct class *class,  struct class_att
 static ssize_t asyncfifo##i##_store_source(struct class *class,  struct class_attribute *attr,const char *buf, size_t size)\
 {\
     enum aml_dmx_id_t src = -1;\
-    \
+pr_inf("inp:%s\n", buf);    \
 	if(!strncmp("dmx0", buf, 4)) {\
     	src = AM_DMX_0;\
     } else if(!strncmp("dmx1", buf, 4)) {\
@@ -1259,8 +1258,8 @@ static int aml_dvb_probe(struct platform_device *pdev)
 		if (ret < 0)
 			goto error;
 
-		aml_asyncfifo_hw_set_source(&advb->asyncfifo[i], AM_DMX_0);
 	}
+	aml_asyncfifo_hw_set_source(&advb->asyncfifo[0], AM_DMX_0);
 
 	aml_regist_dmx_class();
 
