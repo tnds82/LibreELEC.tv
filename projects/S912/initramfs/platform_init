@@ -1,7 +1,5 @@
 #!/bin/sh
 
-hdmimode=1080p60hz
-
 for arg in $(cat /proc/cmdline); do
   case ${arg} in
     hdmimode=*)
@@ -21,6 +19,11 @@ for arg in $(cat /proc/cmdline); do
       ;;
   esac
 done
+
+if [ ! "$hdmimode" = "1080p60hz" ]; then
+  hdmimode="1080p60hz"
+  echo "$hdmimode" > /sys/class/display/mode
+fi
 
 # Add information where to run LibreELEC from
 if [ -z "$BOOT_IMAGE" -o -z "$boot" -o -z "$disk" ]; then
@@ -58,10 +61,6 @@ case $hdmimode in
     echo 0x10001 > /sys/class/graphics/fb0/free_scale
   ;;
 esac
-
-# Include deinterlacer into default VFM map
-echo rm default > /sys/class/vfm/map
-echo add default decoder ppmgr deinterlace amlvideo amvideo > /sys/class/vfm/map
 
 # Enable framebuffer device
 echo 0 > /sys/class/graphics/fb0/blank
