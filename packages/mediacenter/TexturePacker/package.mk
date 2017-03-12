@@ -23,7 +23,7 @@ PKG_LICENSE="GPL"
 PKG_SITE="http://www.kodi.tv"
 PKG_URL=""
 PKG_DEPENDS_HOST="lzo:host libpng:host libjpeg-turbo:host giflib:host"
-PKG_NEED_UNPACK="$ROOT/packages/mediacenter/$MEDIACENTER/package.mk"
+PKG_NEED_UNPACK="$(get_pkg_directory $MEDIACENTER)"
 PKG_SECTION="mediacenter"
 PKG_SHORTDESC="kodi-platform:"
 PKG_LONGDESC="kodi-platform:"
@@ -35,15 +35,11 @@ PKG_CMAKE_SCRIPT="$(get_build_dir $MEDIACENTER)/tools/depends/native/TexturePack
 
 PKG_CMAKE_OPTS_HOST="-Wno-dev"
 
-pre_build_host() {
-  $SCRIPTS/clean $PKG_NAME
-}
-
 pre_configure_host() {
   export CXXFLAGS="$CXXFLAGS -std=c++11 -DTARGET_POSIX -DTARGET_LINUX -D_LINUX -I$(get_build_dir $MEDIACENTER)/xbmc/linux"
 }
 
 makeinstall_host() {
-  mkdir -p $ROOT/$TOOLCHAIN/bin
-    cp TexturePacker $ROOT/$TOOLCHAIN/bin
+  mkdir -p $TOOLCHAIN/bin
+    cp TexturePacker $TOOLCHAIN/bin
 }
