@@ -22,7 +22,7 @@ u8  FILTER_DELAY = 2;
 			printk("R848: %s: " fmt, __func__, ##args);\
 	} while (0)
 MODULE_PARM_DESC(debug, "\n\t\t Enable Rafael R848 tuner debug information");
-static int debug = 1;
+static int debug;
 module_param(debug, int, 0644);
 
 //PLL LO=161MHz (R20:0x70 ; R24:0x70 ; R28:0x10 ; R29:0x00 ; R30:0x80)
@@ -376,20 +376,16 @@ int R848_GetLockStatus(struct r848_priv *priv)
     i2c_para.Len     = 3;
     if(I2C_Read_Len(priv, &i2c_para) != RT_Success)
     {
-		dev_dbg("i2c R848_GetLockStatus failed!\n");
+	dev_dbg("i2c R848_GetLockStatus failed!\n");
         ret = -EREMOTEIO;
     }
 
-    if( (i2c_para.Data[2] & 0x40) == 0x00 ) 
-    {
-        ret = 0; //tuner unlock
-    }
+    if ((i2c_para.Data[2] & 0x40) == 0x00)
+        ret = 1; //tuner unlock
     else
-    {
-        ret = 1; //tuner lock
-    }
+	ret = 0; //tuner lock
 	
-	dev_dbg("R848_GETLOCKSTATUS=0x%x\n", i2c_para.Data[2]);
+    dev_dbg("R848_GETLOCKSTATUS=0x%x\n", i2c_para.Data[2]);
 
     return ret;
 }
@@ -5477,6 +5473,9 @@ static int r848_set_params(struct dvb_frontend *fe)
 			dev_dbg("R848_SetPllData failed!!!\n");
 			return RT_Fail;
 		}
+		dev_dbg("R848_SetPllData for DVB-C OK!!!\n");
+		dev_dbg("R848_SetStandard=%d\n", R848_INFO.R848_Standard);
+		dev_dbg("R848_SetFrequency=%d KHz\n", R848_INFO.RF_KHz);
 		break;
 	case SYS_DVBT:
 	case SYS_DVBT2:
@@ -5503,7 +5502,7 @@ static int r848_set_params(struct dvb_frontend *fe)
 			dev_dbg("R848_SetPllData failed!!!\n");
 			return RT_Fail;
 		}
-		dev_dbg("R848_SetPllData OK!!!\n");
+		dev_dbg("R848_SetPllData for DVB-T OK!!!\n");
 		dev_dbg("R848_SetStandard=%d\n", R848_INFO.R848_Standard);
 		dev_dbg("R848_SetFrequency=%d KHz\n", R848_INFO.RF_KHz);
 		dev_dbg("c->bandwidth_hz=%d\n", c->bandwidth_hz);
@@ -5525,7 +5524,7 @@ static int r848_set_params(struct dvb_frontend *fe)
 			dev_dbg("R848_SetPllData failed!!!\n");
 			return RT_Fail;
 		}
-		dev_dbg("R848_SetPllData OK!!!\n");
+		dev_dbg("R848_SetPllData for DVB-S OK!!!\n");
 		dev_dbg("R848_SetStandard=%d\n", R848_INFO.R848_Standard);
 		dev_dbg("R848_SetFrequency=%d KHz\n", R848_INFO.RF_KHz);
 		break;
@@ -5538,20 +5537,17 @@ static int r848_set_params(struct dvb_frontend *fe)
 	}
 #endif
 	for (i = 0; i < 5; i++) {
-		ret = R848_GetLockStatus(priv);
-		if(ret) {
-			printk("Tuner Locked.\n");
-			break;
-		} else {
-			printk("Tuner not Locked!\n");
-		}
-		msleep(20);
+	    ret = R848_GetLockStatus(priv);
+	    if(!ret)  {
+		dev_dbg("Tuner Locked.\n");
+		break;
+	    }
+	    dev_dbg("Tuner not Locked!\n");
+	    msleep(20);  
 	}
-
 //exit:
 
-	//return ret;
-	return 0;
+	return ret;
 }
 
 static const struct dvb_tuner_ops r848_tuner_ops = {

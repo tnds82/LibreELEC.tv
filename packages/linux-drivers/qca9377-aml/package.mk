@@ -1,6 +1,7 @@
 ################################################################################
 #      This file is part of LibreELEC - https://LibreELEC.tv
 #      Copyright (C) 2016 Team LibreELEC
+#      Copyright (C) 2016 kszaq
 #
 #  LibreELEC is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -16,21 +17,19 @@
 #  along with LibreELEC.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
-PKG_NAME="gpu-aml-t8xx"
+PKG_NAME="qca9377-aml"
 PKG_REV="1"
 PKG_ARCH="arm aarch64"
 PKG_LICENSE="GPL"
-PKG_SITE="http://openlinux.amlogic.com:8000/download/ARM/gpu/"
-PKG_VERSION="fe6d7b1"
-PKG_URL="https://github.com/openwetek/gpu-aml/archive/$PKG_VERSION.tar.gz"
-#PKG_URL="$DISTRO_SRC/$PKG_NAME-$PKG_VERSION.tar.xz"
-PKG_SOURCE_DIR="gpu-aml-$PKG_VERSION*"
+PKG_SITE="https://boundarydevices.com/new-silex-wifi-802-11ac-bt4-1-module/"
+PKG_VERSION="boundary-LNX.LEH.4.2.2.2-4.5.20.034"
+PKG_URL="https://github.com/boundarydevices/qcacld-2.0/archive/$PKG_VERSION.tar.gz"
+PKG_SOURCE_DIR="qcacld-2.0-$PKG_VERSION*"
 PKG_DEPENDS_TARGET="toolchain linux"
 PKG_NEED_UNPACK="$LINUX_DEPENDS"
-PKG_PRIORITY="optional"
 PKG_SECTION="driver"
-PKG_SHORTDESC="gpu-aml: Linux drivers for Mali GPUs found in Amlogic Meson SoCs"
-PKG_LONGDESC="gpu-aml: Linux drivers for Mali GPUs found in Amlogic Meson SoCs"
+PKG_SHORTDESC="qca9377-aml"
+PKG_LONGDESC="qca9377-aml"
 
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
@@ -42,13 +41,11 @@ if [ "$TARGET_KERNEL_ARCH" = "arm64" -a "$TARGET_ARCH" = "arm" ]; then
 fi
 
 make_target() {
-  LDFLAGS="" make -C $(kernel_path) M=$ROOT/$PKG_BUILD/t83x/kernel/drivers/gpu/arm/midgard \
-  EXTRA_CFLAGS="-DCONFIG_MALI_PLATFORM_DEVICETREE -DCONFIG_MALI_DEVFREQ" \
-    CONFIG_MALI_MIDGARD=m CONFIG_MALI_PLATFORM_DEVICETREE=y CONFIG_MALI_DEVFREQ=y
+  KERNEL_SRC="$(kernel_path)" ARCH=$TARGET_KERNEL_ARCH CROSS_COMPILE=$TARGET_PREFIX \
+    LDFLAGS="" CFLAGS="" CONFIG_CLD_HL_SDIO_CORE=y make
 }
 
 makeinstall_target() {
-  LDFLAGS="" make -C $(kernel_path) M=$ROOT/$PKG_BUILD/t83x/kernel/drivers/gpu/arm/midgard \
-    INSTALL_MOD_PATH=$INSTALL/usr INSTALL_MOD_STRIP=1 DEPMOD=: \
-  modules_install
+  mkdir -p $INSTALL/usr/lib/modules/$(get_module_dir)/$PKG_NAME
+  cp $ROOT/$PKG_BUILD/wlan.ko $INSTALL/usr/lib/modules/$(get_module_dir)/$PKG_NAME/
 }

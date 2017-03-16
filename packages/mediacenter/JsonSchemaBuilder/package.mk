@@ -18,12 +18,11 @@
 
 PKG_NAME="JsonSchemaBuilder"
 PKG_VERSION="0"
-PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://www.kodi.tv"
 PKG_URL=""
-PKG_NEED_UNPACK="$ROOT/packages/mediacenter/$MEDIACENTER/package.mk"
+PKG_NEED_UNPACK="$(get_pkg_directory $MEDIACENTER)"
 PKG_SECTION="mediacenter"
 PKG_SHORTDESC="kodi-platform:"
 PKG_LONGDESC="kodi-platform:"

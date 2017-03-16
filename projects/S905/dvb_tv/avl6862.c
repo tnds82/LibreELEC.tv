@@ -269,13 +269,15 @@ static int avl6862_wait_demod(struct avl6862_priv *priv)
 	int ret, retry = DEMOD_WAIT_RETRIES;
 
 	do {
+		msleep(DEMOD_WAIT_MS);
 		ret = avl6862_RD_REG16(priv,0x200 + rc_fw_command_saddr_offset, &cmd);
 		if ((ret == 0) && (cmd == 0))
 			return ret;
-		else
-			msleep(DEMOD_WAIT_MS);
+//		else
+//			msleep(DEMOD_WAIT_MS);
 	} while (--retry);
 	ret = -EBUSY;
+
 	return ret;
 }
 
@@ -283,10 +285,11 @@ static int avl6862_wait_demod(struct avl6862_priv *priv)
 static int avl6862_exec_n_wait(struct avl6862_priv *priv, u8 cmd)
 {
 	int ret;
-
+/*
 	ret = avl6862_wait_demod(priv);
 	if (ret)
 		return ret;
+*/
 	ret = avl6862_WR_REG16(priv, 0x200 + rc_fw_command_saddr_offset, (u32) cmd);
 	if (ret)
 		return ret;
@@ -554,11 +557,13 @@ static int avl6862_load_firmware(struct avl6862_priv *priv)
 		break;
 	case SYS_DVBT:
 	case SYS_DVBT2:
-	default:
 		fw_data = AVL_Demod_Patch_DVBTxFw;
 		fw_size = sizeof(AVL_Demod_Patch_DVBTxFw);
 		dev_info(&priv->i2c->dev, "Load avl6862 firmware patch for DVB-T/T2 size=%d", fw_size);
 		break;
+	default:
+		ret = -EINVAL;
+		goto err;
 	}
 
 	fw_size &= 0xfffffffc;
@@ -941,18 +946,35 @@ static int avl6862_set_dvbmode(struct dvb_frontend *fe,
 	int ret;
 	u32 reg;
 
-	/* these modes use the same fw / config */
+	/* these modes use the same fw / config *
 	if (delsys == SYS_DVBS2)
 		delsys = SYS_DVBS;
 	else if (delsys == SYS_DVBT2)
 		delsys = SYS_DVBT;
 
-	/* already in desired mode */
+	* already in desired mode */
 	if (priv->delivery_system == delsys)
 		return 0;
 
-	priv->delivery_system = delsys;
 	dbg_avl("initing demod for delsys=%d", delsys);
+
+	switch (priv->delivery_system) {
+	case SYS_DVBS:
+		if (delsys == SYS_DVBS2) return 0;
+		break;
+	case SYS_DVBS2:
+		if (delsys == SYS_DVBS) return 0;
+		break;
+	case SYS_DVBT:
+		if (delsys == SYS_DVBT2) return 0;
+		break;
+	case SYS_DVBT2:
+		if (delsys == SYS_DVBT) return 0;
+		break;
+	default:
+		break;
+	}
+	priv->delivery_system = delsys;
 
 	ret = avl6862_load_firmware(priv);
 
@@ -1039,6 +1061,7 @@ static int AVL_Demod_DVBSx_Diseqc_SendModulationData(struct avl6862_priv *priv, 
 	u8 pucBuffTemp[8] = {0};
 	u8 Continuousflag = 0;
 	u16 uiTempOutTh = 0;
+
 	if (ucSize > 8) {
 		r = AVL_EC_WARNING;
 	} else {
@@ -1121,6 +1144,7 @@ int AVL_SX_DiseqcSendCmd(struct avl6862_priv *priv, AVL_puchar pCmd, u8 CmdSize)
 {
 	int r = AVL_EC_OK;
 	struct AVL_Diseqc_TxStatus TxStatus;
+	dbg_avl(" %*ph", CmdSize, pCmd);
 
 	r = AVL_Demod_DVBSx_Diseqc_SendModulationData(priv, pCmd, CmdSize);
 	if(r != AVL_EC_OK) {
@@ -1224,9 +1248,9 @@ static int avl6862_diseqc(struct dvb_frontend *fe,
 	struct avl6862_priv *priv = fe->demodulator_priv;
 	int ret;
 
-	ret = avl6862_set_dvbmode(fe,SYS_DVBS);
-	if (ret)
-	  return ret;
+//	ret = avl6862_set_dvbmode(fe,SYS_DVBS);
+//	if (ret)
+//	  return ret;
 
 	return AVL_SX_DiseqcSendCmd(priv,cmd->msg,cmd->msg_len);
 }
@@ -1237,9 +1261,6 @@ static int avl6862_burst(struct dvb_frontend *fe, enum fe_sec_mini_cmd burst)
 	struct AVL_Diseqc_TxStatus TxStatus;
 	int ret;
 
-	ret = avl6862_set_dvbmode(fe,SYS_DVBS);
-	if (ret)
-	  return ret;
 	ret = AVL_Demod_DVBSx_Diseqc_SendTone(priv,burst == SEC_MINI_A ? 1 : 0, 1);
 
 	return ret;
@@ -1251,10 +1272,7 @@ static int avl6862_set_tone(struct dvb_frontend* fe, enum fe_sec_tone_mode tone)
 	int ret;
 	u32 reg;
 
-	ret = avl6862_set_dvbmode(fe,SYS_DVBS);
-	if (ret)
-	  return ret;
-
+	dbg_avl("tone: %d", tone);
 	ret = avl6862_RD_REG32(priv, 0x16c000 + hw_diseqc_tx_cntrl_offset, &reg);
 	if (ret)
 		return ret;
@@ -1280,9 +1298,7 @@ static int avl6862_set_voltage(struct dvb_frontend* fe, enum fe_sec_voltage volt
 	u32 pwr, vol;
 	int ret;
 
-	ret = avl6862_set_dvbmode(fe,SYS_DVBS);
-	if (ret)
-	  return ret;
+	dbg_avl("volt: %d", voltage);
 
 	switch (voltage) {
 	case SEC_VOLTAGE_OFF:
@@ -1312,7 +1328,7 @@ static int avl6862_read_status(struct dvb_frontend *fe, enum fe_status *status)
 	struct avl6862_priv *priv = fe->demodulator_priv;
 	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
 	int ret = 0;
-	u32 reg, agc, mul, snr = 0;
+	u32 reg = 0, agc, mul, snr = 0;
 
 	switch (priv->delivery_system) {
 	case SYS_DVBC_ANNEX_A:
@@ -1334,6 +1350,9 @@ static int avl6862_read_status(struct dvb_frontend *fe, enum fe_status *status)
 		if (reg) {
 			ret |= avl6862_RD_REG32(priv,0xc00 + rs_DVBSx_int_SNR_dB_iaddr_offset, &snr);		  
 			if (ret || snr > 10000) snr = 0;
+		} else { 
+			*status = 0;
+			return ret;
 		}
 		mul = 328;
 		break;
@@ -1355,7 +1374,6 @@ static int avl6862_read_status(struct dvb_frontend *fe, enum fe_status *status)
 	  	*status = 0;
 		return ret;
 	}
-
 	*status = FE_HAS_SIGNAL;
 	ret = avl6862_RD_REG16(priv,0x0a4 + rs_rf_agc_saddr_offset, &agc);
 	c->strength.len = 2;
@@ -1448,6 +1466,8 @@ static int avl6862fe_algo(struct dvb_frontend *fe)
 			
 //static  struct dtv_frontend_properties _last_dtv;
 
+
+
 static int avl6862_set_frontend(struct dvb_frontend *fe)
 {
 	struct avl6862_priv *priv = fe->demodulator_priv;
@@ -1502,8 +1522,8 @@ static int avl6862_set_frontend(struct dvb_frontend *fe)
 		if (demod_mode != AVL_DVBSX) {
 			dev_err(&priv->i2c->dev, "%s: failed to enter DVBSx mode",
 				KBUILD_MODNAME);
-//			ret = -EAGAIN;
-//			break;
+			ret = -EAGAIN;
+			break;
 		}
 		ret = avl6862_set_dvbs(fe);
 		break;
@@ -1549,11 +1569,15 @@ static int avl6862_set_property(struct dvb_frontend *fe,
 			break;
 		case SYS_DVBT:
 		case SYS_DVBT2:
-		default:
 			fe->ops.info.frequency_min = 174000000;
 			fe->ops.info.frequency_max = 862000000;
 			fe->ops.info.frequency_stepsize = 250000;
 			break;
+		default:
+			fe->ops.info.frequency_min = 0;
+			fe->ops.info.frequency_max = 0;
+			fe->ops.info.frequency_stepsize = 0;
+			ret = -EINVAL;
 		}
 
 		break;
@@ -1581,7 +1605,7 @@ static void avl6862_release(struct dvb_frontend *fe)
 }
 
 static struct dvb_frontend_ops avl6862_ops = {
-	.delsys = {SYS_DVBT, SYS_DVBT2, SYS_DVBC_ANNEX_A, SYS_DVBC_ANNEX_B, SYS_DVBS, SYS_DVBS2},
+	.delsys = {SYS_DVBT, SYS_DVBT2, SYS_DVBC_ANNEX_A, SYS_DVBS, SYS_DVBS2},
 	.info = {
 		.name			= "Availink avl6862",
 		.frequency_min		= 0,
