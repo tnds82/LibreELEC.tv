@@ -1,5 +1,8 @@
+#!/bin/sh
 ################################################################################
-#      This file is part of OpenELEC - http://www.openelec.tv
+#      This file is part of LibreELEC - https://libreelec.tv
+#      Copyright (C) 2016 Team LibreELEC
+#      Copyright (C) 2016 Mateusz Krzak (kszaquitto@gmail.com)
 #
 #  OpenELEC is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -15,27 +18,36 @@
 #  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
-SOURCEREMOTECONF="/tmp/remote/remote.conf"
-TARGETREMOTECONF="/storage/.config/amremote/remote.conf"
-REMOTECONFPRESENT="no"
+SOURCEREMOTECONF=""
+REMAP="no"
 
-if ! grep -q /dev/system /proc/mounts ; then
-  mkdir -p /tmp/remote
+if [ -f /storage/.config/remote.conf ]; then
+  SOURCEREMOTECONF="/storage/.config"
+  REMAP="yes"
+elif [ -f /flash/remote.conf ]; then
+  SOURCEREMOTECONF="/flash"
+  REMAP="yes"
+elif [ -f /etc/amremote/remote.conf ]; then
+  SOURCEREMOTECONF="/etc/amremote"
+elif ! grep -q /dev/system /proc/mounts ; then
+  mount -o rw,remount /flash
   mkdir -p /tmp/system
   mount -o ro /dev/system /tmp/system
-
-  if [ -f /tmp/system/etc/remote.conf ] ; then
-    cp -f /tmp/system/etc/remote.conf $SOURCEREMOTECONF
-    REMOTECONFPRESENT="yes"
-  elif [ -f /tmp/system/remote.conf ] ; then
-    cp -f /tmp/system/remote.conf $SOURCEREMOTECONF
-    REMOTECONFPRESENT="yes"
-  fi
+  for f in /tmp/system/etc/remote*.conf; do
+    cp $f /flash
+    SOURCEREMOTECONF="/flash"
+  done
+  for f in /tmp/system/remote*.conf; do
+    cp $f /flash
+    SOURCEREMOTECONF="/flash"
+  done
   umount /tmp/system
+  REMAP="yes"
 fi
 
-if [ "$REMOTECONFPRESENT" = "yes" ]; then
-  cp -f "$SOURCEREMOTECONF" "$TARGETREMOTECONF"
+if [ -n "$SOURCEREMOTECONF" ]; then
+  cp $SOURCEREMOTECONF/remote*.conf /tmp
+  if [ "$REMAP" = "yes" ]; then
     sed -i 's/ 15[^0-9]*$/ 1/
             s/ 63[^0-9]*$/ 90/
             s/ 97[^0-9]*$/ 28/
@@ -55,7 +67,9 @@ if [ "$REMOTECONFPRESENT" = "yes" ]; then
             s/ 244[^0-9]*$/ 208/
             s/ 245[^0-9]*$/ 168/
             s/ 264[^0-9]*$/ 63/
-            s/ 704[^0-9]*$/ 116/' "$TARGETREMOTECONF"
-
-  /usr/bin/remotecfg "$TARGETREMOTECONF"
+            s/ 704[^0-9]*$/ 116/' /tmp/remote*.conf
+  fi
+  for f in /tmp/remote*.conf; do
+    /usr/bin/remotecfg $f
+  done
 fi
