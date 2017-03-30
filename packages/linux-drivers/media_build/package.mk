@@ -50,7 +50,7 @@ make_target() {
     if [ -f $PKG_DIR/config/generic.config ]; then
       cp $PKG_DIR/config/generic.config v4l/.config
     fi
-  elif [ "$PROJECT" != "S805" ] && [ "$PROJECT" != "S905" ]; then
+  elif [ "$PROJECT" != "S805" ] && [ "$PROJECT" != "S905" ] && [ "$PROJECT" != "S912" ]; then
     if [ -f $PKG_DIR/config/usb.config ]; then
       cp $PKG_DIR/config/usb.config v4l/.config
     fi
@@ -82,9 +82,12 @@ make_target() {
 
   fi
 # avl6862 driver
-  if [ -d $PROJECT_DIR/$PROJECT/dvb_tv ]; then
-    cp -a $PROJECT_DIR/$PROJECT/dvb_tv "linux/drivers/media/"	
-   echo "obj-y += dvb_tv/" >> "linux/drivers/media/Makefile"
+  if [ -d $PROJECT_DIR/S905/dvb_tv ]; then
+    cp -a $PROJECT_DIR/S905/dvb_tv "linux/drivers/media/"
+    if  [ "$PROJECT" = "S912" ]; then
+      echo "EXTRA_CFLAGS += -DUSE_I2C_2" >> "linux/drivers/media/dvb_tv/Makefile"	
+    fi
+    echo "obj-y += dvb_tv/" >> "linux/drivers/media/Makefile"
   fi
 
 
