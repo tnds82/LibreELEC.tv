@@ -17,7 +17,6 @@
 ################################################################################
 
 PKG_NAME="linux"
-PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://www.kernel.org"
@@ -30,31 +29,33 @@ PKG_SHORTDESC="linux26: The Linux kernel 2.6 precompiled kernel binary image and
 PKG_LONGDESC="This package contains a precompiled kernel image and the modules."
 case "$LINUX" in
   amlogic-3.10)
-    PKG_VERSION="0268c8e"
+    PKG_VERSION="de626d8"
     PKG_URL="https://github.com/LibreELEC/linux-amlogic/archive/$PKG_VERSION.tar.gz"
     PKG_SOURCE_DIR="$PKG_NAME-amlogic-$PKG_VERSION*"
     PKG_PATCH_DIRS="amlogic-3.10"
     ;;
   amlogic-3.14)
-    PKG_VERSION="6eaacba"
+    PKG_VERSION="eb7e852"
     PKG_URL="https://github.com/LibreELEC/linux-amlogic/archive/$PKG_VERSION.tar.gz"
     PKG_SOURCE_DIR="$PKG_NAME-amlogic-$PKG_VERSION*"
     PKG_PATCH_DIRS="amlogic-3.14"
     ;;
-  imx6)
-    PKG_VERSION="3.14-mx6-sr"
-    PKG_COMMIT="27e61f6"
-    PKG_SOURCE_DIR="$PKG_NAME-$PKG_VERSION-$PKG_COMMIT"
-    PKG_SOURCE_NAME="$PKG_SOURCE_DIR.tar.xz"
-    PKG_URL="$DISTRO_SRC/$PKG_SOURCE_NAME"
+  imx6-3.14-sr)
+    PKG_VERSION="3.14-sr"
+    PKG_COMMIT="2fb11e2"
+    PKG_SITE="http://solid-run.com/wiki/doku.php?id=products:imx6:software:development:kernel"
+    PKG_URL="https://github.com/SolidRun/linux-fslc/archive/$PKG_COMMIT.tar.gz"
+    PKG_SOURCE_NAME="$PKG_NAME-$LINUX-$PKG_COMMIT.tar.gz"
+    PKG_SOURCE_DIR="$PKG_NAME-fslc-${PKG_COMMIT}*"
     PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET imx6-status-led imx6-soc-fan"
     ;;
   imx6-4.4-xbian)
     PKG_VERSION="4.4-xbian"
-    PKG_COMMIT="20160821-f14907b"
-    PKG_SOURCE_DIR="$PKG_NAME-$PKG_VERSION-$PKG_COMMIT"
-    PKG_SOURCE_NAME="$PKG_SOURCE_DIR.tar.xz"
-    PKG_URL="$DISTRO_SRC/$PKG_SOURCE_NAME"
+    PKG_COMMIT="3bde863"
+    PKG_SITE="https://github.com/xbianonpi/xbian-sources-kernel/tree/imx6-4.4.y"
+    PKG_URL="https://github.com/xbianonpi/xbian-sources-kernel/archive/$PKG_COMMIT.tar.gz"
+    PKG_SOURCE_NAME="$PKG_NAME-$LINUX-$PKG_COMMIT.tar.gz"
+    PKG_SOURCE_DIR="xbian-sources-kernel-${PKG_COMMIT}*"
     PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET imx6-status-led imx6-soc-fan irqbalanced"
     ;;
   custom)
@@ -64,7 +65,7 @@ case "$LINUX" in
     PKG_PATCH_DIRS="$KERNEL_PATCH_DIRS"
     ;;
   *)
-    PKG_VERSION="4.9.3"
+    PKG_VERSION="4.9.13"
     PKG_URL="http://www.kernel.org/pub/linux/kernel/v4.x/$PKG_NAME-$PKG_VERSION.tar.xz"
     PKG_PATCH_DIRS="default"
     ;;
@@ -91,10 +92,6 @@ if [ "$BUILD_ANDROID_BOOTIMG" = "yes" ]; then
 fi
 
 post_patch() {
-  if [ -d $PROJECT_DIR/$PROJECT/dvb_tvx ]; then
-   rm -fR $PKG_BUILD/drivers/amlogic/dvb_tv/*
-   cp -f $PROJECT_DIR/$PROJECT/dvb_tvx/* $PKG_BUILD/drivers/amlogic/dvb_tv/	
-  fi
   if [ -n "$DEVICE" -a -f $PROJECT_DIR/$PROJECT/devices/$DEVICE/$PKG_NAME/$PKG_VERSION/$PKG_NAME.$TARGET_ARCH.conf ]; then
     KERNEL_CFG_FILE=$PROJECT_DIR/$PROJECT/devices/$DEVICE/$PKG_NAME/$PKG_VERSION/$PKG_NAME.$TARGET_ARCH.conf
   elif [ -n "$DEVICE" -a -f $PROJECT_DIR/$PROJECT/devices/$DEVICE/$PKG_NAME/$PKG_NAME.$TARGET_ARCH.conf ]; then

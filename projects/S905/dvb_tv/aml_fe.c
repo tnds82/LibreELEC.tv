@@ -124,8 +124,11 @@ static int avl6862_fe_init(struct aml_dvb *advb, struct platform_device *pdev, s
 
 	frontend_reset = gpio_reset;
 	frontend_power = gpio_power;
-	
+#ifdef USE_I2C_2	
+	i2c_handle = i2c_get_adapter(2);
+#else
 	i2c_handle = i2c_get_adapter(1);
+#endif
 	if (!i2c_handle) {
 		pr_err("Cannot get i2c adapter! \n");
 		return 0;

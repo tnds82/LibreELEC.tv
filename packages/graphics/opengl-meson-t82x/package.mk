@@ -16,30 +16,33 @@
 #  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
-PKG_NAME="liberation-fonts-ttf"
-PKG_VERSION="2.00.1"
-PKG_ARCH="any"
-PKG_LICENSE="OFL1_1"
-PKG_SITE="https://www.redhat.com/promo/fonts/"
-PKG_URL="$DISTRO_SRC/$PKG_NAME-$PKG_VERSION.tar.gz"
-PKG_DEPENDS_TARGET="toolchain util-macros"
-PKG_SECTION="x11/fonts"
-PKG_SHORTDESC="liberation-fonts: High quality "open-sourced" vector fonts"
-PKG_LONGDESC="This packages included the high-quality and open-sourced TrueType vector fonts released by RedHat."
+PKG_NAME="opengl-meson-t82x"
+PKG_ARCH="arm"
+PKG_LICENSE="nonfree"
+PKG_SITE="https://github.com/kszaq/opengl-meson-t82x"
+PKG_DEPENDS_TARGET="toolchain libhybris"
+PKG_VERSION="1a2e07e"
+PKG_URL="$PKG_SITE/archive/$PKG_VERSION.tar.gz"
+PKG_SOURCE_DIR="$PKG_NAME-$PKG_VERSION*"
+PKG_SECTION="graphics"
+PKG_SHORTDESC="opengl-meson: OpenGL ES pre-compiled libraries for Mali GPUs found in Amlogic Meson SoCs"
+PKG_LONGDESC="opengl-meson: OpenGL ES pre-compiled libraries for Mali GPUs found in Amlogic Meson SoCs. The libraries could be found in a Linux buildroot released by Amlogic at http://openlinux.amlogic.com:8000/download/ARM/filesystem/. See the opengl package."
 
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 make_target() {
-  : # nothing to make
+ : # nothing todo
 }
 
 makeinstall_target() {
-  mkdir -p $INSTALL/usr/share/fonts/liberation
-    cp *.ttf $INSTALL/usr/share/fonts/liberation
+  mkdir -p $SYSROOT_PREFIX/usr/include
+    cp -PR usr/include/* $SYSROOT_PREFIX/usr/include
+
+  mkdir -p $INSTALL/system
+    cp -PR system/* $INSTALL/system
 }
 
 post_install() {
-  mkfontdir $INSTALL/usr/share/fonts/liberation
-  mkfontscale $INSTALL/usr/share/fonts/liberation
+  enable_service unbind-console.service
 }

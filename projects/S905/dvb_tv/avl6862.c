@@ -884,6 +884,22 @@ static int avl6862_set_dvbc(struct dvb_frontend *fe)
 
 	ret = avl6862_WR_REG32(priv, 0x600 + rc_DVBC_qam_mode_scan_control_iaddr_offset, 0x0101);
 	ret |= avl6862_WR_REG32(priv, 0x600 + rc_DVBC_symbol_rate_Hz_iaddr_offset, c->symbol_rate);
+	ret |= avl6862_WR_REG8(priv, 0x600 + rc_DVBC_j83b_mode_caddr_offset, AVL_DVBC_J83A);
+	ret |= avl6862_exec_n_wait(priv, AVL_FW_CMD_ACQUIRE);
+	return ret;
+}
+
+static int avl6862_set_dvbc_b(struct dvb_frontend *fe)
+{
+	struct avl6862_priv *priv = fe->demodulator_priv;
+	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
+	int ret;
+
+	dbg_avl("Freq:%d Mhz,sym:%d", c->frequency, c->symbol_rate);
+
+	ret = avl6862_WR_REG32(priv, 0x600 + rc_DVBC_qam_mode_scan_control_iaddr_offset, 0x0101);
+	ret |= avl6862_WR_REG32(priv, 0x600 + rc_DVBC_symbol_rate_Hz_iaddr_offset, c->symbol_rate);
+	ret |= avl6862_WR_REG8(priv, 0x600 + rc_DVBC_j83b_mode_caddr_offset, AVL_DVBC_J83B);
 	ret |= avl6862_exec_n_wait(priv, AVL_FW_CMD_ACQUIRE);
 	return ret;
 }
@@ -1248,10 +1264,6 @@ static int avl6862_diseqc(struct dvb_frontend *fe,
 	struct avl6862_priv *priv = fe->demodulator_priv;
 	int ret;
 
-//	ret = avl6862_set_dvbmode(fe,SYS_DVBS);
-//	if (ret)
-//	  return ret;
-
 	return AVL_SX_DiseqcSendCmd(priv,cmd->msg,cmd->msg_len);
 }
 
@@ -1323,12 +1335,27 @@ static int avl6862_set_voltage(struct dvb_frontend* fe, enum fe_sec_voltage volt
 	return ret;
 }
 
+struct Signal_Level
+{
+	u16 SignalLevel;
+	short SignalDBM;
+};
+#define Level_High_Stage	36
+#define Level_Low_Stage		76
+
+#define Percent_Space_High	10
+#define Percent_Space_Mid	30
+#define Percent_Space_Low	60
+	
 static int avl6862_read_status(struct dvb_frontend *fe, enum fe_status *status)
 {
 	struct avl6862_priv *priv = fe->demodulator_priv;
 	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
 	int ret = 0;
 	u32 reg = 0, agc, mul, snr = 0;
+	u16 Level;
+	int i = 0;
+	int Percent = 0;
 
 	switch (priv->delivery_system) {
 	case SYS_DVBC_ANNEX_A:
@@ -1376,11 +1403,22 @@ static int avl6862_read_status(struct dvb_frontend *fe, enum fe_status *status)
 	}
 	*status = FE_HAS_SIGNAL;
 	ret = avl6862_RD_REG16(priv,0x0a4 + rs_rf_agc_saddr_offset, &agc);
+
 	c->strength.len = 2;
 	c->strength.stat[0].scale = FE_SCALE_DECIBEL;
 	c->strength.stat[0].svalue = - (s32)agc;
+	Level = (s32)agc / 1000;
+dbg_avl("Level=%d", Level);
+	
+	if (Level <= Level_High_Stage)
+		Percent = Percent_Space_Low+Percent_Space_Mid + (Level_High_Stage - Level) * Percent_Space_High / Level_High_Stage;
+	else if (Level <= Level_Low_Stage)
+		Percent = Percent_Space_Low+ (Level_Low_Stage - Level) * Percent_Space_Mid/ (Level_Low_Stage - Level_High_Stage);
+	else
+		Percent =(90 - Level) * Percent_Space_Low / (90 - Level_Low_Stage);
+
 	c->strength.stat[1].scale = FE_SCALE_RELATIVE;
-	c->strength.stat[1].uvalue = (100 - agc/1000) * 656;
+	c->strength.stat[1].uvalue = (Percent * 65535) / 100; //(100 - agc/1000) * 656;
 
 	if (reg){
 		*status |= FE_HAS_CARRIER | FE_HAS_VITERBI | FE_HAS_SYNC | FE_HAS_LOCK;
@@ -1481,6 +1519,11 @@ static int avl6862_set_frontend(struct dvb_frontend *fe)
 	if (ret)
 		return ret;
 
+	if (c->delivery_system == SYS_DVBC_ANNEX_A && c->symbol_rate < 6000000 ) {
+		c->delivery_system = SYS_DVBC_ANNEX_B;
+		c->bandwidth_hz = 6000000;
+	}
+
 	/* setup tuner */
 //	if (memcmp(&_last_dtv, c, sizeof(struct dtv_frontend_properties))) {
 	    if (fe->ops.tuner_ops.set_params) {
@@ -1508,7 +1551,6 @@ static int avl6862_set_frontend(struct dvb_frontend *fe)
 		ret = avl6862_set_dvbt(fe);
 		break;
 	case SYS_DVBC_ANNEX_A:
-	case SYS_DVBC_ANNEX_B:
 		if (demod_mode != AVL_DVBC) {
 			dev_err(&priv->i2c->dev, "%s: failed to enter DVBC mode",
 				KBUILD_MODNAME);
@@ -1516,6 +1558,15 @@ static int avl6862_set_frontend(struct dvb_frontend *fe)
 			break;
 		}
 		ret = avl6862_set_dvbc(fe);
+		break;
+	case SYS_DVBC_ANNEX_B:
+		if (demod_mode != AVL_DVBC) {
+			dev_err(&priv->i2c->dev, "%s: failed to enter DVBC annex B mode",
+				KBUILD_MODNAME);
+			ret = -EAGAIN;
+			break;
+		}
+		ret = avl6862_set_dvbc_b(fe);
 		break;
 	case SYS_DVBS:
 	case SYS_DVBS2:
@@ -1605,7 +1656,7 @@ static void avl6862_release(struct dvb_frontend *fe)
 }
 
 static struct dvb_frontend_ops avl6862_ops = {
-	.delsys = {SYS_DVBT, SYS_DVBT2, SYS_DVBC_ANNEX_A, SYS_DVBS, SYS_DVBS2},
+	.delsys = {SYS_DVBT, SYS_DVBT2, SYS_DVBC_ANNEX_A, SYS_DVBC_ANNEX_B, SYS_DVBS, SYS_DVBS2},
 	.info = {
 		.name			= "Availink avl6862",
 		.frequency_min		= 0,

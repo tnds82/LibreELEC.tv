@@ -22,7 +22,7 @@ u8  FILTER_DELAY = 2;
 			printk("R848: %s: " fmt, __func__, ##args);\
 	} while (0)
 MODULE_PARM_DESC(debug, "\n\t\t Enable Rafael R848 tuner debug information");
-static int debug;
+static int debug = 1;
 module_param(debug, int, 0644);
 
 //PLL LO=161MHz (R20:0x70 ; R24:0x70 ; R28:0x10 ; R29:0x00 ; R30:0x80)
@@ -5454,6 +5454,7 @@ static int r848_set_params(struct dvb_frontend *fe)
 
 	switch (c->delivery_system) {
 	case SYS_DVBC_ANNEX_A:
+	case SYS_DVBC_ANNEX_C:
 		R848_INFO.RF_KHz = c->frequency / 1000;
 		if(c->bandwidth_hz <= 6000000) {
         		R848_INFO.R848_Standard = R848_DVB_C_6M_IF_5M;
@@ -5473,7 +5474,27 @@ static int r848_set_params(struct dvb_frontend *fe)
 			dev_dbg("R848_SetPllData failed!!!\n");
 			return RT_Fail;
 		}
-		dev_dbg("R848_SetPllData for DVB-C OK!!!\n");
+		dev_dbg("R848_SetPllData for DVB-C\n");
+		dev_dbg("R848_SetStandard=%d\n", R848_INFO.R848_Standard);
+		dev_dbg("R848_SetFrequency=%d KHz\n", R848_INFO.RF_KHz);
+		break;
+	case SYS_DVBC_ANNEX_B:
+		R848_INFO.RF_KHz = c->frequency / 1000;
+       		R848_INFO.R848_Standard = R848_J83B_IF_5M;
+#if 0
+		/* set pll data */
+		if(R848_SetStandard(priv, R848_INFO.R848_Standard) != RT_Success) {
+			return RT_Fail;
+		}
+		if(R848_SetFrequency(priv, R848_INFO) != RT_Success) {
+			return RT_Fail;
+		}
+#endif
+		if(R848_SetPllData(priv, R848_INFO) != RT_Success) {
+			dev_dbg("R848_SetPllData failed!!!\n");
+			return RT_Fail;
+		}
+			dev_dbg("R848_SetPllData for DVB-C Annex B\n");
 		dev_dbg("R848_SetStandard=%d\n", R848_INFO.R848_Standard);
 		dev_dbg("R848_SetFrequency=%d KHz\n", R848_INFO.RF_KHz);
 		break;
@@ -5502,7 +5523,7 @@ static int r848_set_params(struct dvb_frontend *fe)
 			dev_dbg("R848_SetPllData failed!!!\n");
 			return RT_Fail;
 		}
-		dev_dbg("R848_SetPllData for DVB-T OK!!!\n");
+		dev_dbg("R848_SetPllData for DVB-T\n");
 		dev_dbg("R848_SetStandard=%d\n", R848_INFO.R848_Standard);
 		dev_dbg("R848_SetFrequency=%d KHz\n", R848_INFO.RF_KHz);
 		dev_dbg("c->bandwidth_hz=%d\n", c->bandwidth_hz);
@@ -5524,7 +5545,7 @@ static int r848_set_params(struct dvb_frontend *fe)
 			dev_dbg("R848_SetPllData failed!!!\n");
 			return RT_Fail;
 		}
-		dev_dbg("R848_SetPllData for DVB-S OK!!!\n");
+		dev_dbg("R848_SetPllData for DVB-S\n");
 		dev_dbg("R848_SetStandard=%d\n", R848_INFO.R848_Standard);
 		dev_dbg("R848_SetFrequency=%d KHz\n", R848_INFO.RF_KHz);
 		break;
