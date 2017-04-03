@@ -34,7 +34,8 @@ PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 if [ "$BOOTLOADER" = "bcm2835-bootloader" ] \
-  || [ "$PROJECT" = "S802" ] \
+  || [ "$PROJECT" = "AML8726" ] \
+  || [ "$PROJECT" = "S8X2" ] \
   || [ "$PROJECT" = "S805" ] \
   || [ "$PROJECT" = "S905" -a "$ARCH" = "arm" ] \
   || [ "$PROJECT" = "S912" -a "$ARCH" = "arm" ] ; then
