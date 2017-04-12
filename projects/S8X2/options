@@ -37,6 +37,9 @@
      MXIII-1G)
       KERNEL_UBOOT_EXTRA_TARGET="meson8_k200b_1G_emmc_sdio.dtd meson8_k200b_1G_emmc_sdio.dtb"
       ;;
+     TM8)
+      KERNEL_UBOOT_EXTRA_TARGET="meson8_k200C_1G.dtd meson8_k200C_1G.dtb"
+      ;;
      M8S-PLUS)
       KERNEL_UBOOT_EXTRA_TARGET="meson8m2_KII.dtd meson8m2_KII.dtb"
       ;;
