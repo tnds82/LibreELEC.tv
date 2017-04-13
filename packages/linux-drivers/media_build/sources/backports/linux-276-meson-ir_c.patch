@@ -1,0 +1,12 @@
+--- a/drivers/media/rc/meson-ir.c	2017-03-31 10:58:47.147096999 +0200
++++ b/drivers/media/rc/meson-ir.c	2017-03-31 11:16:34.588551000 +0200
+@@ -133,7 +133,7 @@
+ 		return ir->irq;
+ 	}
+ 
+-	ir->rc = rc_allocate_device();
++	ir->rc = rc_allocate_device(RC_DRIVER_IR_RAW);
+ 	if (!ir->rc) {
+ 		dev_err(dev, "failed to allocate rc device\n");
+ 		return -ENOMEM;
+
