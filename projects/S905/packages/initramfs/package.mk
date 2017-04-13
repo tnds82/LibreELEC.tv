@@ -57,11 +57,13 @@ post_install() {
       $STRIP --strip-debug $MOD
     done
 
-    sed -i '/aml_nftl_dev/d' ./etc/modules
-
     ln -sf /usr/lib $ROOT/$BUILD/initramfs/lib
     ln -sf /usr/bin $ROOT/$BUILD/initramfs/bin
     ln -sf /usr/sbin $ROOT/$BUILD/initramfs/sbin
+
+    rm $ROOT/$BUILD/initramfs/splash/splash-768.png
+    rm $ROOT/$BUILD/initramfs/splash/splash-1200.png
+    rm $ROOT/$BUILD/initramfs/splash/splash-2160.png
 
     mkdir -p $ROOT/$BUILD/image/
     fakeroot -- sh -c \
