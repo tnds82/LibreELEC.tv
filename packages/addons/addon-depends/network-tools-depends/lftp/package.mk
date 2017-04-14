@@ -1,5 +1,5 @@
 ################################################################################
-#      This file is part of LibreELEC - http://www.libreelec.tv
+#      This file is part of LibreELEC - https://libreelec.tv
 #      Copyright (C) 2016 Team LibreELEC
 #
 #  LibreELEC is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://lftp.yar.ru/"
 PKG_URL="http://lftp.yar.ru/ftp/${PKG_NAME}-${PKG_VERSION}.tar.gz"
-PKG_DEPENDS_TARGET="toolchain readline libressl zlib"
+PKG_DEPENDS_TARGET="toolchain readline openssl zlib"
 PKG_SECTION="tools"
 PKG_SHORTDESC="ftp client"
 PKG_LONGDESC="LFTP is a sophisticated ftp/http client, and a file transfer program supporting a number of network protocols"

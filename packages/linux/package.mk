@@ -59,7 +59,7 @@ case "$LINUX" in
     PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET imx6-status-led imx6-soc-fan irqbalanced"
     ;;
   *)
-    PKG_VERSION="4.10"
+    PKG_VERSION="4.10.9"
     PKG_URL="http://www.kernel.org/pub/linux/kernel/v4.x/$PKG_NAME-$PKG_VERSION.tar.xz"
     PKG_PATCH_DIRS="default"
     ;;
@@ -137,6 +137,22 @@ post_patch() {
     if [ "$LIBCEC_TYPE" = "xbian" -a "$LINUX" = "imx6-4.4-xbian" ]; then
       sed -i -e "s|# CONFIG_MXC_HDMI_CEC is not set|CONFIG_MXC_HDMI_CEC=y|" $PKG_BUILD/.config
       sed -i -e "s|CONFIG_MXC_HDMI_CEC_SR=y||" $PKG_BUILD/.config
+    fi
+  fi
+
+  # install extra dts files
+  for f in $PROJECT_DIR/$PROJECT/config/*-overlay.dts; do
+    [ -f "$f" ] && cp -v $f $PKG_BUILD/arch/$TARGET_KERNEL_ARCH/boot/dts/overlays
+  done
+  if [ -f $PROJECT_DIR/$PROJECT/config/dt-blob.dts ]; then
+    cp -v $PROJECT_DIR/$PROJECT/config/dt-blob.dts $PKG_BUILD/arch/$TARGET_KERNEL_ARCH/boot/dts
+  fi
+  if [ -n "$DEVICE" ]; then
+    for f in $PROJECT_DIR/$PROJECT/devices/$DEVICE/config/*-overlay.dts; do
+      [ -f "$f" ] && cp -v $f $PKG_BUILD/arch/$TARGET_KERNEL_ARCH/boot/dts/overlays
+    done
+    if [ -f $PROJECT_DIR/$PROJECT/devices/$DEVICE/config/dt-blob.dts ]; then
+      cp -v $PROJECT_DIR/$PROJECT/devices/$DEVICE/config/dt-blob.dts $PKG_BUILD/arch/$TARGET_KERNEL_ARCH/boot/dts
     fi
   fi
 }
