@@ -38,7 +38,7 @@
 			printk("AVL: %s: " fmt "\n", __func__, ##args);\
 	} while (0)
 MODULE_PARM_DESC(debug_avl, "\n\t\t Enable AVL demodulator debug information");
-static int debug_avl = 1;
+static int debug_avl;
 module_param(debug_avl, int, 0644);
 
 
@@ -1408,7 +1408,6 @@ static int avl6862_read_status(struct dvb_frontend *fe, enum fe_status *status)
 	c->strength.stat[0].scale = FE_SCALE_DECIBEL;
 	c->strength.stat[0].svalue = - (s32)agc;
 	Level = (s32)agc / 1000;
-dbg_avl("Level=%d", Level);
 	
 	if (Level <= Level_High_Stage)
 		Percent = Percent_Space_Low+Percent_Space_Mid + (Level_High_Stage - Level) * Percent_Space_High / Level_High_Stage;

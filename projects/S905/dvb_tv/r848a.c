@@ -22,7 +22,7 @@ u8  FILTER_DELAY = 2;
 			printk("R848: %s: " fmt, __func__, ##args);\
 	} while (0)
 MODULE_PARM_DESC(debug, "\n\t\t Enable Rafael R848 tuner debug information");
-static int debug = 1;
+static int debug;
 module_param(debug, int, 0644);
 
 //PLL LO=161MHz (R20:0x70 ; R24:0x70 ; R28:0x10 ; R29:0x00 ; R30:0x80)
