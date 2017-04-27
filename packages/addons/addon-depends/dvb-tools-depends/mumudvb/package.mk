@@ -17,7 +17,7 @@
 ################################################################################
 
 PKG_NAME="mumudvb"
-PKG_VERSION="2.1.0"
+PKG_VERSION="fa9ff6e"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://mumudvb.net/"
