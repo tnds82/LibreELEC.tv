@@ -51,7 +51,7 @@
     LINUX="custom"
     KERNEL_VERSION="d1fde91"
     BUILD_DATE=`date +%Y%m%d%H%M%S`
-    CUSTOM_VERSION="8.0.1h-I"
+    CUSTOM_VERSION="8.0.1i-I"
     KERNEL_URL="https://github.com/kszaq/linux-amlogic-le/archive/$KERNEL_VERSION.tar.gz"
     KERNEL_SOURCE_DIR="linux-amlogic-le-$KERNEL_VERSION*"
     KERNEL_PATCH_DIRS="amlogic-3.14"
