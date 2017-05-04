@@ -30,7 +30,7 @@ PKG_LONGDESC="This package contains a precompiled kernel image and the modules."
 case "$LINUX" in
   linux-sun8i)
     PKG_VERSION="f143b8a"
-    PKG_URL="$LAKKA_MIRROR/$PKG_NAME-$PKG_VERSION.tar.xz"
+    PKG_URL="http://mirror.lakka.tv/$PKG_NAME-$PKG_VERSION.tar.xz"
     PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET sunxi-tools:host sunxi-sys-utils"
     ;;
   amlogic-3.10)

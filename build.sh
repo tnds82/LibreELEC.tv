@@ -13,6 +13,8 @@ PROJECT=S805 SYSTEM=HD18Q ARCH=arm make amlpkg -j8
 >&2 echo "AML8726.arm"
 PROJECT=AML8726 ARCH=arm make amlpkg -j8
 
+PROJECT=H3 SYSTEM=opipc ARCH=arm make image -j8
+
 rm -rf target/*.kernel
 rm -rf target/*.system
 
