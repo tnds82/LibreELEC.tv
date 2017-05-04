@@ -143,6 +143,3 @@
   # additional drivers
     ADDITIONAL_DRIVERS="RTL8192CU RTL8192DU RTL8192EU RTL8188EU"
     ADDITIONAL_DRIVERS+=" mt7601u"
-
-  # override some playlist core assignation
-    RA_PLAYLIST_CORES="${RA_PLAYLIST_CORES//mupen64plus/glupen64}"
