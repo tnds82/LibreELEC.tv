@@ -18,31 +18,19 @@
 #  http://www.gnu.org/copyleft/gpl.html
 ################################################################################
 
-PKG_NAME="sunxi-mali"
-PKG_VERSION="541e445"
+PKG_NAME="libump"
+PKG_VERSION="ec06806"
 PKG_REV="1"
 PKG_ARCH="any"
-PKG_LICENSE="nonfree"
-PKG_SITE="https://github.com/linux-sunxi/sunxi-mali"
+PKG_LICENSE="Apache2"
+PKG_SITE="https://github.com/linux-sunxi/libump"
 PKG_URL="http://mirror.lakka.tv/$PKG_NAME-$PKG_VERSION.tar.xz"
 PKG_BUILD_DEPENDS_TARGET="toolchain"
-PKG_DEPENDS_TARGET="libump"
 PKG_PRIORITY="optional"
 PKG_SECTION="graphics"
-PKG_SHORTDESC="Sunxi Mali-400 support libraries."
-PKG_LONGDESC="Sunxi Mali-400 support libraries."
+PKG_SHORTDESC="Unified Memory Provider userspace API source code needed for xf86-video-mali compilation"
+PKG_LONGDESC="Unified Memory Provider userspace API source code needed for xf86-video-mali compilation"
 
 PKG_IS_ADDON="no"
-PKG_AUTORECONF="no"
+PKG_AUTORECONF="yes"
 
-make_target() {
-  if [ "$LINUX" == "linux-sun8i" ]; then
-    make ABI=armhf VERSION=r4p0-00rel0 EGL_TYPE=framebuffer
-  else
-    make ABI=armhf VERSION=r3p0 EGL_TYPE=framebuffer
-  fi
-}
-
-pre_makeinstall_target() {
-  mkdir -p $INSTALL/usr/lib
-}
