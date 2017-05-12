@@ -1,6 +1,6 @@
 --- a/drivers/amlogic/amports/amstream.c	2017-01-15 11:32:55.000000000 +0100
 +++ b/drivers/amlogic/amports/amstream.c	2017-01-18 23:28:41.559624984 +0100
-@@ -3193,7 +3193,7 @@
+@@ -3567,7 +3567,7 @@
  		return 0;
  	return &bufs[id];
  }
@@ -11,7 +11,7 @@
  		.compatible = "amlogic, codec, streambuf",
 --- a/drivers/amlogic/amports/tsdemux.c	2017-01-15 11:32:55.000000000 +0100
 +++ b/drivers/amlogic/amports/tsdemux.c	2017-01-19 00:06:46.467624984 +0100
-@@ -77,7 +77,7 @@
+@@ -84,7 +84,7 @@
  	demux_ops = ops;
  	spin_unlock_irqrestore(&demux_ops_lock, flags);
  }
@@ -22,12 +22,13 @@
  {
 --- a/drivers/amlogic/amports/Makefile	2017-01-15 11:32:55.000000000 +0100
 +++ b/drivers/amlogic/amports/Makefile	2017-01-19 00:51:10.823624984 +0100
-@@ -101,7 +101,6 @@
- obj-y += arch/
+@@ -124,8 +124,6 @@
  obj-y += cnm/
+ obj-y += decoder/
  
 -ifneq ($(CONFIG_AM_DVB),)
  ##EXTRA_CFLAGS = -DENABLE_DEMUX_DRIVER -DMODIFY_TIMESTAMP_INC_WITH_PLL -DCALC_CACHED_TIME #-DUSE_VMASTER_MODE
  ccflags-y = -DENABLE_DEMUX_DRIVER -DMODIFY_TIMESTAMP_INC_WITH_PLL -DCALC_CACHED_TIME #-DUSE_VMASTER_MODE
 -endif
-+
+ 
+
