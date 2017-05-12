@@ -1,0 +1,25 @@
+--- a/xbmc/cores/VideoPlayer/VideoPlayer.cpp	2017-04-29 09:01:26.783510000 +0200
++++ b/xbmc/cores/VideoPlayer/VideoPlayer.cpp	2017-04-29 09:50:16.543658000 +0200
+@@ -3646,6 +3646,10 @@
+ 
+     if(m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+       hint.filename = "dvd";
++    if (hint.fpsrate / hint.fpsscale > 200) {
++      hint.fpsrate = 60000;
++      hint.fpsscale = 1001;
++    }
+   }
+   else if(STREAM_SOURCE_MASK(source) == STREAM_SOURCE_VIDEOMUX)
+   {
+--- a/xbmc/cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecAmlogic.cpp	2017-04-21 10:59:59.209075420 +0200
++++ b/xbmc/cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecAmlogic.cpp	2017-04-21 11:06:02.641075420 +0200
+@@ -634,7 +634,7 @@
+           break;
+       }
+ 
+-      if (framerate > 0.0 && (int)m_framerate != (int)framerate)
++      if (framerate > 0.0 && (int)(m_framerate*100.0) != (int)(framerate*100.0) && (int)(m_framerate*100.0) == 2 * (int)(framerate*100.0))
+       {
+         m_framerate = framerate;
+         m_video_rate = (int)(0.5 + (96000.0 / framerate));
+
