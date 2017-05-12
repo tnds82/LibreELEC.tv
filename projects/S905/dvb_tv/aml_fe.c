@@ -102,7 +102,7 @@ int avl6862_gpio(void)
 static int avl6862_fe_init(struct aml_dvb *advb, struct platform_device *pdev, struct aml_fe *fe, int id)
 {
 	struct dvb_frontend_ops *ops;
-	int ret;
+	int ret, i2c_adap_id = 1;
 
 	struct i2c_adapter *i2c_handle;
 #ifdef CONFIG_ARM64
@@ -113,6 +113,11 @@ static int avl6862_fe_init(struct aml_dvb *advb, struct platform_device *pdev, s
 	pr_inf("Init AVL6862 frontend %d\n", id);
 	
 #ifdef CONFIG_OF
+	if (of_property_read_u32(pdev->dev.of_node, "dtv_demod0_i2c_adap_id", &i2c_adap_id)) {
+		ret = -ENOMEM;
+		goto err_resource;
+	}
+	pr_dbg("i2c_adap_id=%d\n", &i2c_adap_id);
 	desc = of_get_named_gpiod_flags(pdev->dev.of_node, "dtv_demod0_reset_gpio-gpios", 0, NULL);
 	gpio_reset = desc_to_gpio(desc);
 	pr_dbg("gpio_reset=%d\n", gpio_reset);
@@ -124,14 +129,12 @@ static int avl6862_fe_init(struct aml_dvb *advb, struct platform_device *pdev, s
 
 	frontend_reset = gpio_reset;
 	frontend_power = gpio_power;
-#ifdef USE_I2C_2	
-	i2c_handle = i2c_get_adapter(2);
-#else
-	i2c_handle = i2c_get_adapter(1);
-#endif
+	i2c_handle = i2c_get_adapter(i2c_adap_id);
+
 	if (!i2c_handle) {
-		pr_err("Cannot get i2c adapter! \n");
-		return 0;
+		pr_err("Cannot get i2c adapter for id:%d! \n", i2c_adap_id);
+		ret = -ENOMEM;
+		goto err_resource;
 	}
 	
 	avl6862_Reset();
@@ -148,6 +151,7 @@ static int avl6862_fe_init(struct aml_dvb *advb, struct platform_device *pdev, s
 		dvb_frontend_detach(fe->fe);
 		fe->fe = NULL;
 		pr_err("r848_attach attach failed!!!\n");
+		ret = -ENOMEM;
 		goto err_resource;
 	}
 
@@ -159,6 +163,7 @@ static int avl6862_fe_init(struct aml_dvb *advb, struct platform_device *pdev, s
 		if (ops->release != NULL)
 			ops->release(fe->fe);
 		fe->fe = NULL;
+		ret = -ENOMEM;
 		goto err_resource;
 	}
 	
