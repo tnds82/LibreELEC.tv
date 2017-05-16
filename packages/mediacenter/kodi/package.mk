@@ -32,7 +32,7 @@ PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 case $PROJECT in
-  AML8726|S8X2|S805|S905|S912)
+  H3|S8X2|S805|S905|S912)
     PKG_PATCH_DIRS="amlogic-sX05"
     if [ "$TARGET_ARCH" = "arm" ]; then
       CFLAGS="$CFLAGS -mthumb"

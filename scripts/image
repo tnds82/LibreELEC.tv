@@ -87,7 +87,7 @@ if [ "$DEVEL_VERSION" = "devel" ] ; then
   fi
 fi
 
-if [ "$PROJECT" == "H3" ] && [ -n "$SYSTEM" ]; then
+if [ -n "$SYSTEM" ]; then
   IMAGE_NAME="$IMAGE_NAME-$SYSTEM"
 fi
 
