@@ -17,8 +17,8 @@
 ################################################################################
 
 PKG_NAME="screensaver.matrixtrails"
-PKG_VERSION="84ca058"
-PKG_REV="1"
+PKG_VERSION="b5a245f"
+PKG_REV="2"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="https://github.com/notspiff/screensaver.matrixtrails"

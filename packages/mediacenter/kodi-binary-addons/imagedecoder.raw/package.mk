@@ -17,8 +17,8 @@
 ################################################################################
 
 PKG_NAME="imagedecoder.raw"
-PKG_VERSION="f508b23"
-PKG_REV="1"
+PKG_VERSION="37ef22e"
+PKG_REV="2"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="https://github.com/notspiff/imagedecoder.raw"

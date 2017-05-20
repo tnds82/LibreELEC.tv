@@ -17,8 +17,8 @@
 ################################################################################
 
 PKG_NAME="audiodecoder.ssf"
-PKG_VERSION="b12c97d"
-PKG_REV="1"
+PKG_VERSION="62750ac"
+PKG_REV="2"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="https://github.com/notspiff/audiodecoder.ssf"

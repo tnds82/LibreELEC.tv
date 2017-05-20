@@ -20,7 +20,7 @@ PKG_NAME="xf86-video-nvidia"
 # Remember to run "python packages/x11/driver/xf86-video-nvidia/scripts/make_nvidia_udev.py" and commit changes to
 # "packages/x11/driver/xf86-video-nvidia/udev.d/96-nvidia.rules" whenever bumping version.
 # Host may require installation of python-lxml and python-requests packages.
-PKG_VERSION="375.39"
+PKG_VERSION="375.66"
 PKG_ARCH="x86_64"
 PKG_LICENSE="nonfree"
 PKG_SITE="http://www.nvidia.com/"
@@ -44,6 +44,9 @@ make_target() {
   unset LDFLAGS
 
   cd kernel
+    # Don't build nvidia-drm with kernel 4.11.0 due to incompatible license
+    export NV_EXCLUDE_KERNEL_MODULES=nvidia-drm
+
     make module CC=$CC SYSSRC=$(kernel_path) SYSOUT=$(kernel_path)
     $STRIP --strip-debug nvidia.ko
   cd ..

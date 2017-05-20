@@ -18,7 +18,7 @@
 
 PKG_NAME="net-snmp"
 PKG_VERSION="5.7.3"
-PKG_REV="101"
+PKG_REV="102"
 PKG_ARCH="any"
 PKG_LICENSE="BSD"
 PKG_SITE="http://www.net-snmp.org"
@@ -61,7 +61,7 @@ make_target() {
 }
 
 makeinstall_target() {
-  make install INSTALL_PREFIX=$ROOT/$PKG_BUILD/.$TARGET_NAME
+  make install INSTALL_PREFIX=$PKG_BUILD/.$TARGET_NAME
 }
 
 addon() {
