@@ -17,16 +17,16 @@
 ################################################################################
 
 PKG_NAME="oscam"
-PKG_VERSION="d6fe72c"
-PKG_VERSION_NUMBER="11350"
-PKG_REV="103"
+PKG_VERSION="38b0acf"
+PKG_VERSION_NUMBER="11384"
+PKG_REV="104"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://www.streamboard.tv/oscam/wiki"
 PKG_URL="http://repo.or.cz/oscam.git/snapshot/$PKG_VERSION.tar.gz"
 PKG_DEPENDS_TARGET="toolchain pcsc-lite"
 PKG_SECTION="service.softcam"
-PKG_SHORTDESC="OSCam: an Open Source Conditional Access Modul"
+PKG_SHORTDESC="OSCam: an Open Source Conditional Access Module"
 PKG_LONGDESC="OSCam($PKG_VERSION_NUMBER) is a software to be used to decrypt digital television channels, as an alternative for a conditional access module."
 PKG_AUTORECONF="no"
 

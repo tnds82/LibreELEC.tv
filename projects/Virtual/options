@@ -38,6 +38,7 @@
   # Kernel to use. values can be:
   # default:  default mainline kernel
     LINUX="default"
+	CUSTOM_VERSION="8.0.1a"
 
 
 ################################################################################

@@ -1,0 +1,44 @@
+--- a/xbmc/cores/VideoPlayer/VideoPlayer.cpp	2017-04-24 19:29:12.904035000 +0200
++++ b/xbmc/cores/VideoPlayer/VideoPlayer.cpp	2017-04-24 19:29:12.904035000 +0200
+@@ -1961,9 +1961,14 @@
+         if (m_CurrentAudio.id >= 0)
+         {
+           double adjust = -1.0; // a unique value
+-          if (m_clock.GetSpeedAdjust() >= 0 && m_VideoPlayerAudio->GetLevel() < 5)
+-            adjust = -0.05;
++          if (m_clock.GetSpeedAdjust() >= -0.05 && m_VideoPlayerAudio->GetLevel() < 3) {
++            CLog::Log(LOGDEBUG, "VideoPlayer: AudioLevel:%d SpeedAdjust:%0.3f Clock:%0.3f",  m_VideoPlayerAudio->GetLevel(), m_clock.GetSpeedAdjust(), m_clock.GetClock()); 
++            adjust = -0.15;
++          } 
++          if (m_clock.GetSpeedAdjust() < -0.05 && m_VideoPlayerAudio->GetLevel() < 6)  
++            adjust = -0.05;
++          if (m_clock.GetSpeedAdjust() >= 0 && m_VideoPlayerAudio->GetLevel() < 8)  
++            adjust = -0.05;
+-
+-          if (m_clock.GetSpeedAdjust() < 0 && m_VideoPlayerAudio->GetLevel() > 10)
++          if (m_clock.GetSpeedAdjust() < 0 && m_VideoPlayerAudio->GetLevel() > 12)
+             adjust = 0.0;
+ 
+@@ -2024,7 +2025,10 @@
+       else if (m_CurrentAudio.starttime != DVD_NOPTS_VALUE && m_CurrentAudio.packets > 0)
+       {
+-        if (m_pInputStream->IsRealtime())
+-          clock = m_CurrentAudio.starttime - m_CurrentAudio.cachetotal - DVD_MSEC_TO_TIME(400);
++        if (m_pInputStream->IsRealtime()) {
++          clock = m_CurrentAudio.starttime - m_CurrentAudio.cachetime;
++	   if (clock > - DVD_MSEC_TO_TIME(700)) 
++	     clock = - DVD_MSEC_TO_TIME(700);
++        }
+         else
+           clock = m_CurrentAudio.starttime - m_CurrentAudio.cachetime;
+         if (m_CurrentVideo.starttime != DVD_NOPTS_VALUE &&
+@@ -2600,6 +2600,8 @@  avoid double seeking
+       // This should always be the case.
+       if(m_pDemuxer && m_pDemuxer->SeekChapter(msg.GetChapter(), &start))
+       {
++        CLog::Log(LOGDEBUG, "VideoPlayer: m_pDemuxer->SeekChapter beforeSeek:%0.0f start:%0.0f",  beforeSeek, DVD_TIME_TO_MSEC(start)); 
++        start = DVD_MSEC_TO_TIME(beforeSeek);
+         FlushBuffers(start, true, true);
+         offset = DVD_TIME_TO_MSEC(start) - beforeSeek;
+         m_callback.OnPlayBackSeekChapter(msg.GetChapter());
+

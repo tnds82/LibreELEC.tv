@@ -53,7 +53,7 @@
   # Kernel to use. values can be:
   # default:  default mainline kernel
     LINUX="amlogic-3.14"
-
+    CUSTOM_VERSION="8.0.1a"
 
 ################################################################################
 # setup build defaults

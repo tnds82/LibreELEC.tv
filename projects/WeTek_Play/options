@@ -59,6 +59,7 @@
   # Kernel to use. values can be:
   # default:  default mainline kernel
     LINUX="amlogic-3.10"
+	CUSTOM_VERSION="8.0.1a"
 
 
 ################################################################################
