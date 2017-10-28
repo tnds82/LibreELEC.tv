@@ -1,6 +1,6 @@
 ################################################################################
 #      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016 Team LibreELEC
+#      Copyright (C) 2016-present Team LibreELEC
 #
 #  LibreELEC is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -17,7 +17,8 @@
 ################################################################################
 
 PKG_NAME="libretro-reicast"
-PKG_VERSION="3601150"
+PKG_VERSION="0e5c146"
+PKG_SHA256="98cfef749c736d678f103cc9b1be953f07e2953a98505be2cb7e32082fb82676"
 PKG_ARCH="any"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/reicast-emulator"
@@ -28,7 +29,6 @@ PKG_SECTION="emulation"
 PKG_SHORTDESC="Reicast is a multiplatform Sega Dreamcast emulator"
 PKG_LONGDESC="Reicast is a multiplatform Sega Dreamcast emulator"
 PKG_AUTORECONF="no"
-PKG_IS_ADDON="no"
 PKG_USE_CMAKE="no"
 
 PKG_LIBNAME="reicast_libretro.so"
@@ -38,10 +38,14 @@ PKG_LIBVAR="REICAST_LIB"
 make_target() {
   case $PROJECT in
     RPi)
-      make platform=armv6-hardfloat-arm1176jzf-s
-      ;;
-    RPi2)
-      make platform=rpi2
+      case $DEVICE in
+        RPi)
+          make platform=armv6-hardfloat-arm1176jzf-s
+          ;;
+        RPi2)
+          make platform=rpi2
+          ;;
+      esac
       ;;
     imx6)
       make platform=armv7-neon-hardfloat-cortex-a9
@@ -60,4 +64,3 @@ makeinstall_target() {
   cp $PKG_LIBPATH $SYSROOT_PREFIX/usr/lib/$PKG_LIBNAME
   echo "set($PKG_LIBVAR $SYSROOT_PREFIX/usr/lib/$PKG_LIBNAME)" > $SYSROOT_PREFIX/usr/lib/cmake/$PKG_NAME/$PKG_NAME-config.cmake
 }
-

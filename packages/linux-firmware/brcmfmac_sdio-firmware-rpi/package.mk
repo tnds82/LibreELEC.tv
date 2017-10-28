@@ -17,7 +17,8 @@
 ################################################################################
 
 PKG_NAME="brcmfmac_sdio-firmware-rpi"
-PKG_VERSION="0.1"
+PKG_VERSION="0.2"
+PKG_SHA256="c5c8fe1801362cd0817d98c82f8e9eb06c2f64b96a5233770f1cc054cfcaa9a9"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="https://github.com/LibreELEC/LibreELEC.tv"
@@ -26,8 +27,6 @@ PKG_DEPENDS_TARGET="toolchain"
 PKG_SECTION="firmware"
 PKG_SHORTDESC="brcmfmac_sdio-firmware: firmware for brcm bluetooth chips used on RaspberryPi devices"
 PKG_LONGDESC="Firmware for Broadcom Bluetooth chips used on RaspberryPi devices, and brcm-patchram-plus that downloads a patchram files in the HCD format to the Bluetooth based silicon and combo chips and other utility functions."
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 make_target() {
@@ -35,7 +34,7 @@ make_target() {
 }
 
 makeinstall_target() {
-  DESTDIR=$INSTALL/usr ./install
+  DESTDIR=$INSTALL/$(get_kernel_overlay_dir) ./install
 }
 
 post_makeinstall_target() {

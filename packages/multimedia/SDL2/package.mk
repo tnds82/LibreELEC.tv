@@ -18,6 +18,7 @@
 
 PKG_NAME="SDL2"
 PKG_VERSION="2.0.5"
+PKG_SHA256="442038cf55965969f2ff06d976031813de643af9c9edc9e331bd761c242e8785"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="https://www.libsdl.org/"
@@ -26,10 +27,8 @@ PKG_DEPENDS_TARGET="toolchain yasm:host alsa-lib systemd dbus"
 PKG_SECTION="multimedia"
 PKG_SHORTDESC="SDL2: A cross-platform Graphic API"
 PKG_LONGDESC="Simple DirectMedia Layer is a cross-platform multimedia library designed to provide fast access to the graphics framebuffer and audio device. It is used by MPEG playback software, emulators, and many popular games, including the award winning Linux port of 'Civilization: Call To Power.' Simple DirectMedia Layer supports Linux, Win32, BeOS, MacOS, Solaris, IRIX, and FreeBSD."
-
-PKG_IS_ADDON="no"
-PKG_USE_CMAKE="no"
 PKG_AUTORECONF="no"
+PKG_USE_CMAKE="no"
 
 PKG_CONFIGURE_OPTS_TARGET="--disable-shared --enable-static \
                            --enable-libc \
@@ -74,8 +73,6 @@ PKG_CONFIGURE_OPTS_TARGET="--disable-shared --enable-static \
                            --disable-clock_gettime \
                            --disable-rpath \
                            --disable-render-d3d"
-
-
 
 if [ "$DISPLAYSERVER" = "x11" ]; then
   PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET libX11 libXrandr"

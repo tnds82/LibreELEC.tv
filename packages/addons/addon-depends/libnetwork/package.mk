@@ -18,7 +18,7 @@
 
 PKG_NAME="libnetwork"
 PKG_VERSION="0f53435"
-PKG_REV="1"
+PKG_SHA256="170d355ad613cc28245a6d9501bcaba930cb594a632fdd9bd52a4fa90b406932"
 PKG_ARCH="any"
 PKG_LICENSE="APL"
 PKG_SITE="https://github.com/docker/libnetwork"
@@ -27,8 +27,6 @@ PKG_DEPENDS_TARGET="toolchain go:host"
 PKG_SECTION="system"
 PKG_SHORTDESC="Libnetwork provides a native Go implementation for connecting containers"
 PKG_LONGDESC="Libnetwork provides a native Go implementation for connecting containers"
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 pre_make_target() {

@@ -1,6 +1,6 @@
 ################################################################################
 #      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016 Team LibreELEC
+#      Copyright (C) 2016-present Team LibreELEC
 #
 #  LibreELEC is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -55,6 +55,4 @@ addon() {
     cp -P $(get_build_dir linuxconsoletools)/utils/fftest $ADDON_BUILD/$PKG_ADDON_ID/bin
     cp -P $(get_build_dir linuxconsoletools)/utils/jscal $ADDON_BUILD/$PKG_ADDON_ID/bin
     cp -P $(get_build_dir linuxconsoletools)/utils/jstest $ADDON_BUILD/$PKG_ADDON_ID/bin
-
-  debug_strip $ADDON_BUILD/$PKG_ADDON_ID/bin
 }

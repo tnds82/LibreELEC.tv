@@ -1,6 +1,6 @@
 ################################################################################
 #      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016 Team LibreELEC
+#      Copyright (C) 2016-present Team LibreELEC
 #
 #  LibreELEC is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 
 PKG_NAME="rsyslog"
 PKG_VERSION="8.21.0"
+PKG_SHA256="bdb1fde87b75107b58d1cd5d00408822fb15b9f3efb8d9dbb93a1dee128339ab"
 PKG_REV="103"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"

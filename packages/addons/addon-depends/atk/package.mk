@@ -20,6 +20,7 @@
 
 PKG_NAME="atk"
 PKG_VERSION="2.20.0"
+PKG_SHA256="493a50f6c4a025f588d380a551ec277e070b28a82e63ef8e3c06b3ee7c1238f0"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://library.gnome.org/devel/atk/"
@@ -28,8 +29,6 @@ PKG_DEPENDS_TARGET="toolchain glib"
 PKG_SECTION="accessibility"
 PKG_SHORTDESC="ATK - Accessibility Toolkit"
 PKG_LONGDESC="ATK provides the set of accessibility interfaces that are implemented by other toolkits and applications. Using the ATK interfaces, accessibility tools have full access to view and control running applications."
-PKG_IS_ADDON="no"
-
 PKG_AUTORECONF="no"
 
 PKG_CONFIGURE_OPTS_TARGET="--enable-static --disable-shared \

@@ -150,6 +150,9 @@
 # build and install CEC adapter support (yes / no)
   CEC_SUPPORT="yes"
 
+# build and install CEC framework support (yes / no)
+  CEC_FRAMEWORK_SUPPORT="no"
+
 # build and install iSCSI support - iscsistart (yes / no)
   ISCSI_SUPPORT="yes"
 
@@ -158,13 +161,13 @@
   INITRAMFS_PARTED_SUPPORT="no"
 
 # build with swap support (yes / no)
-  SWAP_SUPPORT="no"
+  SWAP_SUPPORT="yes"
 
 # swap support enabled per default (yes / no)
   SWAP_ENABLED_DEFAULT="no"
 
 # swapfile size if SWAP_SUPPORT=yes in MB
-  SWAPFILESIZE="256"
+  SWAPFILESIZE="128"
 
 # build with installer (yes / no)
   INSTALLER_SUPPORT="yes"
@@ -189,7 +192,7 @@
   ADDON_SERVER_URL="http://addons.libreelec.tv"
 
 # set the addon dirs
-  ADDON_PATH="$ADDON_VERSION/$PROJECT/$TARGET_ARCH"
+  ADDON_PATH="$ADDON_VERSION/${DEVICE:-$PROJECT}/$TARGET_ARCH"
   ADDON_URL="$ADDON_SERVER_URL/$ADDON_PATH"
 
 # Default size of system partition, in MB, eg. 512

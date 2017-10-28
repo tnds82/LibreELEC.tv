@@ -9,6 +9,7 @@
         TARGET_CPU="cortex-a9"
         TARGET_FLOAT="hard"
         TARGET_FPU="neon"
+        TARGET_FEATURES="32bit neon"
         ;;
     esac
 
@@ -50,20 +51,23 @@
 
   # Kernel to use.
   # default is 4.4 from xbian
-    if [ "$LINUX_VERSION" = "sr-3.14" ]; then
-      LINUX="imx6-3.14-sr"
+    if [ "$LINUX_VERSION" = "3.14-sr" ]; then
+      LINUX="imx6-$LINUX_VERSION"
 
       # OpenGL-ES implementation to use
       OPENGLES="imx-gpu-viv"
-    elif [ "$LINUX_VERSION" = "xbian-4.8" ]; then
-      LINUX="imx6-4.8-xbian"
-      LIBCEC_TYPE="xbian"
+    elif [ "$LINUX_VERSION" = "4.8-xbian" ]; then
+      LINUX="imx6-$LINUX_VERSION"
+
+      # OpenGL-ES implementation to use
+      OPENGLES="gpu-viv-bin-mx6q"
+    elif [ "$LINUX_VERSION" = "4.10-xbian" ]; then
+      LINUX="imx6-$LINUX_VERSION"
 
       # OpenGL-ES implementation to use
       OPENGLES="gpu-viv-bin-mx6q"
     else
       LINUX="imx6-4.4-xbian"
-      LIBCEC_TYPE="xbian"
 
       # OpenGL-ES implementation to use
       OPENGLES="imx-gpu-viv"
@@ -122,15 +126,6 @@
 
   # build and install ATV IR remote support (yes / no)
     ATVCLIENT_SUPPORT="no"
-
-  # build with swap support (yes / no)
-    SWAP_SUPPORT="no"
-
-  # swap support enabled per default (yes / no)
-    SWAP_ENABLED_DEFAULT="no"
-
-  # swapfile size if SWAP_SUPPORT=yes in MB
-    SWAPFILESIZE="128"
 
   # build with installer (yes / no)
     INSTALLER_SUPPORT="no"

@@ -17,7 +17,8 @@
 ################################################################################
 
 PKG_NAME="bcm2835-driver"
-PKG_VERSION="284e48a"
+PKG_VERSION="478d637"
+PKG_SHA256="35954bcd8568b057195c72bbc645d3f74a7201c83486359ce6a29482018706ce"
 PKG_ARCH="any"
 PKG_LICENSE="nonfree"
 PKG_SITE="http://www.broadcom.com"
@@ -26,8 +27,6 @@ PKG_DEPENDS_TARGET="toolchain dtc"
 PKG_SECTION="graphics"
 PKG_SHORTDESC="OpenMAX-bcm2835: OpenGL-ES and OpenMAX driver for BCM2835"
 PKG_LONGDESC="OpenMAX-bcm2835: OpenGL-ES and OpenMAX driver for BCM2835"
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 if [ "$TARGET_FLOAT" = "softfp" -o "$TARGET_FLOAT" = "soft" ]; then

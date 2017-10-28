@@ -18,6 +18,7 @@
 
 PKG_NAME="go"
 PKG_VERSION="1.7.5"
+PKG_SHA256="7af80c99d9e8a52e53d6a617a20332a8602b1a4eca9cbf3d829e1d43e688f6ba"
 PKG_ARCH="any"
 PKG_LICENSE="BSD"
 PKG_SITE="https://golang.org"
@@ -27,8 +28,6 @@ PKG_DEPENDS_HOST="toolchain"
 PKG_SECTION="system"
 PKG_SHORTDESC="Go is an open source programming language that makes it easy to build simple, reliable, and efficient software."
 PKG_LONGDESC="Go is an open source programming language that makes it easy to build simple, reliable, and efficient software."
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 ####################################################################
@@ -43,7 +42,11 @@ PKG_AUTORECONF="no"
 configure_host() {
   export GOOS=linux
   export GOROOT_FINAL=$TOOLCHAIN/lib/golang
-  export GOROOT_BOOTSTRAP=/usr/lib/golang
+  if [ -x /usr/lib/go/bin/go ]; then
+    export GOROOT_BOOTSTRAP=/usr/lib/go
+  else
+    export GOROOT_BOOTSTRAP=/usr/lib/golang
+  fi
   export GOARCH=amd64
 }
 

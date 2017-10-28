@@ -18,6 +18,7 @@
 
 PKG_NAME="libhdhomerun"
 PKG_VERSION="20150826"
+PKG_SHA256="907dfbd1eb82aebd8b09e7c00c21a02433e6baaacf4a4f99aa2511b1d5244baf"
 PKG_ARCH="any"
 PKG_LICENSE="LGPL"
 PKG_SITE="http://www.silicondust.com/products/hdhomerun/dvbt/"
@@ -27,8 +28,6 @@ PKG_DEPENDS_TARGET="toolchain"
 PKG_SECTION="driver"
 PKG_SHORTDESC="The library provides functionality to setup the HDHomeRun, change channels, setup PID filtering, get signal quality and so on."
 PKG_LONGDESC="The library provides functionality to setup the HDHomeRun, change channels, setup PID filtering, get signal quality and so on."
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 PKG_MAKE_OPTS_TARGET="CROSS_COMPILE=$TARGET_PREFIX"

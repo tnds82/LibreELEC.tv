@@ -38,8 +38,10 @@
 
         if [ "$DEVICE" = "RPi" -o "$DEVICE" = "Slice" ]; then
           TARGET_FPU="vfp"
+          TARGET_FEATURES="32bit"
         elif [ "$DEVICE" = "RPi2" -o "$DEVICE" = "Slice3" ]; then
           TARGET_FPU="neon-vfpv4"
+          TARGET_FEATURES="32bit neon"
         fi
 
         ;;
@@ -137,17 +139,12 @@ fi
   # e.g. FIRMWARE="dvb-firmware misc-firmware wlan-firmware"
     FIRMWARE="misc-firmware wlan-firmware dvb-firmware brcmfmac_sdio-firmware-rpi"
 
+  if [ "$DEVICE" = "Slice" -o "$DEVICE" = "Slice3" ]; then
+    FIRMWARE="$FIRMWARE slice-firmware"
+  fi
+
   # build and install ATV IR remote support (yes / no)
     ATVCLIENT_SUPPORT="no"
-
-  # build with swap support (yes / no)
-    SWAP_SUPPORT="yes"
-
-  # swap support enabled per default (yes / no)
-    SWAP_ENABLED_DEFAULT="no"
-
-  # swapfile size if SWAP_SUPPORT=yes in MB
-    SWAPFILESIZE="128"
 
   # build with installer (yes / no)
     INSTALLER_SUPPORT="no"
@@ -164,3 +161,7 @@ fi
   # Space separated list is supported,
   # e.g. ADDITIONAL_DRIVERS="DRIVER1 DRIVER2"
     ADDITIONAL_DRIVERS="$ADDITIONAL_DRIVERS media_build rpi-cirrus-config"
+
+  if [ "$DEVICE" = "Slice" -o "$DEVICE" = "Slice3" ]; then
+    ADDITIONAL_DRIVERS="$ADDITIONAL_DRIVERS slice-drivers"
+  fi

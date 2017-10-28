@@ -17,7 +17,8 @@
 ################################################################################
 
 PKG_NAME="alsa-lib"
-PKG_VERSION="1.1.3"
+PKG_VERSION="1.1.4.1"
+PKG_SHA256="91bb870c14d1c7c269213285eeed874fa3d28112077db061a3af8010d0885b76"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://www.alsa-project.org/"
@@ -26,8 +27,6 @@ PKG_DEPENDS_TARGET="toolchain"
 PKG_SECTION="audio"
 PKG_SHORTDESC="alsa-lib: Advanced Linux Sound Architecture library"
 PKG_LONGDESC="ALSA (Advanced Linux Sound Architecture) is the next generation Linux Sound API. It provides much finer (->better) access to the sound hardware, has a unbeatable mixer API and supports stuff like multi channel hardware, digital outs and ins, uninterleaved sound data access, and an oss emulation layer (for the old applications). It is the prefered API for professional sound apps under Linux."
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="yes"
 
 if [ "$DEBUG" = yes ]; then

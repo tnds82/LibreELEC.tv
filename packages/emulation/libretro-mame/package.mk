@@ -1,6 +1,6 @@
 ################################################################################
 #      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016 Team LibreELEC
+#      Copyright (C) 2016-present Team LibreELEC
 #
 #  LibreELEC is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -17,7 +17,8 @@
 ################################################################################
 
 PKG_NAME="libretro-mame"
-PKG_VERSION="769dd8d"
+PKG_VERSION="a449150"
+PKG_SHA256="51577dd9a3316c11708bb6b6fd010801b1d5e61491160f52da36fd5eb0759ecc"
 PKG_ARCH="x86_64"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/mame"
@@ -28,7 +29,6 @@ PKG_SECTION="emulation"
 PKG_SHORTDESC="game.libretro.mame: MAME for Kodi"
 PKG_LONGDESC="game.libretro.mame: MAME for Kodi"
 PKG_AUTORECONF="no"
-PKG_IS_ADDON="no"
 PKG_USE_CMAKE="no"
 
 PKG_LIBNAME="mame_libretro.so"
@@ -38,30 +38,10 @@ PKG_LIBVAR="MAME_LIB"
 pre_make_target() {
   strip_lto
   strip_gold
-
-  export OVERRIDE_CC="$CC"
-  export OVERRIDE_CXX="$CXX"
-  export OVERRIDE_LD="$CXX"
 }
 
 make_target() {
-  case $PROJECT in
-    RPi)
-      make platform=armv6-hardfloat-arm1176jzf-s
-      ;;
-    RPi2)
-      make platform=armv7-neon-hardfloat-cortex-a7
-      ;;
-    imx6)
-      make platform=armv7-neon-hardfloat-cortex-a9
-      ;;
-    WeTek_Play|WeTek_Core)
-      make platform=armv7-neon-hardfloat-cortex-a9
-      ;;
-    Generic)
-      make -f Makefile.libretro
-      ;;
-  esac
+  make -f Makefile.libretro
 }
 
 makeinstall_target() {
@@ -69,4 +49,3 @@ makeinstall_target() {
   cp $PKG_LIBPATH $SYSROOT_PREFIX/usr/lib/$PKG_LIBNAME
   echo "set($PKG_LIBVAR $SYSROOT_PREFIX/usr/lib/$PKG_LIBNAME)" > $SYSROOT_PREFIX/usr/lib/cmake/$PKG_NAME/$PKG_NAME-config.cmake
 }
-

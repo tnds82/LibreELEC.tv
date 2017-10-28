@@ -1,6 +1,6 @@
 ################################################################################
 #      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016 Team LibreELEC
+#      Copyright (C) 2016-present Team LibreELEC
 #
 #  LibreELEC is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 
 PKG_NAME="libretro-mame2003"
 PKG_VERSION="69163cc"
+PKG_SHA256="5c505590857319cfb7043883afa1965067bfa8387829ff6cbe462927f1262303"
 PKG_ARCH="any"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/mame2003-libretro"
@@ -28,7 +29,6 @@ PKG_SECTION="emulation"
 PKG_SHORTDESC="Late 2003 version of MAME (0.78) for libretro"
 PKG_LONGDESC="Late 2003 version of MAME (0.78) for libretro"
 PKG_AUTORECONF="no"
-PKG_IS_ADDON="no"
 PKG_USE_CMAKE="no"
 
 PKG_LIBNAME="mame2003_libretro.so"
@@ -44,4 +44,3 @@ makeinstall_target() {
   cp $PKG_LIBPATH $SYSROOT_PREFIX/usr/lib/$PKG_LIBNAME
   echo "set($PKG_LIBVAR $SYSROOT_PREFIX/usr/lib/$PKG_LIBNAME)" > $SYSROOT_PREFIX/usr/lib/cmake/$PKG_NAME/$PKG_NAME-config.cmake
 }
-

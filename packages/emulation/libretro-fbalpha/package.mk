@@ -1,6 +1,6 @@
 ################################################################################
 #      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016 Team LibreELEC
+#      Copyright (C) 2016-present Team LibreELEC
 #
 #  LibreELEC is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -17,7 +17,8 @@
 ################################################################################
 
 PKG_NAME="libretro-fbalpha"
-PKG_VERSION="3e64a22"
+PKG_VERSION="3d4ec7b"
+PKG_SHA256="1a4bab14e1c47b70bfc7dbeac687091ef978b33039fe0942439dbc857f55b999"
 PKG_ARCH="any"
 PKG_LICENSE="GPLv3"
 PKG_SITE="https://github.com/libretro/fbalpha"
@@ -28,10 +29,9 @@ PKG_SECTION="emulation"
 PKG_SHORTDESC="game.libretro.fba: fba for Kodi"
 PKG_LONGDESC="game.libretro.fba: fba for Kodi"
 PKG_AUTORECONF="no"
-PKG_IS_ADDON="no"
 PKG_USE_CMAKE="no"
 
-PKG_LIBNAME="fba_libretro.so"
+PKG_LIBNAME="fbalpha_libretro.so"
 PKG_LIBPATH="$PKG_LIBNAME"
 PKG_LIBVAR="FBALPHA_LIB"
 
@@ -49,4 +49,3 @@ makeinstall_target() {
   cp $PKG_LIBPATH $SYSROOT_PREFIX/usr/lib/$PKG_LIBNAME
   echo "set($PKG_LIBVAR $SYSROOT_PREFIX/usr/lib/$PKG_LIBNAME)" > $SYSROOT_PREFIX/usr/lib/cmake/$PKG_NAME/$PKG_NAME-config.cmake
 }
-

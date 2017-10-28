@@ -18,6 +18,7 @@
 
 PKG_NAME="libdnet"
 PKG_VERSION="1.12"
+PKG_SHA256="83b33039787cf99990e977cef7f18a5d5e7aaffc4505548a83d31bd3515eb026"
 PKG_ARCH="any"
 PKG_LICENSE="BSD"
 PKG_SITE="http://code.google.com/p/libdnet/"
@@ -26,8 +27,6 @@ PKG_DEPENDS_TARGET="toolchain"
 PKG_SECTION="network"
 PKG_SHORTDESC="A simplified, portable interface to several low-level networking routines"
 PKG_LONGDESC="A simplified, portable interface to several low-level networking routines"
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 PKG_CONFIGURE_OPTS_TARGET="ac_cv_func_strlcat=no \
@@ -37,6 +36,7 @@ PKG_CONFIGURE_OPTS_TARGET="ac_cv_func_strlcat=no \
                            --without-python"
 
 pre_configure_target() {
+  CFLAGS="$CFLAGS -fPIC"
   sed "s|@prefix@|$SYSROOT_PREFIX/usr|g" -i $PKG_BUILD/dnet-config.in
 }
 

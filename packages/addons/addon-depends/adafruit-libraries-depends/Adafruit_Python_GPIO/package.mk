@@ -1,6 +1,6 @@
 ################################################################################
 #      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016 Team LibreELEC
+#      Copyright (C) 2016-present Team LibreELEC
 #
 #  LibreELEC is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -17,12 +17,13 @@
 ################################################################################
 
 PKG_NAME="Adafruit_Python_GPIO"
-PKG_VERSION="fdf0fca"
+PKG_VERSION="060f6d6"
+PKG_SHA256="f3361a03571ba53e47791a884129f1699ea4a18b8ac104e4c520c795d54b452b"
 PKG_ARCH="any"
 PKG_LICENSE="MIT"
 PKG_SITE="https://github.com/adafruit/${PKG_NAME}"
 PKG_URL="https://github.com/adafruit/${PKG_NAME}/archive/$PKG_VERSION.tar.gz"
-PKG_DEPENDS_TARGET="toolchain Python distutilscross:host"
+PKG_DEPENDS_TARGET="toolchain Python2 distutilscross:host"
 PKG_SECTION="python"
 PKG_SHORTDESC="Adafruit Python GPIO Library"
 PKG_LONGDESC="Library to provide a cross-platform GPIO interface on the Raspberry Pi and Beaglebone Black using the RPi.GPIO and Adafruit_BBIO librarie"

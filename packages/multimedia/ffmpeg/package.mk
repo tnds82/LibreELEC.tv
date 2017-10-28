@@ -18,7 +18,8 @@
 
 PKG_NAME="ffmpeg"
 # Current branch is: release/3.3-kodi
-PKG_VERSION="eb0819c"
+PKG_VERSION="20f6654"
+PKG_SHA256="34d4f16d529b03d276fe7cbab8c7d12c4dfd51f0c1f78c5f38fab4a66a836deb"
 PKG_ARCH="any"
 PKG_LICENSE="LGPLv2.1+"
 PKG_SITE="https://ffmpeg.org"
@@ -28,8 +29,6 @@ PKG_DEPENDS_TARGET="toolchain yasm:host zlib bzip2 openssl speex"
 PKG_SECTION="multimedia"
 PKG_SHORTDESC="FFmpeg is a complete, cross-platform solution to record, convert and stream audio and video."
 PKG_LONGDESC="FFmpeg is a complete, cross-platform solution to record, convert and stream audio and video."
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 # Dependencies
@@ -68,7 +67,7 @@ case "$TARGET_ARCH" in
     ;;
 esac
 
-if echo "$TARGET_FPU" | grep -q '^neon' || [[ "$TARGET_ARCH" = "aarch64" ]]; then
+if target_has_feature neon; then
   FFMPEG_FPU="--enable-neon"
 else
   FFMPEG_FPU="--disable-neon"
@@ -87,7 +86,6 @@ pre_configure_target() {
 
 # ffmpeg fails running with GOLD support
   strip_gold
-
 
   if [ "$KODIPLAYER_DRIVER" = "bcm2835-driver" ]; then
     CFLAGS="-I$SYSROOT_PREFIX/usr/include/interface/vcos/pthreads -I$SYSROOT_PREFIX/usr/include/interface/vmcs_host/linux -DRPI=1 $CFLAGS"

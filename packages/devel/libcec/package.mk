@@ -18,23 +18,16 @@
 
 PKG_NAME="libcec"
 PKG_VERSION="5250931"
+PKG_SHA256="22c746602e85ea575bd247adfb17181849fb54d97428a25ccd29a064e43e6cde"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://libcec.pulse-eight.com/"
 PKG_URL="https://github.com/Pulse-Eight/libcec/archive/$PKG_VERSION.tar.gz"
-if [ "$PROJECT" = "imx6" ]; then
-  if [ "$LINUX_VERSION" = "sr-3.14" ]; then
-    PKG_PATCH_DIRS="3.14-sr"
-  else
-    PKG_PATCH_DIRS="4.4-xbian"
-  fi
-fi
+[ "$PROJECT" = "imx6" ] && PKG_PATCH_DIRS="${LINUX#imx6-}"
 PKG_DEPENDS_TARGET="toolchain systemd lockdev p8-platform"
 PKG_SECTION="system"
 PKG_SHORTDESC="libCEC is an open-source dual licensed library designed for communicating with the Pulse-Eight USB - CEC Adaptor"
 PKG_LONGDESC="libCEC is an open-source dual licensed library designed for communicating with the Pulse-Eight USB - CEC Adaptor."
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 PKG_CMAKE_OPTS_TARGET="-DBUILD_SHARED_LIBS=1 \
@@ -52,13 +45,18 @@ else
 fi
 
 if [ "$KODIPLAYER_DRIVER" = "libamcodec" ]; then
-  if [ "$TARGET_ARCH" = "aarch64" ]; then
+  if [ "$TARGET_KERNEL_ARCH" = "arm64" ]; then
     PKG_CMAKE_OPTS_TARGET="$PKG_CMAKE_OPTS_TARGET -DHAVE_AOCEC_API=1"
   else
     PKG_CMAKE_OPTS_TARGET="$PKG_CMAKE_OPTS_TARGET -DHAVE_AMLOGIC_API=1"
   fi
 else
   PKG_CMAKE_OPTS_TARGET="$PKG_CMAKE_OPTS_TARGET -DHAVE_AOCEC_API=0 -DHAVE_AMLOGIC_API=0"
+fi
+
+if [ "$CEC_FRAMEWORK_SUPPORT" = "yes" ]; then
+  PKG_PATCH_DIRS="cec-framework"
+  PKG_CMAKE_OPTS_TARGET="$PKG_CMAKE_OPTS_TARGET -DHAVE_LINUX_API=1"
 fi
 
 pre_configure_target() {
@@ -73,7 +71,8 @@ pre_configure_target() {
 }
 
 post_makeinstall_target() {
-  if [ -d $INSTALL/usr/lib/python2.7/dist-packages ]; then 
-    mv $INSTALL/usr/lib/python2.7/dist-packages $INSTALL/usr/lib/python2.7/site-packages
+  PYTHON_DIR=$INSTALL/usr/lib/$PKG_PYTHON_VERSION
+  if [ -d $PYTHON_DIR/dist-packages ]; then
+    mv $PYTHON_DIR/dist-packages $PYTHON_DIR/site-packages
   fi
 }

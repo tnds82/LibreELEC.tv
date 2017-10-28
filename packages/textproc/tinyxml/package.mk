@@ -18,6 +18,7 @@
 
 PKG_NAME="tinyxml"
 PKG_VERSION="2.6.2_2"
+PKG_SHA256="8164c9ad48b9028667768a584d62f7760cfbfb90d0dd6214ad174403058da10c"
 PKG_ARCH="any"
 PKG_LICENSE="OSS"
 PKG_SITE="http://www.grinninglizard.com/tinyxml/"
@@ -26,11 +27,9 @@ PKG_DEPENDS_TARGET="toolchain"
 PKG_SECTION="textproc"
 PKG_SHORTDESC="tinyxml: XML parser library"
 PKG_LONGDESC="TinyXML is a simple, small, C++ XML parser that can be easily integrating into other programs."
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="yes"
 
-PKG_CONFIGURE_OPTS_TARGET="--enable-static --disable-shared"
+PKG_CONFIGURE_OPTS_TARGET="--enable-static --disable-shared --with-pic"
 
 pre_configure_target() {
   export CFLAGS="$CFLAGS -fPIC"

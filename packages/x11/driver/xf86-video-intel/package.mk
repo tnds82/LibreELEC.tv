@@ -18,6 +18,7 @@
 
 PKG_NAME="xf86-video-intel"
 PKG_VERSION="028c946"
+PKG_SHA256="f868f6dad81d8c220755c5cbb343463be1f6e44343c334ac1954a48061fd7063"
 PKG_ARCH="x86_64"
 PKG_LICENSE="OSS"
 PKG_SITE="http://intellinuxgraphics.org/"
@@ -27,8 +28,6 @@ PKG_DEPENDS_TARGET="toolchain libXcomposite util-macros fontsproto systemd xorg-
 PKG_SECTION="x11/driver"
 PKG_SHORTDESC="xf86-video-intel: The Xorg driver for Intel video chips"
 PKG_LONGDESC="The Xorg driver for Intel i810, i815, 830M, 845G, 852GM, 855GM, 865G, 915G, 915GM and 965G video chips."
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="yes"
 
 PKG_CONFIGURE_OPTS_TARGET="--disable-backlight \

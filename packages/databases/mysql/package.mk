@@ -1,6 +1,6 @@
 ################################################################################
 #      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016 Team LibreELEC
+#      Copyright (C) 2016-present Team LibreELEC
 #
 #  LibreELEC is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,17 +18,16 @@
 
 PKG_NAME="mysql"
 PKG_VERSION="5.7.18"
+PKG_SHA256="0b5d71ed608656cd8181d3bb0434d3e36bac192899038dbdddf5a7594aaea1a2"
 PKG_ARCH="any"
 PKG_LICENSE="LGPL"
 PKG_SITE="http://www.mysql.com"
 PKG_URL="http://ftp.gwdg.de/pub/misc/$PKG_NAME/Downloads/MySQL-5.7/$PKG_NAME-$PKG_VERSION.tar.gz"
 PKG_DEPENDS_HOST="toolchain zlib:host"
-PKG_DEPENDS_TARGET="toolchain zlib netbsd-curses openssl boost mysql:host"
+PKG_DEPENDS_TARGET="toolchain zlib ncurses openssl boost mysql:host"
 PKG_SECTION="database"
 PKG_SHORTDESC="mysql: A database server"
 PKG_LONGDESC="MySQL is a SQL (Structured Query Language) database server. SQL is the most popular database language in the world. MySQL is a client server implementation that consists of a server daemon mysqld and many different client programs/libraries."
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 post_unpack() {
@@ -64,9 +63,9 @@ if [ "$DEBUG" = yes -a "$TARGET_ARCH" = aarch64 ]; then
 fi
 
 make_host() {
-  make comp_err
-  make gen_lex_hash
-  make comp_sql
+  ninja comp_err
+  ninja gen_lex_hash
+  ninja comp_sql
 }
 
 post_make_host() {

@@ -20,7 +20,8 @@ PKG_NAME="xf86-video-nvidia"
 # Remember to run "python packages/x11/driver/xf86-video-nvidia/scripts/make_nvidia_udev.py" and commit changes to
 # "packages/x11/driver/xf86-video-nvidia/udev.d/96-nvidia.rules" whenever bumping version.
 # Host may require installation of python-lxml and python-requests packages.
-PKG_VERSION="375.66"
+PKG_VERSION="384.90"
+PKG_SHA256="2b96394931d3caf635aeb5c1b02244c76de9be54f4af944b8f7743eae570302a"
 PKG_ARCH="x86_64"
 PKG_LICENSE="nonfree"
 PKG_SITE="http://www.nvidia.com/"
@@ -30,8 +31,6 @@ PKG_NEED_UNPACK="$LINUX_DEPENDS"
 PKG_SECTION="x11/driver"
 PKG_SHORTDESC="xf86-video-nvidia: The Xorg driver for NVIDIA video chips"
 PKG_LONGDESC="These binary drivers provide optimized hardware acceleration of OpenGL applications via a direct-rendering X Server. AGP, PCIe, SLI, TV-out and flat panel displays are also supported. This version only supports GeForce 8xxx and higher of the Geforce GPUs plus complimentary Quadros and nforce."
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 unpack() {
@@ -44,9 +43,6 @@ make_target() {
   unset LDFLAGS
 
   cd kernel
-    # Don't build nvidia-drm with kernel 4.11.0 due to incompatible license
-    export NV_EXCLUDE_KERNEL_MODULES=nvidia-drm
-
     make module CC=$CC SYSSRC=$(kernel_path) SYSOUT=$(kernel_path)
     $STRIP --strip-debug nvidia.ko
   cd ..
@@ -72,10 +68,10 @@ makeinstall_target() {
   # rename to not conflicting with Mesa libGL.so
     cp -P libGL.so.$PKG_VERSION $INSTALL/usr/lib/libGL_nvidia.so.1
 
-  mkdir -p $INSTALL/usr/lib/modules/$(get_module_dir)/nvidia
-    ln -sf /var/lib/nvidia.ko $INSTALL/usr/lib/modules/$(get_module_dir)/nvidia/nvidia.ko
-    cp -P kernel/nvidia-uvm.ko $INSTALL/usr/lib/modules/$(get_module_dir)/nvidia
-    cp -P kernel/nvidia-modeset.ko $INSTALL/usr/lib/modules/$(get_module_dir)/nvidia
+  mkdir -p $INSTALL/$(get_full_module_dir)/nvidia
+    ln -sf /var/lib/nvidia.ko $INSTALL/$(get_full_module_dir)/nvidia/nvidia.ko
+    cp -P kernel/nvidia-uvm.ko $INSTALL/$(get_full_module_dir)/nvidia
+    cp -P kernel/nvidia-modeset.ko $INSTALL/$(get_full_module_dir)/nvidia
 
   mkdir -p $INSTALL/usr/lib/nvidia
     cp -P kernel/nvidia.ko $INSTALL/usr/lib/nvidia

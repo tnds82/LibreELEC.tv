@@ -1,6 +1,6 @@
 ################################################################################
 #      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016 Team LibreELEC
+#      Copyright (C) 2016-present Team LibreELEC
 #
 #  LibreELEC is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -17,7 +17,8 @@
 ################################################################################
 
 PKG_NAME="libretro-4do"
-PKG_VERSION="b8b029b"
+PKG_VERSION="9053104"
+PKG_SHA256="7a87a014dfd8584b30bc97a5aab390fcb782a1357447724d31eee295056a03f5"
 PKG_ARCH="any"
 PKG_LICENSE="LGPL"
 PKG_SITE="https://github.com/libretro/4do-libretro"
@@ -27,10 +28,8 @@ PKG_DEPENDS_TARGET="toolchain"
 PKG_SECTION="emulation"
 PKG_SHORTDESC="Port of 4DO/libfreedo to libretro."
 PKG_LONGDESC="Port of 4DO/libfreedo to libretro."
-
-PKG_IS_ADDON="no"
-PKG_USE_CMAKE="no"
 PKG_AUTORECONF="no"
+PKG_USE_CMAKE="no"
 
 PKG_LIBNAME="4do_libretro.so"
 PKG_LIBPATH="$PKG_LIBNAME"

@@ -1,6 +1,6 @@
 ################################################################################
 #      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016 Team LibreELEC
+#      Copyright (C) 2016-present Team LibreELEC
 #
 #  LibreELEC is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -17,7 +17,8 @@
 ################################################################################
 
 PKG_NAME="hd-idle"
-PKG_VERSION="1.04"
+PKG_VERSION="1.05"
+PKG_SHA256="4efefe79d145b50e055582730d9d685e485da3df3dad90fef030036d52aa3a0c"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://hd-idle.sourceforge.net/"

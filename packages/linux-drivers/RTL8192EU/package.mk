@@ -17,7 +17,8 @@
 ################################################################################
 
 PKG_NAME="RTL8192EU"
-PKG_VERSION="c23c613"
+PKG_VERSION="192bad4"
+PKG_SHA256="35c7783cc1d10d4cee887b857a0372b808677c6aada8a02f78df906323acbd2f"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="https://github.com/Mange/rtl8192eu-linux-driver"
@@ -28,9 +29,8 @@ PKG_NEED_UNPACK="$LINUX_DEPENDS"
 PKG_SECTION="driver"
 PKG_SHORTDESC="Realtek RTL8192EU Linux 3.x driver"
 PKG_LONGDESC="Realtek RTL8192EU Linux 3.x driver"
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
+PKG_IS_KERNEL_PKG="yes"
 
 pre_make_target() {
   unset LDFLAGS
@@ -46,6 +46,6 @@ make_target() {
 }
 
 makeinstall_target() {
-  mkdir -p $INSTALL/usr/lib/modules/$(get_module_dir)/$PKG_NAME
-    cp *.ko $INSTALL/usr/lib/modules/$(get_module_dir)/$PKG_NAME
+  mkdir -p $INSTALL/$(get_full_module_dir)/$PKG_NAME
+    cp *.ko $INSTALL/$(get_full_module_dir)/$PKG_NAME
 }

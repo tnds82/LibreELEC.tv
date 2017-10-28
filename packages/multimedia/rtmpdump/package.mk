@@ -18,6 +18,7 @@
 
 PKG_NAME="rtmpdump"
 PKG_VERSION="fa8646d"
+PKG_SHA256="dba4d4d2e1c7de6884b01d98194b83cab6784669089fa3c919152087a3a38fd2"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://rtmpdump.mplayerhq.hu/"
@@ -26,8 +27,6 @@ PKG_DEPENDS_TARGET="toolchain zlib openssl"
 PKG_SECTION="multimedia"
 PKG_SHORTDESC="rtmpdump: a toolkit for RTMP streams."
 PKG_LONGDESC="rtmpdump is a toolkit for RTMP streams. All forms of RTMP are supported, including rtmp://, rtmpt://, rtmpe://, rtmpte://, and rtmps://."
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 MAKEFLAGS="-j1"
@@ -43,7 +42,7 @@ make_target() {
        SHARED=no \
        CRYPTO="OPENSSL" \
        OPT="" \
-       XCFLAGS="$CFLAGS" \
+       XCFLAGS="$CFLAGS -fPIC" \
        XLDFLAGS="$LDFLAGS" \
        XLIBS="-lm"
 }
@@ -60,7 +59,7 @@ makeinstall_target() {
        SHARED=no \
        CRYPTO="OPENSSL" \
        OPT="" \
-       XCFLAGS="$CFLAGS" \
+       XCFLAGS="$CFLAGS -fPIC" \
        XLDFLAGS="$LDFLAGS" \
        XLIBS="-lm" \
        install
@@ -76,7 +75,7 @@ makeinstall_target() {
        SHARED=no \
        CRYPTO="OPENSSL" \
        OPT="" \
-       XCFLAGS="$CFLAGS" \
+       XCFLAGS="$CFLAGS -FPIC" \
        XLDFLAGS="$LDFLAGS" \
        XLIBS="-lm" \
        install

@@ -18,6 +18,7 @@
 
 PKG_NAME="libopenmpt"
 PKG_VERSION="0.2.7386-beta20.3"
+PKG_SHA256="a6a7e6da1ae66e1cf46985ee92c182e50652d71b96135e9fa6048e132d844753"
 PKG_ARCH="any"
 PKG_LICENSE="BSD"
 PKG_SITE="http://lib.openmpt.org/libopenmpt/"
@@ -27,8 +28,6 @@ PKG_DEPENDS_TARGET="toolchain libogg libvorbis"
 PKG_SECTION="audio"
 PKG_SHORTDESC="libopenmpt: renders mod music files as raw audio data, for playing or conversion."
 PKG_LONGDESC="libopenmpt renders mod music files as raw audio data, for playing or conversion."
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 PKG_CONFIGURE_OPTS_TARGET="--enable-static \

@@ -17,7 +17,8 @@
 ################################################################################
 
 PKG_NAME="xf86-video-nvidia-legacy"
-PKG_VERSION="340.102"
+PKG_VERSION="340.104"
+PKG_SHA256="ed112523ae424aea46904d2dcfc769b0263cf552f5bfec0e30601f6f0f95eada"
 PKG_ARCH="x86_64"
 PKG_LICENSE="nonfree"
 PKG_SITE="http://www.nvidia.com/"
@@ -27,8 +28,6 @@ PKG_NEED_UNPACK="$LINUX_DEPENDS"
 PKG_SECTION="x11/driver"
 PKG_SHORTDESC="xf86-video-nvidia-legacy: The Xorg driver for NVIDIA video chips supporting Geforce 6 and Geforce 7 devices too"
 PKG_LONGDESC="These binary drivers provide optimized hardware acceleration of OpenGL applications via a direct-rendering X Server. AGP, PCIe, SLI, TV-out and flat panel displays are also supported. This version only supports GeForce 6xxx and higher of the Geforce GPUs plus complimentary Quadros and nforce."
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 unpack() {
@@ -66,8 +65,8 @@ makeinstall_target() {
   # rename to not conflicting with Mesa libGL.so
     cp -P libGL.so* $INSTALL/usr/lib/libGL_nvidia-legacy.so.1
 
-  mkdir -p $INSTALL/usr/lib/modules/$(get_module_dir)/nvidia
-    ln -sf /var/lib/nvidia.ko $INSTALL/usr/lib/modules/$(get_module_dir)/nvidia/nvidia.ko
+  mkdir -p $INSTALL/$(get_full_module_dir)/nvidia
+    ln -sf /var/lib/nvidia.ko $INSTALL/$(get_full_module_dir)/nvidia/nvidia.ko
 
   mkdir -p $INSTALL/usr/lib/nvidia-legacy
     cp kernel/nvidia.ko $INSTALL/usr/lib/nvidia-legacy

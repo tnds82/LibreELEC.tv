@@ -17,7 +17,8 @@
 ################################################################################
 
 PKG_NAME="bluez"
-PKG_VERSION="5.45"
+PKG_VERSION="5.47"
+PKG_SHA256="cf75bf7cd5d564f21cc4a2bd01d5c39ce425397335fd47d9bbe43af0a58342c8"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://www.bluez.org/"
@@ -26,8 +27,6 @@ PKG_DEPENDS_TARGET="toolchain dbus glib readline systemd"
 PKG_SECTION="network"
 PKG_SHORTDESC="bluez: Bluetooth Tools and System Daemons for Linux."
 PKG_LONGDESC="Bluetooth Tools and System Daemons for Linux."
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="yes"
 
 if [ "$DEBUG" = "yes" ]; then
@@ -63,7 +62,7 @@ pre_configure_target() {
   cd $PKG_BUILD
     rm -rf .$TARGET_NAME
 
-  export LIBS="-ltermcap"
+  export LIBS="-lncurses"
 }
 
 post_makeinstall_target() {

@@ -26,7 +26,7 @@ if [ -z "$1" ]; then
 fi
 
 if [ ! -f $PKG_DIR/package.mk ]; then
-  printf "${boldred}$1: no package.mk file found${endcolor}\n"
+  printf "$(print_color CLR_ERROR "$1: no package.mk file found")\n"
   exit 1
 fi
 
@@ -61,7 +61,7 @@ fi
 [ -f "$STAMP" ] && exit 0
 
 if [ -d "$SOURCES/$1" -o -d "$PKG_DIR/sources" ]; then
-  printf "%${BUILD_INDENT}c ${boldcyan}UNPACK${endcolor}   $1\n" ' '>&$SILENT_OUT
+  printf "%${BUILD_INDENT}c $(print_color CLR_UNPACK "UNPACK")   $1\n" ' '>&$SILENT_OUT
   export BUILD_INDENT=$((${BUILD_INDENT:-1}+$BUILD_INDENT_SIZE))
 
   # unset functions
@@ -81,14 +81,7 @@ if [ -d "$SOURCES/$1" -o -d "$PKG_DIR/sources" ]; then
     unpack
   else
     if [ -n "$PKG_URL" ]; then
-      $SCRIPTS/extract $1 "$1*.tar.bz2" $BUILD
-      $SCRIPTS/extract $1 "$1*.tbz"     $BUILD
-      $SCRIPTS/extract $1 "$1*.tar.gz"  $BUILD
-      $SCRIPTS/extract $1 "$1*.tar.xz"  $BUILD
-      $SCRIPTS/extract $1 "$1*.txz"     $BUILD
-      $SCRIPTS/extract $1 "$1*.tgz"     $BUILD
-      $SCRIPTS/extract $1 "$1*.7z"      $BUILD
-      $SCRIPTS/extract $1 "$1*.zip"     $BUILD
+      $SCRIPTS/extract $1 $BUILD
     fi
   fi
 
@@ -120,7 +113,7 @@ if [ -d "$SOURCES/$1" -o -d "$PKG_DIR/sources" ]; then
   if [ "$TARGET_ARCH" = "x86_64" ]; then
     PATCH_ARCH="x86"
   else
-    PATCH_ARCH="$TARGET_ARCH"
+    PATCH_ARCH="${TARGET_PATCH_ARCH:-$TARGET_ARCH}"
   fi
 
   PATCH_DIRS_PKG=""
@@ -129,11 +122,12 @@ if [ -d "$SOURCES/$1" -o -d "$PKG_DIR/sources" ]; then
     for patch_dir in $PKG_PATCH_DIRS; do
       [ -d $PKG_DIR/patches/$patch_dir ] && PATCH_DIRS_PKG="$PATCH_DIRS_PKG $PKG_DIR/patches/$patch_dir/*.patch"
       [ -d $PROJECT_DIR/$PROJECT/patches/$PKG_NAME/$patch_dir ] && PATCH_DIRS_PRJ="$PATCH_DIRS_PRJ $PROJECT_DIR/$PROJECT/patches/$PKG_NAME/$patch_dir/*.patch"
+      [ -d $PROJECT_DIR/$PROJECT/devices/$DEVICE/patches/$PKG_NAME/$patch_dir ] && PATCH_DIRS_PRJ="$PATCH_DIRS_PRJ $PROJECT_DIR/$PROJECT/devices/$DEVICE/patches/$PKG_NAME/$patch_dir/*.patch"
     done
   fi
 
-  for i in $PKG_DIR/patches/$PKG_NAME-*.patch \
-           $PKG_DIR/patches/$PATCH_ARCH/$PKG_NAME-*.patch \
+  for i in $PKG_DIR/patches/*.patch \
+           $PKG_DIR/patches/$PATCH_ARCH/*.patch \
            $PATCH_DIRS_PKG \
            $PKG_DIR/patches/$PKG_VERSION/*.patch \
            $PKG_DIR/patches/$PKG_VERSION/$PATCH_ARCH/*.patch \
@@ -164,6 +158,8 @@ if [ -d "$SOURCES/$1" -o -d "$PKG_DIR/sources" ]; then
     else
       if [[ "$thisdir" =~ ^$PKG_DIR/.* ]]; then
         PATCH_DESC="(common - $(basename "$thisdir"))"
+      elif [[ "$thisdir" =~ ^$PROJECT_DIR/.*/devices/.* ]]; then
+        PATCH_DESC="(device - $(basename "$thisdir"))"
       elif [[ "$thisdir" =~ ^$PROJECT_DIR/.* ]]; then
         PATCH_DESC="(project - $(basename "$thisdir"))"
       else
@@ -172,8 +168,8 @@ if [ -d "$SOURCES/$1" -o -d "$PKG_DIR/sources" ]; then
     fi
 
     if [ -f "$i" ]; then
-      printf "%${BUILD_INDENT}c ${boldgreen}APPLY PATCH${endcolor} ${boldwhite}${PATCH_DESC}${endcolor}   ${i#$ROOT/}\n" ' '>&$SILENT_OUT
-      if [ -n "$(grep -E '^GIT binary patch$' $i)" ]; then
+      printf "%${BUILD_INDENT}c $(print_color CLR_APPLY_PATCH "APPLY PATCH") $(print_color CLR_PATCH_DESC "${PATCH_DESC}")   ${i#$ROOT/}\n" ' '>&$SILENT_OUT
+      if grep -qE '^GIT binary patch$|^rename from|^rename to' $i; then
         cat $i | git apply --directory=`echo "$PKG_BUILD" | cut -f1 -d\ ` -p1 --verbose --whitespace=nowarn --unsafe-paths >&$VERBOSE_OUT
       else
         cat $i | patch -d `echo "$PKG_BUILD" | cut -f1 -d\ ` -p1 >&$VERBOSE_OUT
@@ -187,7 +183,7 @@ if [ -d "$SOURCES/$1" -o -d "$PKG_DIR/sources" ]; then
 
   if [ ! "$PKG_NAME" == "configtools" ] ; then
     for config in `find $PKG_BUILD -name config.guess | sed 's/config.guess//'`; do
-      printf "%${BUILD_INDENT}c ${boldyellow}FIXCONFIG${endcolor}   $config\n" ' '
+      printf "%${BUILD_INDENT}c $(print_color CLR_FIXCONFIG "FIXCONFIG")   $config\n" ' '
 
       [ -f "$config/config.guess" -a -f $TOOLCHAIN/configtools/config.guess ] && \
         cp -f $TOOLCHAIN/configtools/config.guess $config

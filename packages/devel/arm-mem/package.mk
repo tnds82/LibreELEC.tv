@@ -18,6 +18,7 @@
 
 PKG_NAME="arm-mem"
 PKG_VERSION="3aee5f4"
+PKG_SHA256="c7ac6fea60c01d34e71b24065b65ad6fbef42b9b702a226a22fe4a0caff33382"
 PKG_ARCH="arm"
 PKG_LICENSE="GPL"
 PKG_SITE="https://github.com/bavison/arm-mem"
@@ -27,8 +28,6 @@ PKG_DEPENDS_INIT="toolchain arm-mem"
 PKG_SECTION="devel"
 PKG_SHORTDESC="arm-mem: ARM-accelerated versions of selected functions from string.h"
 PKG_LONGDESC="arm-mem is a ARM-accelerated versions of selected functions from string.h"
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 PKG_MAKE_OPTS_TARGET="libarmmem.so"
@@ -57,4 +56,3 @@ makeinstall_init() {
   mkdir -p $INSTALL/etc
     echo "/usr/lib/libarmmem.so" >> $INSTALL/etc/ld.so.preload
 }
-

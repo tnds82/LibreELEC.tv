@@ -18,6 +18,7 @@
 
 PKG_NAME="elfutils"
 PKG_VERSION="0.168"
+PKG_SHA256="b88d07893ba1373c7dd69a7855974706d05377766568a7d9002706d5de72c276"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="https://sourceware.org/elfutils/"
@@ -26,8 +27,6 @@ PKG_DEPENDS_TARGET="toolchain zlib"
 PKG_SECTION="devel"
 PKG_SHORTDESC="elfutils: collection of utilities to handle ELF objects"
 PKG_LONGDESC="Elfutils is a collection of utilities, including eu-ld (a linker), eu-nm (for listing symbols from object files), eu-size (for listing the section sizes of an object or archive file), eu-strip (for discarding symbols), eu-readelf (to see the raw ELF file structures), and eu-elflint (to check for well-formed ELF files)."
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="yes"
 
 PKG_CONFIGURE_OPTS_TARGET="utrace_cv_cc_biarch=false \

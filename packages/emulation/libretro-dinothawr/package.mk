@@ -1,6 +1,6 @@
 ################################################################################
 #      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016 Team LibreELEC
+#      Copyright (C) 2016-present Team LibreELEC
 #
 #  LibreELEC is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -17,7 +17,8 @@
 ################################################################################
 
 PKG_NAME="libretro-dinothawr"
-PKG_VERSION="02821dd"
+PKG_VERSION="c48088b"
+PKG_SHA256="a33406f56d43bc312418cc2bbc0b8ac89e2c6897e3c7a6f7fd4687d8fafee2a0"
 PKG_ARCH="any"
 PKG_LICENSE="GPLv3"
 PKG_SITE="https://github.com/libretro/Dinothawr"
@@ -28,15 +29,16 @@ PKG_SECTION="emulation"
 PKG_SHORTDESC="game.libretro.dinothawr: dinothawr for Kodi"
 PKG_LONGDESC="game.libretro.dinothawr: dinothawr for Kodi"
 PKG_AUTORECONF="no"
-PKG_IS_ADDON="no"
 PKG_USE_CMAKE="no"
 
 PKG_LIBNAME="dinothawr_libretro.so"
 PKG_LIBPATH="$PKG_LIBNAME"
 PKG_LIBVAR="DINOTHAWR_LIB"
 
-make_target() {
-  make
+pre_make_target() {
+  if target_has_feature neon; then
+    export HAVE_NEON=1
+  fi
 }
 
 makeinstall_target() {
@@ -44,4 +46,3 @@ makeinstall_target() {
   cp $PKG_LIBPATH $SYSROOT_PREFIX/usr/lib/$PKG_LIBNAME
   echo "set($PKG_LIBVAR $SYSROOT_PREFIX/usr/lib/$PKG_LIBNAME)" > $SYSROOT_PREFIX/usr/lib/cmake/$PKG_NAME/$PKG_NAME-config.cmake
 }
-

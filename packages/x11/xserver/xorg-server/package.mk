@@ -17,7 +17,8 @@
 ################################################################################
 
 PKG_NAME="xorg-server"
-PKG_VERSION="1.19.3"
+PKG_VERSION="1.19.5"
+PKG_SHA256="18fffa8eb93d06d2800d06321fc0df4d357684d8d714315a66d8dfa7df251447"
 PKG_ARCH="any"
 PKG_LICENSE="OSS"
 PKG_SITE="http://www.X.org"
@@ -27,8 +28,6 @@ PKG_NEED_UNPACK="$(get_pkg_directory xf86-video-nvidia) $(get_pkg_directory xf86
 PKG_SECTION="x11/xserver"
 PKG_SHORTDESC="xorg-server: The Xorg X server"
 PKG_LONGDESC="Xorg is a full featured X server that was originally designed for UNIX and UNIX-like operating systems running on Intel x86 hardware."
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="yes"
 
 get_graphicdrivers

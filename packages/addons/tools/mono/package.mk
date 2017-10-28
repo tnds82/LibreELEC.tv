@@ -1,6 +1,6 @@
 ################################################################################
 #      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016-2017 Team LibreELEC
+#      Copyright (C) 2016-present Team LibreELEC
 #
 #  LibreELEC is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -17,8 +17,9 @@
 ################################################################################
 
 PKG_NAME="mono"
-PKG_VERSION="4.8.1.0"
-PKG_REV="104"
+PKG_VERSION="5.2.0.224"
+PKG_SHA256="03b8e463032bc425673dec844b35b4c669f5b99b0e45521195efb3741a9f5e94"
+PKG_REV="107"
 PKG_ARCH="any"
 PKG_LICENSE="MIT"
 PKG_SITE="http://www.mono-project.com"
@@ -71,7 +72,7 @@ makeinstall_target() {
 
 addon() {
   mkdir -p "$ADDON_BUILD/$PKG_ADDON_ID"
-  
+
   cp -PR "$PKG_BUILD/.install_pkg/storage/.kodi/addons/$PKG_SECTION.$PKG_NAME"/* \
          "$ADDON_BUILD/$PKG_ADDON_ID/"
 

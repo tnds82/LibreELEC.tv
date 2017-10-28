@@ -19,7 +19,7 @@
 ################################################################################
 
 PKG_NAME="nspr"
-PKG_VERSION="4.13"
+PKG_VERSION="4.13.1"
 PKG_ARCH="any"
 PKG_LICENSE="Mozilla Public License"
 PKG_SITE="http://www.linuxfromscratch.org/blfs/view/svn/general/nspr.html"
@@ -27,7 +27,6 @@ PKG_DEPENDS_TARGET="toolchain nss:host"
 PKG_SECTION="security"
 PKG_SHORTDESC="Netscape Portable Runtime (NSPR) provides a platform-neutral API for system level and libc like functions"
 PKG_LONGDESC="Netscape Portable Runtime (NSPR) provides a platform-neutral API for system level and libc like functions"
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 MAKEFLAGS=-j1
@@ -42,5 +41,5 @@ PKG_MAKEINSTALL_OPTS_TARGET="NSINSTALL=$TOOLCHAIN/bin/nsinstall"
 
 configure_target() {
   cd $(get_build_dir nss)/nspr
-  ./configure --with-pthreads $TARGET_USE_64 $TARGET_CONFIGURE_OPTS 
+  ./configure --with-pthreads $TARGET_USE_64 $TARGET_CONFIGURE_OPTS
 }

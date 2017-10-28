@@ -17,7 +17,8 @@
 ################################################################################
 
 PKG_NAME="screensavers.rsxs"
-PKG_VERSION="579ec13"
+PKG_VERSION="3b74bb6"
+PKG_SHA256="5ea9b045e98a3ebccd12a2c4c238f97493d9128d68f50fd208365c5666a443f2"
 PKG_REV="2"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
@@ -40,9 +41,7 @@ addon() {
   for _ADDON in $PKG_BUILD/.install_pkg/usr/share/$MEDIACENTER/addons/* ; do
     _ADDON_ID=$(basename $_ADDON)
 
-    mkdir -p $ADDON_BUILD/$_ADDON_ID/
-    cp -PR $PKG_BUILD/.install_pkg/usr/share/$MEDIACENTER/addons/$_ADDON_ID/* $ADDON_BUILD/$_ADDON_ID/
-    cp -PL $PKG_BUILD/.install_pkg/usr/lib/$MEDIACENTER/addons/$_ADDON_ID/*.so $ADDON_BUILD/$_ADDON_ID/
+    install_binary_addon $_ADDON_ID
 
     MULTI_ADDONS="$MULTI_ADDONS $_ADDON_ID"
   done

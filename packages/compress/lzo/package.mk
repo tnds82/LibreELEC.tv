@@ -18,6 +18,7 @@
 
 PKG_NAME="lzo"
 PKG_VERSION="2.10"
+PKG_SHA256="c0f892943208266f9b6543b3ae308fab6284c5c90e627931446fb49b4221a072"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://www.oberhumer.com/opensource/lzo"
@@ -27,8 +28,6 @@ PKG_DEPENDS_TARGET="toolchain"
 PKG_SECTION="compress"
 PKG_SHORTDESC="LZO data compressor"
 PKG_LONGDESC="LZO is a data compression library which is suitable for data de-/compression in real-time. This means it favours speed over compression ratio."
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 PKG_CMAKE_OPTS_HOST="-DENABLE_SHARED=OFF -DENABLE_STATIC=ON"

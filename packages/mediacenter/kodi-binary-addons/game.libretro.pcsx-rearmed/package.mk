@@ -1,6 +1,6 @@
 ################################################################################
 #      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016 Team LibreELEC
+#      Copyright (C) 2016-present Team LibreELEC
 #
 #  LibreELEC is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -17,11 +17,11 @@
 ################################################################################
 
 PKG_NAME="game.libretro.pcsx-rearmed"
-PKG_VERSION="54fccff"
-PKG_REV="101"
-PKG_ARCH="any"
-# RPi doesn't support neon
-PKG_ADDON_PROJECTS="Generic imx6 Odroid_C2 RPi2 Virtual WeTek_Core WeTek_Hub WeTek_Play WeTek_Play_2"
+PKG_VERSION="b6a4644"
+PKG_SHA256="2189b458fdd1c7946e383bdb374a89ca72bb29ce9d040ea1fcc5ee8cc0d6fc4e"
+PKG_REV="103"
+# neon optimizations make it only useful for arm
+PKG_ARCH="arm"
 PKG_LICENSE="GPL"
 PKG_SITE="https://github.com/kodi-game/game.libretro.pcsx-rearmed"
 PKG_URL="https://github.com/kodi-game/game.libretro.pcsx-rearmed/archive/$PKG_VERSION.tar.gz"
@@ -34,18 +34,7 @@ PKG_AUTORECONF="no"
 PKG_IS_ADDON="yes"
 PKG_ADDON_TYPE="kodi.gameclient"
 
-configure_target() {
-  cmake -DCMAKE_TOOLCHAIN_FILE=$CMAKE_CONF \
-        -DCMAKE_INSTALL_PREFIX=/usr \
-        -DCMAKE_MODULE_PATH=$SYSROOT_PREFIX/usr/lib/kodi \
-        -DCMAKE_PREFIX_PATH=$SYSROOT_PREFIX/usr \
-        ..
-}
-
-addon() {
-  mkdir -p $ADDON_BUILD/$PKG_ADDON_ID/
-  cp -R $PKG_BUILD/.install_pkg/usr/share/kodi/addons/$PKG_NAME/* $ADDON_BUILD/$PKG_ADDON_ID/
-
-  ADDONSO=$(xmlstarlet sel -t -v "/addon/extension/@library_linux" $ADDON_BUILD/$PKG_ADDON_ID/addon.xml)
-  cp -L $PKG_BUILD/.install_pkg/usr/lib/kodi/addons/$PKG_NAME/$ADDONSO $ADDON_BUILD/$PKG_ADDON_ID/
-}
+if ! target_has_feature neon; then
+  echo "${DEVICE:-${PROJECT}} doesn't support neon"
+  exit 0
+fi

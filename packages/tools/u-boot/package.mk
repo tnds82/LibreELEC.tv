@@ -21,6 +21,7 @@ PKG_DEPENDS_TARGET="toolchain"
 if [ "$UBOOT_VERSION" = "imx6-cuboxi" ]; then
   PKG_COMMIT="ad02f49"
   PKG_VERSION="imx6-$PKG_COMMIT"
+  PKG_SHA256="bee9c8f4d21230a53605ed0df2ee79a9d2a18a49870d235ec0993a26a37ba0fd"
   PKG_SITE="http://solid-run.com/wiki/doku.php?id=products:imx6:software:development:u-boot"
   PKG_URL="https://github.com/SolidRun/u-boot-imx6/archive/$PKG_COMMIT.tar.gz"
   PKG_SOURCE_NAME="$PKG_NAME-sr-$PKG_VERSION.tar.gz"
@@ -28,6 +29,7 @@ if [ "$UBOOT_VERSION" = "imx6-cuboxi" ]; then
   [ -n "$UBOOT_CONFIG_V2" ] && PKG_DEPENDS_TARGET="toolchain u-boot-v2"
 elif [ "$UBOOT_VERSION" = "hardkernel" ]; then
   PKG_VERSION="6e4e886"
+  PKG_SHA256="0d05829e07e226d1acbc6b23ff038d6c92fa3ed738ddc28703d51987c0fab3bb"
   PKG_SITE="https://github.com/hardkernel/u-boot"
   PKG_URL="https://github.com/hardkernel/u-boot/archive/$PKG_VERSION.tar.gz"
   PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET gcc-linaro-aarch64-elf:host gcc-linaro-arm-eabi:host"
@@ -39,7 +41,6 @@ PKG_LICENSE="GPL"
 PKG_SECTION="tools"
 PKG_SHORTDESC="u-boot: Universal Bootloader project"
 PKG_LONGDESC="Das U-Boot is a cross-platform bootloader for embedded systems, used as the default boot loader by several board vendors. It is intended to be easy to port and to debug, and runs on many supported architectures, including PPC, ARM, MIPS, x86, m68k, NIOS, and Microblaze."
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 pre_configure_target() {

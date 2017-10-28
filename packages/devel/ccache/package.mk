@@ -18,6 +18,7 @@
 
 PKG_NAME="ccache"
 PKG_VERSION="3.3.4"
+PKG_SHA256="fa9d7f38367431bc86b19ad107d709ca7ecf1574fdacca01698bdf0a47cd8567"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="https://ccache.samba.org/"
@@ -26,8 +27,6 @@ PKG_DEPENDS_HOST="make:host"
 PKG_SECTION="devel"
 PKG_SHORTDESC="ccache: A fast compiler cache"
 PKG_LONGDESC="Ccache is a compiler cache. It speeds up re-compilation of C/C++ code by caching previous compiles and detecting when the same compile is being done again."
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 export CC=$LOCAL_CC

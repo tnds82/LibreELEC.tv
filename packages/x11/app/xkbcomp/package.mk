@@ -18,6 +18,7 @@
 
 PKG_NAME="xkbcomp"
 PKG_VERSION="1.4.0"
+PKG_SHA256="bc69c8748c03c5ad9afdc8dff9db11994dd871b614c65f8940516da6bf61ce6b"
 PKG_ARCH="any"
 PKG_LICENSE="OSS"
 PKG_SITE="http://www.X.org"
@@ -26,9 +27,6 @@ PKG_DEPENDS_TARGET="toolchain util-macros libX11"
 PKG_SECTION="x11/app"
 PKG_SHORTDESC="xkbcomp: Compiles XKB keyboard description"
 PKG_LONGDESC="The xkbcomp keymap compiler converts a description of an XKB keymap into one of several output formats."
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 PKG_CONFIGURE_OPTS_TARGET="--with-xkb-config-root=$XORG_PATH_XKB"
-

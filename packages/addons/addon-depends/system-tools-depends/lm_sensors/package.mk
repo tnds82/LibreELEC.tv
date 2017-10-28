@@ -1,6 +1,6 @@
 ################################################################################
 #      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016 Team LibreELEC
+#      Copyright (C) 2016-present Team LibreELEC
 #
 #  LibreELEC is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -17,11 +17,13 @@
 ################################################################################
 
 PKG_NAME="lm_sensors"
-PKG_VERSION="3.4.0"
+PKG_VERSION="0d5ccf6"
+PKG_SHA256="172b297671d794b78a5bb9dde4cc3218fea50480e45b5cc9ab5d50162710b2e4"
 PKG_ARCH="arm x86_64"
 PKG_LICENSE="GPL"
 PKG_SITE="http://secure.netroedge.com/~lm78/"
-PKG_URL="http://ftp.gwdg.de/pub/linux/misc/lm-sensors/$PKG_NAME-$PKG_VERSION.tar.bz2"
+PKG_URL="https://github.com/groeck/lm-sensors/archive/${PKG_VERSION}.tar.gz"
+PKG_SOURCE_DIR="lm-sensors-${PKG_VERSION}*"
 PKG_DEPENDS_TARGET="toolchain"
 PKG_SECTION="tools"
 PKG_SHORTDESC="lm_sensors: Hardware monitoring via the SMBus"

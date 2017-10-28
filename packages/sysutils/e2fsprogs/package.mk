@@ -18,6 +18,7 @@
 
 PKG_NAME="e2fsprogs"
 PKG_VERSION="1.43.4"
+PKG_SHA256="a648a90a513f1b25113c7f981af978b8a19f832b3a32bd10707af3ff682ba66d"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://e2fsprogs.sourceforge.net/"
@@ -27,8 +28,6 @@ PKG_DEPENDS_INIT="toolchain"
 PKG_SECTION="tools"
 PKG_SHORTDESC="e2fsprogs: Utilities for use with the ext2 filesystem"
 PKG_LONGDESC="The filesystem utilities for the EXT2 filesystem, including e2fsck, mke2fs, dumpe2fs, fsck, and others."
-PKG_IS_ADDON="no"
-
 PKG_AUTORECONF="no"
 
 if [ "$HFSTOOLS" = "yes" ]; then
@@ -62,6 +61,7 @@ PKG_CONFIGURE_OPTS_TARGET="BUILD_CC=$HOST_CC \
                            --disable-uuidd \
                            --disable-nls \
                            --disable-rpath \
+                           --disable-fuse2fs \
                            --with-gnu-ld"
 
 PKG_CONFIGURE_OPTS_INIT="$PKG_CONFIGURE_OPTS_TARGET"
@@ -72,7 +72,7 @@ pre_make_host() {
 }
 
 post_makeinstall_target() {
-  make -C lib/et DESTDIR=$SYSROOT_PREFIX install
+  make -C lib/et LIBMODE=644 DESTDIR=$SYSROOT_PREFIX install
 
   rm -rf $INSTALL/usr/sbin/badblocks
   rm -rf $INSTALL/usr/sbin/blkid
@@ -109,7 +109,6 @@ make_host() {
 }
 
 makeinstall_host() {
-  make -C lib/et install
-  make -C lib/ext2fs install
+  make -C lib/et LIBMODE=644 install
+  make -C lib/ext2fs LIBMODE=644 install
 }
-

@@ -18,6 +18,7 @@
 
 PKG_NAME="libfslvpuwrap"
 PKG_VERSION="1.0.65"
+PKG_SHA256="abe8ebeaf708c93b4ef61b4b181139b18b2136ddc7f53749fd5c0a613cde874e"
 PKG_ARCH="arm"
 PKG_LICENSE="other"
 PKG_SITE="http://www.freescale.com"
@@ -26,8 +27,6 @@ PKG_DEPENDS_TARGET="toolchain imx-vpu"
 PKG_SECTION="multimedia"
 PKG_SHORTDESC="libfslvpuwrap: Freescale Multimedia VPU wrapper"
 PKG_LONGDESC="libfslvpuwrap: Freescale Multimedia VPU wrapper"
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="yes"
 
 post_makeinstall_target() {

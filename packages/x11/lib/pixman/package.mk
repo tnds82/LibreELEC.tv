@@ -18,6 +18,7 @@
 
 PKG_NAME="pixman"
 PKG_VERSION="0.34.0"
+PKG_SHA256="39ba3438f3d17c464b0cb8be006dacbca0ab5aee97ebde69fec7ecdbf85794a0"
 PKG_ARCH="any"
 PKG_LICENSE="OSS"
 PKG_SITE="http://www.x.org/"
@@ -26,8 +27,6 @@ PKG_DEPENDS_TARGET="toolchain util-macros"
 PKG_SECTION="x11/lib"
 PKG_SHORTDESC="pixman: Pixel manipulation library"
 PKG_LONGDESC="Pixman is a generic library for manipulating pixel regions, contains low-level pixel manipulation routines and is used by both xorg and cairo."
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 if [ "$TARGET_ARCH" = arm ]; then

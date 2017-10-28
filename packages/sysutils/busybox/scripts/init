@@ -53,6 +53,7 @@
   RUN_FSCK="yes"
   RUN_FSCK_DISKS=""
   SYSLINUX_DEFAULT=""
+  GRUB_DEFAULT=""
 
   NBD_DEVS="0"
   FLASH_FREE_MIN="5"
@@ -61,6 +62,8 @@
   SYSTEM_TORAM_LIMIT=1024000
 
   LIVE="no"
+
+  BREAK_TRIPPED="no"
 
   # Get a serial number if present (eg. RPi) otherwise use MAC address from eth0
   MACHINE_UID="$(cat /proc/cpuinfo | awk '/^Serial/{s=$3; gsub ("^0*","",s); print s}')"
@@ -151,6 +154,13 @@
       portable)
         SYSLINUX_DEFAULT="run"
         ;;
+      grub_live)
+        LIVE=yes
+        GRUB_DEFAULT="Live"
+        ;;
+      grub_portable)
+        GRUB_DEFAULT="Run"
+        ;;
       overlay)
         OVERLAY=yes
         ;;
@@ -182,27 +192,35 @@
   }
 
   debug_shell() {
-    echo "### Starting debugging shell... type  exit  to quit ###"
+    echo "### Starting debugging shell for boot step: $BOOT_STEP... type  exit  to quit ###"
 
     showcursor
 
-    sh </dev/tty1 >/dev/tty1 2>&1
+    setsid cttyhack sh
   }
 
   error() {
     # Display fatal error message
     # $1:action which caused error, $2:message
+    # Send debug_shell output to stderr, in case caller is redirecting/consuming stdout
+    # Return exitcode=1 so that called may detect when an error has occurred
     echo "*** Error in $BOOT_STEP: $1: $2 ***" >&2
-    debug_shell
+    debug_shell >&2
+    return 1
   }
 
   break_after() {
-    # Start debug shell after boot step $1
-    case $BREAK in
-      all|*$1*)
-        debug_shell
-        ;;
-    esac
+    # Start debug shell after boot step $1, and all subsequent steps
+    if [ $BREAK_TRIPPED == yes ]; then
+      debug_shell
+    else
+      case $BREAK in
+        all|*$1*)
+          BREAK_TRIPPED=yes
+          debug_shell
+          ;;
+      esac
+    fi
   }
 
   # Mount handlers
@@ -221,7 +239,8 @@
 
       usleep 1000000
     done
-    [ "$ERR_ENV" -ne "0" ] && error "mount_common" "Could not mount $1"
+    [ "$ERR_ENV" -eq "0" ] && return 0
+    error "mount_common" "Could not mount $1"
   }
 
   get_iscsistart_options() {
@@ -356,7 +375,7 @@
 
   # mount the specified SYSTEM file and output arch from /etc/os-release
   get_project_arch() {
-    mount_part "$1" "/sysroot" "ro,loop"
+    mount_part "$1" "/sysroot" "ro,loop" || return
 
     if [ -f /sysroot/etc/os-release ]; then
       . /sysroot/etc/os-release
@@ -393,8 +412,10 @@
     local update_filename="${1}"
     local old_system="${2}"
     local new_system="${3}"
-    local old_project_arch="$(get_project_arch "${old_system}")"
-    local new_project_arch="$(get_project_arch "${new_system}")"
+    local old_project_arch new_project_arch
+
+    old_project_arch="$(get_project_arch "${old_system}")" || return
+    new_project_arch="$(get_project_arch "${new_system}")" || return
 
     # If old or new project/arch isn't available then could be very old (pre-/etc/os-release) build - have to trust it
     if [ -n "${old_project_arch}" -a -n "${new_project_arch}" ]; then
@@ -440,7 +461,7 @@
 
     if [ -f "$UPDATE_DIR/$2" -a -b "$3" ]; then
       StartProgress spinner "Updating $1... "
-        result="$(dd if="$UPDATE_DIR/$2" of="$3" conv=fsync 2>&1)"
+        result="$(dd if="$UPDATE_DIR/$2" of="$3" 2>&1)"
         StopProgress "done"
       echo "${result}"
     fi
@@ -687,7 +708,7 @@
   }
 
   # Make last bootloader label (installer, live, run etc.) as the new default
-  update_syslinux() {
+  update_bootmenu() {
     local crnt_default
 
     if [ -n "$SYSLINUX_DEFAULT" -a -f /flash/syslinux.cfg ]; then
@@ -699,6 +720,20 @@
           mount -o remount,rw /flash
           sed -i "s/^DEFAULT .*/DEFAULT $SYSLINUX_DEFAULT/" /flash/syslinux.cfg
           [ -f /flash/EFI/BOOT/syslinux.cfg ] && cp /flash/syslinux.cfg /flash/EFI/BOOT/syslinux.cfg
+          mount -o remount,ro /flash
+        fi
+      fi
+    fi
+
+    if [ -n "\"$GRUB_DEFAULT\"" -a -f /flash/grub.cfg ]; then
+      if grep -q "^menuentry \"$GRUB_DEFAULT\"" /flash/grub.cfg; then
+        crnt_default="$(awk '/^set default/ {print substr($2,9,19)}' /flash/grub.cfg)"
+        if [ ! "$crnt_default" = "\"$GRUB_DEFAULT\"" ]; then
+          progress "Updating /flash/grub.cfg [$crnt_default -> \"$GRUB_DEFAULT\"]"
+
+          mount -o remount,rw /flash
+          sed -i "s/^set default=.*/set default=\"$GRUB_DEFAULT\"/" /flash/grub.cfg
+          [ -f /flash/EFI/BOOT/grub.cfg ] && cp /flash/grub.cfg /flash/EFI/BOOT/grub.cfg
           mount -o remount,ro /flash
         fi
       fi
@@ -766,8 +801,16 @@
       return 0
     fi
 
-    # remove temporary folder if exist from previous run
-    rm -fr "$UPDATE_DIR/.tmp" &>/dev/null
+    if [ -d $UPDATE_DIR/.tmp ]; then
+      echo "Failed update detected - performing recovery."
+      echo ""
+      do_cleanup
+      StartProgress countdown "Normal startup in 10s... " 10 "NOW"
+      return 0
+    fi
+
+    mkdir -p $UPDATE_DIR/.tmp &>/dev/null
+    sync
 
     echo "UPGRADE IN PROGRESS"
     echo ""
@@ -780,7 +823,6 @@
       echo "Found new .tar archive"
       UPDATE_FILENAME="$UPDATE_TAR"
       StartProgress spinner "Extracting contents of archive... "
-        mkdir -p $UPDATE_DIR/.tmp &>/dev/null
         tar -xf "$UPDATE_TAR" -C $UPDATE_DIR/.tmp 1>/dev/null 2>/tmp/tarresult.txt || TARRESULT="1"
 
       if [ "${TARRESULT}" -eq "0" ]; then
@@ -991,7 +1033,7 @@
     mount --move /flash /sysroot/flash
     mount --move /storage /sysroot/storage
 
-    if [ ! -d "/sysroot/usr/lib/modules/$(uname -r)/" -a -f "/sysroot/usr/lib/systemd/systemd" ]; then
+    if [ ! -d "/sysroot/usr/lib/kernel-overlays/base/lib/modules/$(uname -r)/" -a -f "/sysroot/usr/lib/systemd/systemd" ]; then
       echo ""
       echo "NEVER TOUCH boot= in extlinux.conf / cmdline.txt!"
       echo "If you don't know what you are doing,"
@@ -1002,6 +1044,10 @@
 
     [ -f "/sysroot/usr/lib/systemd/systemd" ] || error "final_check" "Could not find systemd!"
   }
+
+  # If the network is up (due to the use of the "ip" kernel parameter) and a DNS
+  # server is known, allow the libc resolver to use it
+  grep '^\(nameserver\|domain\) ' /proc/net/pnp | grep -v '^nameserver 0\.0\.0\.0$' > /etc/resolv.conf
 
   if [ "${boot%%=*}" = "FILE" ]; then
     error "check arguments" "boot argument can't be FILE type..."
@@ -1014,7 +1060,7 @@
       load_modules \
       check_disks \
       mount_flash \
-      update_syslinux \
+      update_bootmenu \
       load_splash \
       mount_storage \
       check_update \

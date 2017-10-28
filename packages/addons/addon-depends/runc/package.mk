@@ -18,6 +18,7 @@
 
 PKG_NAME="runc"
 PKG_VERSION="9df8b30"
+PKG_SHA256="93d2ad2fdf83803517a601141253ebb760970a4a237c6e016871a5ec31d85552"
 PKG_ARCH="any"
 PKG_LICENSE="APL"
 PKG_SITE="https://github.com/opencontainers/runc"
@@ -26,8 +27,6 @@ PKG_DEPENDS_TARGET="toolchain go:host"
 PKG_SECTION="system"
 PKG_SHORTDESC="runc is a CLI tool for spawning and running containers according to the OCI specification"
 PKG_LONGDESC="runc is a CLI tool for spawning and running containers according to the OCI specification"
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 pre_make_target() {

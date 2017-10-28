@@ -17,7 +17,8 @@
 ################################################################################
 
 PKG_NAME="glibc"
-PKG_VERSION="2.25"
+PKG_VERSION="2.26"
+PKG_SHA256="e54e0a934cd2bc94429be79da5e9385898d2306b9eaf3c92d5a77af96190f6bd"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://www.gnu.org/software/libc/"
@@ -27,8 +28,6 @@ PKG_DEPENDS_INIT="glibc"
 PKG_SECTION="toolchain/devel"
 PKG_SHORTDESC="glibc: The GNU C library"
 PKG_LONGDESC="The Glibc package contains the main C library. This library provides the basic routines for allocating memory, searching directories, opening and closing files, reading and writing files, string handling, pattern matching, arithmetic, and so on."
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 PKG_CONFIGURE_OPTS_TARGET="BASH_SHELL=/bin/sh \
@@ -49,6 +48,7 @@ PKG_CONFIGURE_OPTS_TARGET="BASH_SHELL=/bin/sh \
                            --without-cvs \
                            --without-gd \
                            --enable-obsolete-rpc \
+                           --enable-obsolete-nsl \
                            --disable-build-nscd \
                            --disable-nscd \
                            --enable-lock-elision \
@@ -111,12 +111,27 @@ echo "libdir=/usr/lib" >> configparms
 echo "slibdir=/usr/lib" >> configparms
 echo "sbindir=/usr/bin" >> configparms
 echo "rootsbindir=/usr/bin" >> configparms
-echo "build-programs=no" >> configparms
+echo "build-programs=yes" >> configparms
+
+GLIBC_INCLUDE_BIN="getent ldd locale"
 }
 
 post_makeinstall_target() {
 # we are linking against ld.so, so symlink
   ln -sf $(basename $INSTALL/usr/lib/ld-*.so) $INSTALL/usr/lib/ld.so
+
+# cleanup
+# remove any programs we don't want/need, keeping only those we want
+  for f in $(find $INSTALL/usr/bin -type f); do
+    fb="$(basename "${f}")"
+    for ib in $GLIBC_INCLUDE_BIN; do
+      if [ "${ib}" == "${fb}" ]; then
+        fb=
+        break
+      fi
+    done
+    [ -n "${fb}" ] && rm -rf ${f}
+  done
 
   rm -rf $INSTALL/usr/lib/audit
   rm -rf $INSTALL/usr/lib/glibc
@@ -144,7 +159,7 @@ post_makeinstall_target() {
 
 # create default configs
   mkdir -p $INSTALL/etc
-    cp $PKG_DIR/config/nsswitch.conf $INSTALL/etc
+    cp $PKG_DIR/config/nsswitch-target.conf $INSTALL/etc/nsswitch.conf
     cp $PKG_DIR/config/host.conf $INSTALL/etc
     cp $PKG_DIR/config/gai.conf $INSTALL/etc
 
@@ -169,8 +184,16 @@ makeinstall_init() {
     cp -PR $PKG_BUILD/.$TARGET_NAME/math/libm.so* $INSTALL/usr/lib
     cp -PR $PKG_BUILD/.$TARGET_NAME/nptl/libpthread.so* $INSTALL/usr/lib
     cp -PR $PKG_BUILD/.$TARGET_NAME/rt/librt.so* $INSTALL/usr/lib
+    cp -PR $PKG_BUILD/.$TARGET_NAME/resolv/libnss_dns.so* $INSTALL/usr/lib
+    cp -PR $PKG_BUILD/.$TARGET_NAME/resolv/libresolv.so* $INSTALL/usr/lib
 
     if [ "$TARGET_ARCH" = "arm" -a "$TARGET_FLOAT" = "hard" ]; then
       ln -sf ld.so $INSTALL/usr/lib/ld-linux.so.3
     fi
+}
+
+post_makeinstall_init() {
+# create default configs
+  mkdir -p $INSTALL/etc
+    cp $PKG_DIR/config/nsswitch-init.conf $INSTALL/etc/nsswitch.conf
 }

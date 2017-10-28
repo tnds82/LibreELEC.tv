@@ -17,18 +17,17 @@
 ################################################################################
 
 PKG_NAME="kodi"
-PKG_VERSION="61e98fd"
+PKG_VERSION="9d82343"
+PKG_SHA256="c22b044ca692798049b731a69bec501b88fb41a59304b9d3b85d51331d2bdea7"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://www.kodi.tv"
 PKG_URL="https://github.com/xbmc/xbmc/archive/$PKG_VERSION.tar.gz"
 PKG_SOURCE_DIR="xbmc-$PKG_VERSION*"
-PKG_DEPENDS_TARGET="toolchain JsonSchemaBuilder:host TexturePacker:host xmlstarlet:host Python zlib systemd pciutils lzo pcre swig:host libass curl fontconfig fribidi tinyxml libjpeg-turbo freetype libcdio taglib libxml2 libxslt rapidjson sqlite ffmpeg crossguid giflib libdvdnav libhdhomerun libfmt"
+PKG_DEPENDS_TARGET="toolchain JsonSchemaBuilder:host TexturePacker:host Python2 zlib systemd pciutils lzo pcre swig:host libass curl fontconfig fribidi tinyxml libjpeg-turbo freetype libcdio taglib libxml2 libxslt rapidjson sqlite ffmpeg crossguid giflib libdvdnav libhdhomerun libfmt"
 PKG_SECTION="mediacenter"
 PKG_SHORTDESC="kodi: Kodi Mediacenter"
 PKG_LONGDESC="Kodi Media Center (which was formerly named Xbox Media Center or XBMC) is a free and open source cross-platform media player and home entertainment system software with a 10-foot user interface designed for the living-room TV. Its graphical user interface allows the user to easily manage video, photos, podcasts, and music from a computer, optical disk, local network, and the internet using a remote control."
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 get_graphicdrivers
@@ -37,23 +36,15 @@ PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET dbus"
 
 if [ "$DISPLAYSERVER" = "x11" ]; then
   PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET libX11 libXext libdrm libXrandr"
-  KODI_XORG="-DENABLE_X11=ON"
-else
-  KODI_XORG="-DENABLE_X11=OFF"
+  KODI_XORG="-DCORE_PLATFORM_NAME=x11"
 fi
 
 if [ ! "$OPENGL" = "no" ]; then
   PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET $OPENGL glu"
-  KODI_OPENGL="-DENABLE_OPENGL=ON"
-else
-  KODI_OPENGL="-DENABLE_OPENGL=OFF"
 fi
 
 if [ "$OPENGLES_SUPPORT" = yes ]; then
   PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET $OPENGLES"
-  KODI_OPENGLES="-DENABLE_OPENGLES=ON"
-else
-  KODI_OPENGLES="-DENABLE_OPENGLES=OFF"
 fi
 
 if [ "$ALSA_SUPPORT" = yes ]; then
@@ -144,9 +135,6 @@ fi
 
 if [ "$KODI_SAMBA_SUPPORT" = yes ]; then
   PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET samba"
-  KODI_SAMBA="-DENABLE_SMBCLIENT=ON"
-else
-  KODI_SAMBA="-DENABLE_SMBCLIENT=OFF"
 fi
 
 if [ "$KODI_WEBSERVER_SUPPORT" = yes ]; then
@@ -164,6 +152,12 @@ if [ "$KODI_SSHLIB_SUPPORT" = yes ]; then
   KODI_SSH="-DENABLE_SSH=ON"
 else
   KODI_SSH="-DENABLE_SSH=OFF"
+fi
+
+if target_has_feature neon; then
+  KODI_NEON="-DENABLE_NEON=ON"
+else
+  KODI_NEON="-DENABLE_NEON=OFF"
 fi
 
 if [ "$VDPAU_SUPPORT" = "yes" -a "$DISPLAYSERVER" = "x11" ]; then
@@ -193,17 +187,17 @@ fi
 if [ ! "$KODIPLAYER_DRIVER" = default ]; then
   PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET $KODIPLAYER_DRIVER"
   if [ "$KODIPLAYER_DRIVER" = bcm2835-driver ]; then
-    KODI_PLAYER="-DENABLE_MMAL=ON -DCORE_SYSTEM_NAME=rbpi"
+    KODI_PLAYER="-DCORE_PLATFORM_NAME=rbpi"
   elif [ "$KODIPLAYER_DRIVER" = mesa ]; then
-    KODI_PLAYER="-DCORE_SYSTEM_NAME=linux"
+    KODI_PLAYER="-DCORE_PLATFORM_NAME=gbm"
     CFLAGS="$CFLAGS -DMESA_EGL_NO_X11_HEADERS"
     CXXFLAGS="$CXXFLAGS -DMESA_EGL_NO_X11_HEADERS"
   elif [ "$KODIPLAYER_DRIVER" = libfslvpuwrap ]; then
-    KODI_PLAYER="-DENABLE_IMX=ON"
+    KODI_PLAYER="-DCORE_PLATFORM_NAME=imx"
     CFLAGS="$CFLAGS -DHAS_IMXVPU -DLINUX -DEGL_API_FB"
     CXXFLAGS="$CXXFLAGS -DHAS_IMXVPU -DLINUX -DEGL_API_FB"
   elif [ "$KODIPLAYER_DRIVER" = libamcodec ]; then
-    KODI_PLAYER="-DENABLE_AML=ON"
+    KODI_PLAYER="-DCORE_PLATFORM_NAME=aml"
   fi
 fi
 
@@ -214,9 +208,10 @@ KODI_LIBDVD="$KODI_DVDCSS \
 PKG_CMAKE_OPTS_TARGET="-DNATIVEPREFIX=$TOOLCHAIN \
                        -DWITH_TEXTUREPACKER=$TOOLCHAIN/bin/TexturePacker \
                        -DDEPENDS_PATH=$PKG_BUILD/depends \
-                       -DPYTHON_EXECUTABLE=$TOOLCHAIN/bin/python2.7 \
-                       -DPYTHON_INCLUDE_DIRS=$SYSROOT_PREFIX/usr/include/python2.7 \
+                       -DPYTHON_EXECUTABLE=$TOOLCHAIN/bin/$PKG_PYTHON_VERSION \
+                       -DPYTHON_INCLUDE_DIRS=$SYSROOT_PREFIX/usr/include/$PKG_PYTHON_VERSION \
                        -DGIT_VERSION=$PKG_VERSION \
+                       -DWITH_FFMPEG=$(get_build_dir ffmpeg) \
                        -DENABLE_INTERNAL_FFMPEG=OFF \
                        -DFFMPEG_INCLUDE_DIRS=$SYSROOT_PREFIX/usr \
                        -DENABLE_INTERNAL_CROSSGUID=OFF \
@@ -229,13 +224,11 @@ PKG_CMAKE_OPTS_TARGET="-DNATIVEPREFIX=$TOOLCHAIN \
                        -DENABLE_LIRC=ON \
                        -DENABLE_EVENTCLIENTS=ON \
                        -DENABLE_LDGOLD=ON \
+                       -DENABLE_DEBUGFISSION=OFF \
                        $KODI_ARCH \
-                       $KODI_OPENGL \
-                       $KODI_OPENGLES \
-                       $KODI_OPENMAX \
+                       $KODI_NEON \
                        $KODI_VDPAU \
                        $KODI_VAAPI \
-                       $KODI_JOYSTICK \
                        $KODI_CEC \
                        $KODI_XORG \
                        $KODI_SAMBA \
@@ -256,7 +249,7 @@ pre_configure_target() {
 # kodi should never be built with lto
   strip_lto
 
-  export LIBS="$LIBS -lz -lterminfo"
+  export LIBS="$LIBS -lncurses"
 }
 
 post_makeinstall_target() {
@@ -278,8 +271,8 @@ post_makeinstall_target() {
     cp $PKG_DIR/scripts/kodi-config $INSTALL/usr/lib/kodi
     cp $PKG_DIR/scripts/kodi.sh $INSTALL/usr/lib/kodi
 
-  mkdir -p $INSTALL/usr/lib/libreelec
-    cp $PKG_DIR/scripts/systemd-addon-wrapper $INSTALL/usr/lib/libreelec
+  mkdir -p $INSTALL/usr/sbin
+    cp $PKG_DIR/scripts/service-addon-wrapper $INSTALL/usr/sbin
 
   mkdir -p $INSTALL/usr/bin
     cp $PKG_DIR/scripts/cputemp $INSTALL/usr/bin
@@ -330,6 +323,9 @@ post_makeinstall_target() {
   xmlstarlet ed -L --subnode "/addons" -t elem -n "addon" -v "repository.libreelec.tv" $ADDON_MANIFEST
   xmlstarlet ed -L --subnode "/addons" -t elem -n "addon" -v "repository.retroplayer.libreelec.tv" $ADDON_MANIFEST
   xmlstarlet ed -L --subnode "/addons" -t elem -n "addon" -v "service.libreelec.settings" $ADDON_MANIFEST
+  if [ "$DEVICE" = "Slice" -o "$DEVICE" = "Slice3" ]; then
+    xmlstarlet ed -L --subnode "/addons" -t elem -n "addon" -v "service.slice" $ADDON_MANIFEST
+  fi
 
   # more binaddons cross compile badness meh
   sed -e "s:INCLUDE_DIR /usr/include/kodi:INCLUDE_DIR $SYSROOT_PREFIX/usr/include/kodi:g" \

@@ -1,6 +1,6 @@
 ################################################################################
 #      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016 Team LibreELEC
+#      Copyright (C) 2016-present Team LibreELEC
 #
 #  LibreELEC is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 
 PKG_NAME="libimobiledevice"
 PKG_VERSION="1.2.0"
+PKG_SHA256="786b0de0875053bf61b5531a86ae8119e320edab724fc62fe2150cc931f11037"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://www.libimobiledevice.org"

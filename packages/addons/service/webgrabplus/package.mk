@@ -1,6 +1,6 @@
 ################################################################################
 #      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016 Team LibreELEC
+#      Copyright (C) 2016-present Team LibreELEC
 #
 #  LibreELEC is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 
 PKG_NAME="webgrabplus"
 PKG_VERSION="56.29pre-20161021"
+PKG_SHA256="1b11551b8b7a5d6abac39a54c9f609af510297a1e6bc8265927f42b0fb3f4bab"
 PKG_REV="105"
 PKG_ARCH="any"
 PKG_LICENSE="prop."

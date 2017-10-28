@@ -17,7 +17,8 @@
 ################################################################################
 
 PKG_NAME="fontconfig"
-PKG_VERSION="2.12.1"
+PKG_VERSION="2.12.4"
+PKG_SHA256="fd5a6a663f4c4a00e196523902626654dd0c4a78686cbc6e472f338e50fdf806"
 PKG_ARCH="any"
 PKG_LICENSE="OSS"
 PKG_SITE="http://www.fontconfig.org"
@@ -26,8 +27,6 @@ PKG_DEPENDS_TARGET="toolchain util-macros freetype libxml2 zlib expat"
 PKG_SECTION="x11/other"
 PKG_SHORTDESC="fontconfig: A library for font customization and configuration"
 PKG_LONGDESC="Fontconfig is a library for font customization and configuration."
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 PKG_CONFIGURE_OPTS_TARGET="--with-arch=$TARGET_ARCH \

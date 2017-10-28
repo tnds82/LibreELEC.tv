@@ -1,6 +1,6 @@
 ################################################################################
 #      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016 Team LibreELEC
+#      Copyright (C) 2016-present Team LibreELEC
 #
 #  LibreELEC is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -72,6 +72,4 @@ addon() {
 
     # tstools
     cp -P $(get_build_dir tstools)/bin/* $ADDON_BUILD/$PKG_ADDON_ID/bin/
-
-  debug_strip $ADDON_BUILD/$PKG_ADDON_ID/bin
 }

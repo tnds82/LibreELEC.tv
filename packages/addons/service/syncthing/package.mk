@@ -1,6 +1,6 @@
 ################################################################################
 #      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016 Team LibreELEC
+#      Copyright (C) 2016-present Team LibreELEC
 #
 #  LibreELEC is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -17,8 +17,9 @@
 ################################################################################
 
 PKG_NAME="syncthing"
-PKG_VERSION="0.14.3"
-PKG_REV="104"
+PKG_VERSION="0.14.29"
+PKG_SHA256="99002701279abedace88283b1381ff7850b6c20df62ae119b271ffd89716fcfd"
+PKG_REV="105"
 PKG_ARCH="any"
 PKG_LICENSE="MPLv2"
 PKG_SITE="https://syncthing.net/"
@@ -35,7 +36,17 @@ PKG_ADDON_TYPE="xbmc.service"
 PKG_MAINTAINER="Anton Voyl (awiouy)"
 
 configure_target() {
-  go run build.go assets
+  export GOOS=linux
+  export CGO_ENABLED=1
+  export CGO_NO_EMULATION=1
+  export CGO_CFLAGS=$CFLAGS
+  export LDFLAGS="-w -linkmode external -extldflags -Wl,--unresolved-symbols=ignore-in-shared-libs -extld $CC -X main.Version=v$PKG_VERSION"
+  export GOLANG=$TOOLCHAIN/lib/golang/bin/go
+  export GOPATH=$PKG_BUILD/src/github.com/syncthing/syncthing:$PKG_BUILD/vendor:$PKG_BUILD/Godeps/_workspace
+  export GOROOT=$TOOLCHAIN/lib/golang
+  export PATH=$PATH:$GOROOT/bin
+
+  $TOOLCHAIN/lib/golang/bin/go run build.go assets
 
   mkdir -p $PKG_BUILD $PKG_BUILD/src/github.com/syncthing
   ln -fs $PKG_BUILD $PKG_BUILD/src/github.com/syncthing/syncthing
@@ -60,16 +71,6 @@ configure_target() {
       esac
       ;;
   esac
-
-  export GOOS=linux
-  export CGO_ENABLED=1
-  export CGO_NO_EMULATION=1
-  export CGO_CFLAGS=$CFLAGS
-  export LDFLAGS="-w -linkmode external -extldflags -Wl,--unresolved-symbols=ignore-in-shared-libs -extld $CC -X main.Version=v$PKG_VERSION"
-  export GOLANG=$TOOLCHAIN/lib/golang/bin/go
-  export GOPATH=$PKG_BUILD/src/github.com/syncthing/syncthing:$PKG_BUILD/vendor:$PKG_BUILD/Godeps/_workspace
-  export GOROOT=$TOOLCHAIN/lib/golang
-  export PATH=$PATH:$GOROOT/bin
 }
 
 make_target() {

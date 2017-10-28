@@ -18,6 +18,7 @@
 
 PKG_NAME="iptables"
 PKG_VERSION="1.6.1"
+PKG_SHA256="0fc2d7bd5d7be11311726466789d4c65fb4c8e096c9182b56ce97440864f0cf5"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://www.netfilter.org/"
@@ -26,8 +27,6 @@ PKG_DEPENDS_TARGET="toolchain linux libmnl libnftnl"
 PKG_SECTION="network"
 PKG_SHORTDESC="iptables: IP packet filter administration"
 PKG_LONGDESC="Iptables is used to set up, maintain, and inspect the tables of IP packet filter rules in the Linux kernel. There are several different tables which may be defined, and each table contains a number of built-in chains, and may contain user-defined chains."
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="yes"
 
 PKG_CONFIGURE_OPTS_TARGET="--with-kernel=$(kernel_path)"

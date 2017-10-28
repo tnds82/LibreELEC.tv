@@ -18,6 +18,7 @@
 
 PKG_NAME="enca"
 PKG_VERSION="1.19"
+PKG_SHA256="3a487eca40b41021e2e4b7a6440b97d822e6532db5464471f572ecf77295e8b8"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://freshmeat.net/projects/enca/"
@@ -26,8 +27,6 @@ PKG_DEPENDS_TARGET="toolchain"
 PKG_SECTION="devel"
 PKG_SHORTDESC="enca: detects the encoding of text files, on the basis of knowledge of their language."
 PKG_LONGDESC="Enca detects the encoding of text files, on the basis of knowledge of their language. It can also convert them to other encodings, allowing you to recode files without knowing their current encoding. It supports most of Central and East European languages, and a few Unicode variants, independently on language."
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 PKG_MAKEINSTALL_OPTS_TARGET="-C lib"

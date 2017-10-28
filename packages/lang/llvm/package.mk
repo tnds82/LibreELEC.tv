@@ -17,7 +17,8 @@
 ################################################################################
 
 PKG_NAME="llvm"
-PKG_VERSION="4.0.0"
+PKG_VERSION="5.0.0"
+PKG_SHA256="e35dcbae6084adcf4abb32514127c5eabd7d63b733852ccdb31e06f1373136da"
 PKG_ARCH="x86_64"
 PKG_LICENSE="GPL"
 PKG_SITE="http://llvm.org/"
@@ -28,8 +29,6 @@ PKG_DEPENDS_TARGET="toolchain llvm:host zlib"
 PKG_SECTION="lang"
 PKG_SHORTDESC="llvm: Low Level Virtual Machine"
 PKG_LONGDESC="Low-Level Virtual Machine (LLVM) is a compiler infrastructure designed for compile-time, link-time, run-time, and idle-time optimization of programs from arbitrary programming languages. It currently supports compilation of C, Objective-C, and C++ programs, using front-ends derived from GCC 4.0, GCC 4.2, and a custom new front-end, "clang". It supports x86, x86-64, ia64, PowerPC, and SPARC, with support for Alpha and ARM under development."
-
-PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 PKG_CMAKE_OPTS_HOST="-DLLVM_INCLUDE_TOOLS=ON \
@@ -50,10 +49,11 @@ PKG_CMAKE_OPTS_HOST="-DLLVM_INCLUDE_TOOLS=ON \
                      -DLLVM_ENABLE_WERROR=OFF \
                      -DLLVM_ENABLE_ZLIB=OFF \
                      -DLLVM_OPTIMIZED_TABLEGEN=ON \
-                     -DCMAKE_INSTALL_RPATH=$TOOLCHAIN/lib"
+                     -DCMAKE_INSTALL_RPATH=$TOOLCHAIN/lib \
+                     -DLLVM_APPEND_VC_REV=OFF"
 
 make_host() {
-  make llvm-config llvm-tblgen
+  ninja llvm-config llvm-tblgen
 }
 
 makeinstall_host() {
@@ -85,10 +85,12 @@ PKG_CMAKE_OPTS_TARGET="-DCMAKE_BUILD_TYPE=MinSizeRel \
                        -DLLVM_BUILD_LLVM_DYLIB=ON \
                        -DLLVM_LINK_LLVM_DYLIB=ON \
                        -DLLVM_OPTIMIZED_TABLEGEN=ON \
-                       -DLLVM_TABLEGEN=$TOOLCHAIN/bin/llvm-tblgen"
+                       -DLLVM_TABLEGEN=$TOOLCHAIN/bin/llvm-tblgen \
+                       -DLLVM_APPEND_VC_REV=OFF"
 
 post_makeinstall_target() {
   rm -rf $INSTALL/usr/bin
   rm -rf $INSTALL/usr/lib/LLVMHello.so
   rm -rf $INSTALL/usr/lib/libLTO.so
+  rm -rf $INSTALL/usr/share
 }
