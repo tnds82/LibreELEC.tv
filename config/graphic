@@ -86,5 +86,12 @@ get_graphicdrivers() {
       VDPAU_SUPPORT="no"
     fi
 
+    if [ "$drv" = "etnaviv" ]; then
+      GALLIUM_DRIVERS="$GALLIUM_DRIVERS,etnaviv,imx"
+      V4L2_SUPPORT="yes"
+      VAAPI_SUPPORT="no"
+      VDPAU_SUPPORT="no"
+    fi
+
   done
 }
