@@ -17,8 +17,8 @@
 ################################################################################
 
 PKG_NAME="pvr.nextpvr"
-PKG_VERSION="03933e9"
-PKG_SHA256="b0d32816deed7e744e9785d23fffaa8e63d8dadb416aa841cc061f4cb559dd4d"
+PKG_VERSION="938bb48"
+PKG_SHA256="5ccd5d2acef47e6fdffaabe0caee2d5ecc19e577682201dc8da5ca34e4f7e48c"
 PKG_REV="2"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
@@ -28,7 +28,6 @@ PKG_DEPENDS_TARGET="toolchain kodi-platform"
 PKG_SECTION=""
 PKG_SHORTDESC="pvr.nextpvr"
 PKG_LONGDESC="pvr.nextpvr"
-PKG_AUTORECONF="no"
 
 PKG_IS_ADDON="yes"
 PKG_ADDON_TYPE="xbmc.pvrclient"

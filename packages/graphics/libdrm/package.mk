@@ -18,17 +18,17 @@
 ################################################################################
 
 PKG_NAME="libdrm"
-PKG_VERSION="2.4.82"
-PKG_SHA256="43fa2dbd422d6d41ac141272cc9855360ce4d08c7cf7f2c7bb55dfe449c4ce1c"
+PKG_VERSION="2.4.85"
+PKG_SHA256="64e4cd87eaee38ae60b2984ef02b66159b9bdd33030040db2a04339cf15f6173"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://dri.freedesktop.org"
 PKG_URL="http://dri.freedesktop.org/libdrm/$PKG_NAME-$PKG_VERSION.tar.bz2"
-PKG_DEPENDS_TARGET="toolchain libpthread-stubs libpciaccess"
+PKG_DEPENDS_TARGET="toolchain libpciaccess"
 PKG_SECTION="graphics"
 PKG_SHORTDESC="libdrm: Userspace interface to kernel DRM services"
 PKG_LONGDESC="The userspace interface library to kernel DRM services."
-PKG_AUTORECONF="yes"
+PKG_TOOLCHAIN="autotools"
 
 get_graphicdrivers
 

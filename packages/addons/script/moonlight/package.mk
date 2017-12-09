@@ -30,7 +30,7 @@ PKG_DEPENDS_TARGET="toolchain moonlight-embedded"
 PKG_SECTION="script"
 PKG_SHORTDESC="Moonlight: implementation of NVIDIA's GameStream protocol"
 PKG_LONGDESC="Moonlight ($PKG_VERSION_NUMBER): allows you to stream your collection of games from your PC (with NVIDIA Gamestream) to your device and play them remotely"
-PKG_AUTORECONF="no"
+PKG_TOOLCHAIN="manual"
 
 PKG_IS_ADDON="yes"
 PKG_ADDON_NAME="Moonlight"
@@ -41,14 +41,6 @@ post_unpack() {
   # don't use the files from the script
   rm $PKG_BUILD/script.moonlight/icon.png
   rm $PKG_BUILD/script.moonlight/changelog.txt
-}
-
-make_target() {
-  :
-}
-
-makeinstall_target() {
-  :
 }
 
 addon() {
@@ -70,8 +62,6 @@ addon() {
 
     if [ "$KODIPLAYER_DRIVER" = "bcm2835-driver" ]; then
       cp -P $(get_build_dir moonlight-embedded)/.$TARGET_NAME/libmoonlight-pi.so $ADDON_BUILD/$PKG_ADDON_ID/lib
-    elif [ "$KODIPLAYER_DRIVER" = "libfslvpuwrap" ]; then
-      cp -P $(get_build_dir moonlight-embedded)/.$TARGET_NAME/libmoonlight-imx.so $ADDON_BUILD/$PKG_ADDON_ID/lib
     elif [ "$KODIPLAYER_DRIVER" = "libamcodec" ]; then
       cp -P $(get_build_dir moonlight-embedded)/.$TARGET_NAME/libmoonlight-aml.so $ADDON_BUILD/$PKG_ADDON_ID/lib
     fi

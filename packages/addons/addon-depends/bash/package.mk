@@ -27,15 +27,8 @@ PKG_DEPENDS_TARGET="toolchain ncurses"
 PKG_SECTION="devel"
 PKG_SHORTDESC="The GNU Bourne Again shell"
 PKG_LONGDESC="The GNU Bourne Again shell"
-PKG_AUTORECONF="no"
 
-PKG_CONFIGURE_OPTS_TARGET="--enable-static \
-                           --disable-shared \
-                           --with-curses \
+PKG_CONFIGURE_OPTS_TARGET="--with-curses \
                            --enable-readline \
                            --without-bash-malloc \
                            --with-installed-readline"
-
-pre_configure_target() {
-  export LIBS="-lterminfo"
-}

@@ -17,8 +17,8 @@
 ################################################################################
 
 PKG_NAME="pvr.mediaportal.tvserver"
-PKG_VERSION="c86ab35"
-PKG_SHA256="ccd68a645e605fbe869bae57ef03e914d4527366fc8a367aadaef50958dcf7bc"
+PKG_VERSION="6c35e88"
+PKG_SHA256="6355e47381023aed857c63c43c54dd610a123a077c19b74991e004879569f113"
 PKG_REV="2"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
@@ -28,7 +28,6 @@ PKG_DEPENDS_TARGET="toolchain kodi-platform"
 PKG_SECTION=""
 PKG_SHORTDESC="pvr.mediaportal.tvserver"
 PKG_LONGDESC="pvr.mediaportal.tvserver"
-PKG_AUTORECONF="no"
 
 PKG_IS_ADDON="yes"
 PKG_ADDON_TYPE="xbmc.pvrclient"

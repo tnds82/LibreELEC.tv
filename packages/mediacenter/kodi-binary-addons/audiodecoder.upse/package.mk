@@ -17,8 +17,8 @@
 ################################################################################
 
 PKG_NAME="audiodecoder.upse"
-PKG_VERSION="23a5430"
-PKG_SHA256="0695968cbcc1acd5e27e5e8d9ce3b7ccd815f49b55c2b06e6435b703244e2e3b"
+PKG_VERSION="de58ded"
+PKG_SHA256="a07f78589af864abba0485884eb757f134f0b1d06e64baf4a96bbec11bcc8515"
 PKG_REV="2"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
@@ -28,7 +28,6 @@ PKG_DEPENDS_TARGET="toolchain kodi-platform"
 PKG_SECTION=""
 PKG_SHORTDESC="audiodecoder.upse"
 PKG_LONGDESC="audiodecoder.upse"
-PKG_AUTORECONF="no"
 
 PKG_IS_ADDON="yes"
 PKG_ADDON_TYPE="kodi.audiodecoder"

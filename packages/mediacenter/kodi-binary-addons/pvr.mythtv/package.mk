@@ -17,8 +17,8 @@
 ################################################################################
 
 PKG_NAME="pvr.mythtv"
-PKG_VERSION="8965048"
-PKG_SHA256="a894d858a17c448ac66ea6631004135d3170d23c15b220b1e48c149a7c4c2bfe"
+PKG_VERSION="ffaa1b5"
+PKG_SHA256="997b44e35aa1b422bf7306449fe480d3996eaf40fe82286740c4561132d937e8"
 PKG_REV="2"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
@@ -28,7 +28,6 @@ PKG_DEPENDS_TARGET="toolchain kodi-platform"
 PKG_SECTION=""
 PKG_SHORTDESC="pvr.mythtv"
 PKG_LONGDESC="pvr.mythtv"
-PKG_AUTORECONF="no"
 
 PKG_IS_ADDON="yes"
 PKG_ADDON_TYPE="xbmc.pvrclient"

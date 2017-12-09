@@ -17,8 +17,8 @@
 ################################################################################
 
 PKG_NAME="pvr.vdr.vnsi"
-PKG_VERSION="f3f80d5"
-PKG_SHA256="f89bebb6b81f8ad21b520837e227fd175d7e7bc59d5d492484e3528f14c50766"
+PKG_VERSION="0ec3e77"
+PKG_SHA256="f77fe1049233de6b7ff0d883783db0da9c98705221ba62cea208a86cf656993c"
 PKG_REV="2"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
@@ -28,7 +28,6 @@ PKG_DEPENDS_TARGET="toolchain kodi-platform"
 PKG_SECTION=""
 PKG_SHORTDESC="pvr.vdr.vnsi"
 PKG_LONGDESC="pvr.vdr.vnsi"
-PKG_AUTORECONF="no"
 
 PKG_IS_ADDON="yes"
 PKG_ADDON_TYPE="xbmc.pvrclient"

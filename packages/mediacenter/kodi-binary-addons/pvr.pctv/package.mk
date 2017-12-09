@@ -17,8 +17,8 @@
 ################################################################################
 
 PKG_NAME="pvr.pctv"
-PKG_VERSION="549f690"
-PKG_SHA256="56ec0028971a1d24d432b88b0b8465a13fc7c19329dbcf7f16eacc940d1bae5e"
+PKG_VERSION="6484615"
+PKG_SHA256="a5d475207b504e59190d0659b5477d3a3ec0430c1c0c1c6420d51a500ac27d6d"
 PKG_REV="2"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
@@ -28,7 +28,6 @@ PKG_DEPENDS_TARGET="toolchain kodi-platform jsoncpp"
 PKG_SECTION=""
 PKG_SHORTDESC="pvr.pctv"
 PKG_LONGDESC="pvr.pctv"
-PKG_AUTORECONF="no"
 
 PKG_IS_ADDON="yes"
 PKG_ADDON_TYPE="xbmc.pvrclient"

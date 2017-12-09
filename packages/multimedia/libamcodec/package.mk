@@ -27,16 +27,15 @@ case $TARGET_KERNEL_ARCH in
     PKG_URL="https://github.com/codesnake/libamcodec/archive/$PKG_VERSION.tar.gz"
     ;;
   arm64)
-    PKG_VERSION="210755d"
-    PKG_SHA256="0c688d80bf1147177acf546230c255404e506ba687ca7bfddd4508d29958c279"
-    PKG_URL="http://amlinux.ru/source/$PKG_NAME-$PKG_VERSION.tar.gz"
+    PKG_VERSION="62d8011"
+    PKG_SHA256="840d29a20cc832a2eb3ec463de6bea729e551abbe6fb2371b7d81fbe35e6145f"
+    PKG_URL="https://github.com/surkovalex/libamcodec/archive/$PKG_VERSION.tar.gz"
     ;;
 esac
 PKG_DEPENDS_TARGET="toolchain alsa-lib"
 PKG_SECTION="multimedia"
 PKG_SHORTDESC="libamcodec: Interface library for Amlogic media codecs"
 PKG_LONGDESC="libamplayer: Interface library for Amlogic media codecs"
-PKG_AUTORECONF="no"
 
 make_target() {
   make -C amavutils CC="$CC" PREFIX="$SYSROOT_PREFIX/usr"

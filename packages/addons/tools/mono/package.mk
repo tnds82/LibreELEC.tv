@@ -17,9 +17,9 @@
 ################################################################################
 
 PKG_NAME="mono"
-PKG_VERSION="5.2.0.224"
-PKG_SHA256="03b8e463032bc425673dec844b35b4c669f5b99b0e45521195efb3741a9f5e94"
-PKG_REV="107"
+PKG_VERSION="5.4.1.6"
+PKG_SHA256="bdfda0fe9ad5ce20bb2cf9e9bf28fed40f324141297479824e1f65d97da565df"
+PKG_REV="109"
 PKG_ARCH="any"
 PKG_LICENSE="MIT"
 PKG_SITE="http://www.mono-project.com"
@@ -29,7 +29,7 @@ PKG_DEPENDS_TARGET="toolchain mono:host libgdiplus sqlite mono_sqlite zlib"
 PKG_SECTION="tools"
 PKG_SHORTDESC="Mono: a cross platform, open source .NET framework"
 PKG_LONGDESC="Mono ($PKG_VERSION) is a software platform designed to allow developers to easily create cross platform applications part of the .NET Foundation"
-PKG_AUTORECONF="yes"
+PKG_TOOLCHAIN="autotools"
 
 PKG_IS_ADDON="yes"
 PKG_ADDON_NAME="Mono"

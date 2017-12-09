@@ -17,8 +17,8 @@
 ################################################################################
 
 PKG_NAME="pvr.dvbviewer"
-PKG_VERSION="8741c8b"
-PKG_SHA256="8a511907b85616ff02f07ba1b983e65f3ffa1ea34f9c6ccfae93bf3138b2df45"
+PKG_VERSION="6129441"
+PKG_SHA256="c924922900c4d7982ca826c666c467f541b311e8a61afe66a224f6c88690afd3"
 PKG_REV="2"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
@@ -28,7 +28,6 @@ PKG_DEPENDS_TARGET="toolchain kodi-platform"
 PKG_SECTION=""
 PKG_SHORTDESC="pvr.dvbviewer"
 PKG_LONGDESC="pvr.dvbviewer"
-PKG_AUTORECONF="no"
 
 PKG_IS_ADDON="yes"
 PKG_ADDON_TYPE="xbmc.pvrclient"

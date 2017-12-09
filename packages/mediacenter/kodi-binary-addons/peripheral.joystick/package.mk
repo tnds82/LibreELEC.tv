@@ -17,8 +17,8 @@
 ################################################################################
 
 PKG_NAME="peripheral.joystick"
-PKG_VERSION="cc14287"
-PKG_SHA256="1ecca110bea2da52d7190836c4b52430f7037e57a8a10a6d93f58135bc1aa33b"
+PKG_VERSION="33b43ce"
+PKG_SHA256="1554469f4fbcbb2a37de9c1ece6b1b41c9e71f1087a48cb7f9ec3ae7d425dc41"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
@@ -28,7 +28,6 @@ PKG_DEPENDS_TARGET="toolchain kodi-platform p8-platform"
 PKG_SECTION=""
 PKG_SHORTDESC="peripheral.joystick: Joystick support in Kodi"
 PKG_LONGDESC="peripheral.joystick provides joystick support and button mapping"
-PKG_AUTORECONF="no"
 
 PKG_IS_ADDON="yes"
 PKG_ADDON_TYPE="kodi.peripheral"

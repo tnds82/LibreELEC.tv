@@ -17,8 +17,8 @@
 ################################################################################
 
 PKG_NAME="audiodecoder.nosefart"
-PKG_VERSION="0919ae1"
-PKG_SHA256="d5ca2262538ed33d6dd0adbc9571bc038f1da50133406e8d7b4b1af611961c54"
+PKG_VERSION="62d7f30"
+PKG_SHA256="8abe4b40b8c6cfcf03acca8d2208f9fe88f3b2ed4092929437911dd21bc9aa00"
 PKG_REV="2"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
@@ -28,7 +28,6 @@ PKG_DEPENDS_TARGET="toolchain kodi-platform"
 PKG_SECTION=""
 PKG_SHORTDESC="audiodecoder.nosefart"
 PKG_LONGDESC="audiodecoder.nosefart"
-PKG_AUTORECONF="no"
 
 PKG_IS_ADDON="yes"
 PKG_ADDON_TYPE="kodi.audiodecoder"

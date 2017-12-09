@@ -17,8 +17,8 @@
 ################################################################################
 
 PKG_NAME="pvr.hts"
-PKG_VERSION="53118d8"
-PKG_SHA256="28c5dc419663c5ff744369147cbe8eb4379f119288105f6d3625ba8afca5786b"
+PKG_VERSION="67fe2df"
+PKG_SHA256="cd5bc330522a1a0d92bb7191dd296779ef2cddbb6f426235eed7eb359e1596e0"
 PKG_REV="2"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
@@ -28,7 +28,6 @@ PKG_DEPENDS_TARGET="toolchain kodi-platform"
 PKG_SECTION=""
 PKG_SHORTDESC="pvr.hts"
 PKG_LONGDESC="pvr.hts"
-PKG_AUTORECONF="no"
 
 PKG_IS_ADDON="yes"
 PKG_ADDON_TYPE="xbmc.pvrclient"

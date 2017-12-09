@@ -17,8 +17,8 @@
 ################################################################################
 
 PKG_NAME="pvr.stalker"
-PKG_VERSION="e15edca"
-PKG_SHA256="2bcbf48a90366b7c88f7f61fc849a46ff96fda6ba55c86f112d91b476abc4098"
+PKG_VERSION="44025a1"
+PKG_SHA256="70f279c473eb2b2432908760e9003cdf05d32037b64bb7eacf6429caa390a31e"
 PKG_REV="2"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
@@ -28,7 +28,6 @@ PKG_DEPENDS_TARGET="toolchain kodi-platform jsoncpp tinyxml"
 PKG_SECTION=""
 PKG_SHORTDESC="pvr.stalker"
 PKG_LONGDESC="pvr.stalker"
-PKG_AUTORECONF="no"
 
 PKG_IS_ADDON="yes"
 PKG_ADDON_TYPE="xbmc.pvrclient"

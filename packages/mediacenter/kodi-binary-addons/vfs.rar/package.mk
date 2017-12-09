@@ -17,8 +17,8 @@
 ################################################################################
 
 PKG_NAME="vfs.rar"
-PKG_VERSION="22292bc"
-PKG_SHA256="4d2df1c6dc31f46dedf828f057ed90ca83f400c6f521c1a05510f82999febcaa"
+PKG_VERSION="2904d06"
+PKG_SHA256="0de99949939acad8753156cf5bc87a33a2cdc1459ee15ea450c5fee75dd73b70"
 PKG_REV="2"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
@@ -28,7 +28,6 @@ PKG_DEPENDS_TARGET="toolchain kodi-platform"
 PKG_SECTION=""
 PKG_SHORTDESC="vfs.rar"
 PKG_LONGDESC="vfs.rar"
-PKG_AUTORECONF="no"
 
 PKG_IS_ADDON="yes"
 PKG_ADDON_TYPE="kodi.vfs"

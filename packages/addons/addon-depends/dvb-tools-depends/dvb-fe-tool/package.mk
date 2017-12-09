@@ -30,7 +30,7 @@ PKG_DEPENDS_TARGET="toolchain systemd"
 PKG_SECTION="tools"
 PKG_SHORTDESC="dvb-fe-tool: Linux V4L2 and DVB API utilities and v4l libraries (libv4l)."
 PKG_LONGDESC="Linux V4L2 and DVB API utilities and v4l libraries (libv4l)."
-PKG_AUTORECONF="yes"
+PKG_TOOLCHAIN="autotools"
 
 PKG_CONFIGURE_OPTS_TARGET="--disable-nls \
             --disable-rpath \
@@ -47,6 +47,10 @@ post_patch() {
     touch $PKG_BUILD/build-aux/config.rpath
     touch $PKG_BUILD/libdvbv5-po/Makefile.in.in
     touch $PKG_BUILD/v4l-utils-po/Makefile.in.in
+}
+
+pre_configure_target() {
+  export LDFLAGS="$LDFLAGS -pthread"
 }
 
 make_target() {

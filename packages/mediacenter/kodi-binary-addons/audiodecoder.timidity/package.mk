@@ -17,8 +17,8 @@
 ################################################################################
 
 PKG_NAME="audiodecoder.timidity"
-PKG_VERSION="8d37e2c"
-PKG_SHA256="c99f3271409414e0675392a10b590eb77c81801eb86f69043948b65f5e706607"
+PKG_VERSION="1e13049"
+PKG_SHA256="bac11b90751d241bc191840b48327312b607dcac2149ef1d2855a09a84332a60"
 PKG_REV="2"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
@@ -28,7 +28,6 @@ PKG_DEPENDS_TARGET="toolchain kodi-platform"
 PKG_SECTION=""
 PKG_SHORTDESC="audiodecoder.timidity"
 PKG_LONGDESC="audiodecoder.timidity"
-PKG_AUTORECONF="no"
 
 PKG_IS_ADDON="yes"
 PKG_ADDON_TYPE="kodi.audiodecoder"

@@ -17,8 +17,8 @@
 ################################################################################
 
 PKG_NAME="pvr.teleboy"
-PKG_VERSION="94bb643"
-PKG_SHA256="92d62261385eb7b9852252070075ae968354c2dd6f96f8fd46cc2196d27e619c"
+PKG_VERSION="e431126"
+PKG_SHA256="c4945fb73890b3be738985f74c0a5b6e0f99ca337e2ba0d97397f23f6ec7423d"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
@@ -28,7 +28,6 @@ PKG_DEPENDS_TARGET="toolchain kodi-platform"
 PKG_SECTION=""
 PKG_SHORTDESC="pvr.teleboy"
 PKG_LONGDESC="pvr.teleboy"
-PKG_AUTORECONF="no"
 
 PKG_IS_ADDON="yes"
 PKG_ADDON_TYPE="xbmc.pvrclient"

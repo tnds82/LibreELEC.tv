@@ -141,6 +141,9 @@ setup_toolchain() {
       export CXX_FOR_BUILD="$CXX"
       export BUILD_CC="$CC"
       export BUILD_CXX="$CXX"
+      export _python_sysroot="$TOOLCHAIN"
+      export _python_prefix=/
+      export _python_exec_prefix=/
       ;;
   esac
 }
@@ -171,7 +174,7 @@ reset_pkg_vars() {
   PKG_REV="0"
   PKG_ARCH="any"
   PKG_LICENSE="unknown"
-  PKG_AUTORECONF="no"
+  PKG_TOOLCHAIN="auto"
   PKG_IS_ADDON="no"
   PKG_PYTHON_VERSION="python2.7"
 }
@@ -362,17 +365,20 @@ add_user() {
   # Usage: add_user "username" "password" "userid" "groupid" "description" "home" "shell"
   mkdir -p ${INSTALL}/etc
   touch ${INSTALL}/etc/passwd
-  if [ -z "`grep "$1:" ${INSTALL}/etc/passwd`" ]; then
+  if ! grep -q "^$1:" ${INSTALL}/etc/passwd; then
     echo "$1:x:$3:$4:$5:$6:$7" >> ${INSTALL}/etc/passwd
   fi
 
-  touch ${INSTALL}/etc/shadow
+  mkdir -p ${INSTALL}/usr/cache
+  touch ${INSTALL}/usr/cache/shadow
+  ln -sf /storage/.cache/shadow ${INSTALL}/etc/shadow
+
   PASSWORD="$2"
   if [ "$PASSWORD" = "x" ]; then
     PASSWORD="*"
   fi
-  if [ -z "`grep "$1:" ${INSTALL}/etc/shadow`" ]; then
-    echo "$1:$PASSWORD:::::::" >> ${INSTALL}/etc/shadow
+  if ! grep -q "^$1:" ${INSTALL}/usr/cache/shadow; then
+    echo "$1:$PASSWORD:::::::" >> ${INSTALL}/usr/cache/shadow
   fi
 }
 
@@ -754,6 +760,7 @@ print_color() {
       CLR_APPLY_PATCH)  clr_actual="boldgreen";;
       CLR_AUTORECONF)   clr_actual="boldmagenta";;
       CLR_BUILD)        clr_actual="boldyellow";;
+      CLR_TOOLCHAIN)    clr_actual="boldmagenta";;
       CLR_CLEAN)        clr_actual="boldred";;
       CLR_FIXCONFIG)    clr_actual="boldyellow";;
       CLR_GET)          clr_actual="boldcyan";;

@@ -17,8 +17,8 @@
 ################################################################################
 
 PKG_NAME="pvr.vuplus"
-PKG_VERSION="5e154bc"
-PKG_SHA256="aa193e058c746dd459665d13289411073f29c7f2d740e0f17c3b870faae19158"
+PKG_VERSION="7ea6b21"
+PKG_SHA256="48ea86488ea9a7faf8baeed4cf0340dfb6c16c3ee2e6a1d1366d3c208dd712bd"
 PKG_REV="2"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
@@ -28,7 +28,6 @@ PKG_DEPENDS_TARGET="toolchain kodi-platform"
 PKG_SECTION=""
 PKG_SHORTDESC="pvr.vuplus"
 PKG_LONGDESC="pvr.vuplus"
-PKG_AUTORECONF="no"
 
 PKG_IS_ADDON="yes"
 PKG_ADDON_TYPE="xbmc.pvrclient"

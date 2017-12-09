@@ -28,7 +28,6 @@ PKG_DEPENDS_TARGET="toolchain kodi-platform"
 PKG_SECTION=""
 PKG_SHORTDESC="screensaver.shadertoy"
 PKG_LONGDESC="screensaver.shadertoy"
-PKG_AUTORECONF="no"
 
 PKG_IS_ADDON="yes"
 PKG_ADDON_TYPE="xbmc.ui.screensaver"
@@ -49,8 +48,5 @@ pre_configure_target() {
                       -I$SYSROOT_PREFIX/usr/include/interface/vmcs_host/linux"
     export CFLAGS="$CFLAGS $BCM2835_INCLUDES"
     export CXXFLAGS="$CXXFLAGS $BCM2835_INCLUDES"
-  elif [ "$KODIPLAYER_DRIVER" = libfslvpuwrap ]; then
-    export CFLAGS="$CFLAGS -DLINUX -DEGL_API_FB"
-    export CXXFLAGS="$CXXFLAGS -DLINUX -DEGL_API_FB"
   fi
 }

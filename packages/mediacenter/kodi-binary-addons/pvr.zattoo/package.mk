@@ -17,8 +17,8 @@
 ################################################################################
 
 PKG_NAME="pvr.zattoo"
-PKG_VERSION="73009cd"
-PKG_SHA256="431960430b354250dbb4e9f3b78fe6ee0046762a5b505139b94073580e0b05bd"
+PKG_VERSION="23d9993"
+PKG_SHA256="4c9caad94059093f16a59865b72645d88d91357cb067db570d1c94ea274fb673"
 PKG_REV="2"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
@@ -28,7 +28,6 @@ PKG_DEPENDS_TARGET="toolchain kodi-platform"
 PKG_SECTION=""
 PKG_SHORTDESC="pvr.zattoo"
 PKG_LONGDESC="pvr.zattoo"
-PKG_AUTORECONF="no"
 
 PKG_IS_ADDON="yes"
 PKG_ADDON_TYPE="xbmc.pvrclient"

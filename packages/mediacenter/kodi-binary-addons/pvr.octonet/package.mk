@@ -17,8 +17,8 @@
 ################################################################################
 
 PKG_NAME="pvr.octonet"
-PKG_VERSION="e9b4c05"
-PKG_SHA256="01bd1f5584cc5f781c09e33e0123b70037edcda35cfc02b5d50f5536fdb56608"
+PKG_VERSION="c4af00a"
+PKG_SHA256="4a62a84c957517044e1d44a40ae5db93576e8c0244acebf9c3a37203920202f9"
 PKG_REV="2"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
@@ -28,7 +28,6 @@ PKG_DEPENDS_TARGET="toolchain kodi-platform jsoncpp"
 PKG_SECTION=""
 PKG_SHORTDESC="A pvr plugin for DigitalDevices Octonet Sat>IP servers"
 PKG_LONGDESC="A pvr plugin for DigitalDevices Octonet Sat>IP servers"
-PKG_AUTORECONF="no"
 
 PKG_IS_ADDON="yes"
 PKG_ADDON_TYPE="xbmc.pvrclient"

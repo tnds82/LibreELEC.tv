@@ -17,8 +17,8 @@
 ################################################################################
 
 PKG_NAME="pvr.wmc"
-PKG_VERSION="7e2cb4b"
-PKG_SHA256="d935ecf8dcc137953698cb7ea3bc7c8e3674dfaca2c038045fcbec481d9cd35c"
+PKG_VERSION="55e701b"
+PKG_SHA256="9e3dcc8d96934bc2959ebc2e9e89dbcce8f664b2a6cfdbdce8512fa68307d590"
 PKG_REV="2"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
@@ -28,7 +28,6 @@ PKG_DEPENDS_TARGET="toolchain kodi-platform"
 PKG_SECTION=""
 PKG_SHORTDESC="pvr.wmc"
 PKG_LONGDESC="pvr.wmc"
-PKG_AUTORECONF="no"
 
 PKG_IS_ADDON="yes"
 PKG_ADDON_TYPE="xbmc.pvrclient"
