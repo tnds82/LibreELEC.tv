@@ -1,0 +1,34 @@
+msgid ""
+msgstr ""
+
+msgctxt "#30000"
+msgid "Status"
+msgstr ""
+
+msgctxt "#30001"
+msgid "Status"
+msgstr ""
+
+msgctxt "#30010"
+msgid "Repository does not match LibreELEC"
+msgstr "O Repositorio não coincide com o LibreELEC"
+
+msgctxt "#30011"
+msgid "Restart Kodi to correct"
+msgstr "Reiniciar o Kodi para corrigir"
+
+msgctxt "#30012"
+msgid "Now"
+msgstr "Agora"
+
+msgctxt "#30013"
+msgid "Later"
+msgstr "Depois"
+
+msgctxt "#30020"
+msgid "Requires Kodi restart"
+msgstr "Necessario reiniciar o Kodi"
+
+msgctxt "#30021"
+msgid "Error"
+msgstr "Erro"

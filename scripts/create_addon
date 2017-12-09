@@ -116,6 +116,7 @@ pack_addon() {
        -e "s|@PKG_LONGDESC@|$PKG_LONGDESC|g" \
        -e "s|@PKG_DISCLAIMER@|$PKG_DISCLAIMER|g" \
        -e "s|@PROVIDER_NAME@|$PROVIDER_NAME|g" \
+       -e "s|@VPA@|$ADDON_VERSION/$PROJECT/$ARCH|g" \
        -e "s|@PKG_ADDON_PROVIDES@|$PKG_ADDON_PROVIDES|g" \
        -e "s|@PKG_ADDON_SCREENSHOT@|$PKG_ADDON_SCREENSHOT|g" \
        -e "s|@PKG_ADDON_BROKEN@|$PKG_ADDON_BROKEN|g" \
