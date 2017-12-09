@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <category label="Hardware">
+		<setting type="lsep" label="Hardware Options" />
+		<setting type="sep" />		
+		<setting id="wait_for_feinit" type="bool" label="Wait for frontend initialization" default="false" />
+		<setting id="num_adapters" type="slider" range="1,16" option="int" label="Number of adapters to wait for" default="1" enable="eq(-1,true)" />
+		<setting id="remove_modules" type="text" label="Unload DVB modules before suspend" values="" default=""/>
+		<setting id="workaround_sleep" type="bool" label="Delay the start of Minisatip" default="false" />
+		<setting id="workaround_sleep_time" type="slider" range="1,30" option="int" label="time (s)" default="1" enable="eq(-1,true)" />
+    </category>
+    <category label="Minisatip">
+		<setting type="lsep" label="Minisatip Options" />
+		<setting type="sep" />		
+		<setting id="satip_tcp" type="bool" label="RTSP over TCP instead of UDP" default="false" />
+		<setting id="cleanpsi" type="bool" label="Clean the PSI from all CA information" default="false" />
+		<setting id="dvbapi_enable" type="bool" label="Enable DVBApi" default="false" />
+		<setting id="dvbapi_ip" type="text" label="Specify the hostname for the dvbapi server (oscam)" subsetting="true" default="127.0.0.1" enable="eq(-1,true)" visible="eq(-1,true)"/>
+		<setting id="dvbapi_port" type="number" label="Specify the port for the dvbapi server (oscam)" subsetting="true" default="9000" enable="eq(-2,true)" visible="eq(-2,true)"/>
+		<setting id="rtsp_port" type="number" label="Port for listening for rtsp requests" default="554" />		
+		<setting id="socket_buffer_enable" type="bool" label="Enable socket buffer" default="false" />
+		<setting id="socket_buffer" type="number" label="Set the socket buffer in KB" default="10000" subsetting="true" enable="eq(-1,true)" visible="eq(-1,true)" />
+		<setting id="http_port" type="number" label="Specify the port for listening on http" default="9090" />	
+    </category>
+    <category label="Minisatip Client">
+		<setting type="lsep" label="Minisatip Client Options" />
+		<setting type="sep" />		
+		<setting id="client_enable" type="bool" label="Add another Minisatip as client" default="false" />
+		<setting type="lsep" label="Minisatip First Client" visible="eq(-1,true)" />
+		<setting id="first_client" type="bool" label="Add first client Minisatip" default="false" enable="eq(-2,true)" visible="eq(-2,true)" />
+		<setting id="tuner_type_first" type="enum" values="dvbc|dvbs2|dvbt" label="Choose tuner type" default="1" subsetting="true" enable="eq(-1,true)" visible="eq(-3,true)+eq(-1,true)"/>
+		<setting id="hmtuners_first" type="slider" range="1,4" option="int" label="Choose how many tuners" default="1" subsetting="true" enable="eq(-2,true)" visible="eq(-4,true)+eq(-2,true)"/>
+		<setting id="first_client_ip" type="text" label="Specify the hostname for the first client minisatip" subsetting="true" default="127.0.0.1" enable="eq(-3,true)" visible="eq(-5,true)+eq(-3,true)"/>
+		<setting id="first_client_port" type="number" label="Specify the port for the first client minisatip" subsetting="true" default="554" enable="eq(-4,true)" visible="eq(-6,true)+eq(-4,true)" />
+		<setting type="lsep" label="Minisatip Second Client" visible="eq(-7,true)"/>
+		<setting id="second_client" type="bool" label="Add second client Minisatip" default="false" enable="eq(-8,true)" visible="eq(-8,true)" />
+		<setting id="tuner_type_second" type="enum" values="dvbc|dvbs2|dvbt" label="Choose tuner type" default="1" subsetting="true" enable="eq(-1,true)" visible="eq(-9,true)+eq(-1,true)"/>
+		<setting id="hmtuners_second" type="slider" range="1,4" option="int" label="Choose how many tuners" default="1" subsetting="true" enable="eq(-2,true)" visible="eq(-10,true)+eq(-2,true)"/>
+		<setting id="second_client_ip" type="text" label="Specify the hostname for the second client minisatip" subsetting="true" default="127.0.0.1" enable="eq(-3,true)" visible="eq(-11,true)+eq(-3,true)"/>
+		<setting id="second_client_port" type="number" label="Specify the port for the second client minisatip" subsetting="true" default="554" enable="eq(-4,true)" visible="eq(-12,true)+eq(-4,true)" />
+		<setting type="lsep" label="Minisatip Third Client" visible="eq(-13,true)" />
+		<setting id="third_client" type="bool" label="Add third client Minisatip" default="false" enable="eq(-14,true)" visible="eq(-14,true)" />
+		<setting id="tuner_type_third" type="enum" values="dvbc|dvbs2|dvbt" label="Choose tuner type" default="1" subsetting="true" enable="eq(-1,true)" visible="eq(-15,true)+eq(-1,true)"/>
+		<setting id="hmtuners_third" type="slider" range="1,4" option="int" label="Choose how many tuners" default="1" subsetting="true" enable="eq(-2,true)" visible="eq(-16,true)+eq(-2,true)"/>
+		<setting id="third_client_ip" type="text" label="Specify the hostname for the third client minisatip" subsetting="true" default="127.0.0.1" enable="eq(-3,true)" visible="eq(-17,true)+eq(-3,true)"/>
+		<setting id="third_client_port" type="number" label="Specify the port for the third client minisatip" subsetting="true" default="554" enable="eq(-4,true)" visible="eq(-18,true)+eq(-4,true)" />
+    </category>
+	<category label="Debugging">
+		<setting type="lsep" label="Debugging and Tests" />
+		<setting type="sep" />		
+		<setting id="debug" type="bool" label="Debug Log" default="false" />
+		<setting id="testmode" type="bool" label="Simulate DVB adapters on this box" default="false" />
+    </category>
+</settings>

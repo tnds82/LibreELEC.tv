@@ -1,0 +1,232 @@
+#!/bin/sh
+
+################################################################################
+#      This file is part of LibreELEC - https://libreelec.tv
+#      Copyright (C) 2016 Team LibreELEC
+#
+#  LibreELEC is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  LibreELEC is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with LibreELEC.  If not, see <http://www.gnu.org/licenses/>.
+################################################################################
+
+. /etc/profile
+
+oe_setup_addon service.minisatip
+
+ADDON_SETTINGS="$ADDON_HOME/settings.xml"
+
+chmod a+x $ADDON_DIR/bin/*
+
+# copy config files to userdata
+if [ ! -f "$ADDON_SETTINGS" ]; then
+  mkdir -p $ADDON_HOME
+  cp $ADDON_DIR/settings-default.xml $ADDON_SETTINGS
+fi
+
+# wait for dvb card
+if [ "$wait_for_feinit" == "true" ] ; then
+  while [ true ] ; do
+    if [ -e /dev/dvb/adapter$((num_adapters-1))/frontend0 ] ; then
+      break
+    fi
+    sleep 1
+  done
+fi
+
+# sleep for x seconds
+if [ "$workaround_sleep" == "true" ] ; then
+  sleep $workaround_sleep_time
+fi
+
+
+## options
+
+# debug log
+if [ "$debug" == "true" ] ; then
+  MINISATIP_ARG="-l -l -l"
+fi
+
+# simulate x adapters on this box
+if [ "$testmode" == "true" ] ; then
+  MINISATIP_ARG="$MINISATIP_ARG -a 2:2:2"
+fi
+
+# RTSP over TCP instead of UDP
+if [ "$satip_tcp" == "true" ] ; then
+  MINISATIP_ARG="$MINISATIP_ARG -O"
+fi
+
+# clean the PSI from all CA information
+if [ "$cleanpsi" == "true" ] ; then
+  MINISATIP_ARG="$MINISATIP_ARG -t"
+fi
+
+# port for listening for rtsp requests
+if [ "$rtsp_port" != "554" ] ; then
+  MINISATIP_ARG="$MINISATIP_ARG -y $rtsp_port"
+fi
+
+# specify the hostname and port for the dvbapi server (oscam)
+if [ "$dvbapi_enable" == "true" ] ; then
+  MINISATIP_ARG="$MINISATIP_ARG -o ${dvbapi_ip}:${dvbapi_port}"
+fi
+
+# set the socket buffer
+if [ "$socket_buffer_enable" == "true" ] ; then
+  MINISATIP_ARG="$MINISATIP_ARG -B $socket_buffer"
+fi
+
+# specify the port for for listening on http
+if [ "$satip_tcp" != "8080" ] ; then
+  MINISATIP_ARG="$MINISATIP_ARG -x $http_port"
+fi
+
+# add minisatip clients
+if  [ "$client_enable" == "true" ] ; then
+	if [ "$first_client" == "true" ] ; then
+		if [ "$tuner_type_first" == "1" ] ; then
+			if  [ "$hmtuners_first" == "1" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s ${first_client_ip}:${first_client_port}"
+			fi
+			if  [ "$hmtuners_first" == "2" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s ${first_client_ip}:${first_client_port} -s ${first_client_ip}:${first_client_port}"
+			fi
+			if  [ "$hmtuners_first" == "3" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s ${first_client_ip}:${first_client_port} -s ${first_client_ip}:${first_client_port} -s ${first_client_ip}:${first_client_port}"
+			fi
+			if  [ "$hmtuners_first" == "4" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s ${first_client_ip}:${first_client_port} -s ${first_client_ip}:${first_client_port} -s ${first_client_ip}:${first_client_port} -s ${first_client_ip}:${first_client_port}"
+			fi
+		fi
+		if [ "$tuner_type_first" == "0" ] ; then
+			if  [ "$hmtuners_first" == "1" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s dvbc:${first_client_ip}:${first_client_port}"
+			fi
+			if  [ "$hmtuners_first" == "2" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s dvbc:${first_client_ip}:${first_client_port} -s dvbc:${first_client_ip}:${first_client_port}"
+			fi
+			if  [ "$hmtuners_first" == "3" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s dvbc:${first_client_ip}:${first_client_port} -s dvbc:${first_client_ip}:${first_client_port} -s dvbc:${first_client_ip}:${first_client_port}"
+			fi
+			if  [ "$hmtuners_first" == "4" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s dvbc:${first_client_ip}:${first_client_port} -s dvbc:${first_client_ip}:${first_client_port} -s dvbc:${first_client_ip}:${first_client_port} -s dvbc:${first_client_ip}:${first_client_port}"
+			fi
+		fi	
+		if [ "$tuner_type_first" == "2" ] ; then
+			if  [ "$hmtuners_first" == "1" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s dvbt:${first_client_ip}:${first_client_port}"
+			fi
+			if  [ "$hmtuners_first" == "2" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s dvbt:${first_client_ip}:${first_client_port} -s dvbt:${first_client_ip}:${first_client_port}"
+			fi
+			if  [ "$hmtuners_first" == "3" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s dvbt:${first_client_ip}:${first_client_port} -s dvbt:${first_client_ip}:${first_client_port} -s dvbt:${first_client_ip}:${first_client_port}"
+			fi
+			if  [ "$hmtuners_first" == "4" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s dvbt:${first_client_ip}:${first_client_port} -s dvbt:${first_client_ip}:${first_client_port} -s dvbt:${first_client_ip}:${first_client_port} -s dvbt:${first_client_ip}:${first_client_port}"
+			fi
+		fi	
+
+	fi
+	if [ "$second_client" == "true" ] ; then
+		if [ "$tuner_type_second" == "1" ] ; then
+			if  [ "$hmtuners_second" == "1" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s ${second_client_ip}:${second_client_port}"
+			fi
+			if  [ "$hmtuners_second" == "2" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s ${second_client_ip}:${second_client_port} -s ${second_client_ip}:${second_client_port}"
+			fi
+			if  [ "$hmtuners_second" == "3" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s ${second_client_ip}:${second_client_port} -s ${second_client_ip}:${second_client_port} -s ${second_client_ip}:${second_client_port}"
+			fi
+			if  [ "$hmtuners_second" == "4" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s ${second_client_ip}:${second_client_port} -s ${second_client_ip}:${second_client_port} -s ${second_client_ip}:${second_client_port} -s ${second_client_ip}:${second_client_port}"
+			fi
+		fi
+		if [ "$tuner_type_second" == "0" ] ; then
+			if  [ "$hmtuners_second" == "1" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s dvbc:${second_client_ip}:${second_client_port}"
+			fi
+			if  [ "$hmtuners_second" == "2" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s dvbc:${second_client_ip}:${second_client_port} -s dvbc:${second_client_ip}:${second_client_port}"
+			fi
+			if  [ "$hmtuners_second" == "3" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s dvbc:${second_client_ip}:${second_client_port} -s dvbc:${second_client_ip}:${second_client_port} -s dvbc:${second_client_ip}:${second_client_port}"
+			fi
+			if  [ "$hmtuners_second" == "4" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s dvbc:${second_client_ip}:${second_client_port} -s dvbc:second_client_ip}:${second_client_port} -s dvbc:${second_client_ip}:${second_client_port} -s dvbc:${second_client_ip}:${second_client_port}"
+			fi
+		fi
+		if [ "$tuner_type_second" == "2" ] ; then
+			if  [ "$hmtuners_second" == "1" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s dvbt:${second_client_ip}:${second_client_port}"
+			fi
+			if  [ "$hmtuners_second" == "2" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s dvbt:${second_client_ip}:${second_client_port} -s dvbt:${second_client_ip}:${second_client_port}"
+			fi
+			if  [ "$hmtuners_second" == "3" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s dvbt:${second_client_ip}:${second_client_port} -s dvbt:${second_client_ip}:${second_client_port} -s dvbt:${second_client_ip}:${second_client_port}"
+			fi
+			if  [ "$hmtuners_second" == "4" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s dvbt:${second_client_ip}:${second_client_port} -s dvbt:${second_client_ip}:${second_client_port} -s dvbt:${second_client_ip}:${second_client_port} -s dvbt:${second_client_ip}:${second_client_port}"
+			fi
+		fi	
+	fi
+	if [ "$third_client" == "true" ] ; then
+		if [ "$tuner_type_third" == "1" ] ; then
+			if  [ "$hmtuners_third" == "1" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s ${third_client_ip}:${third_client_port}"
+			fi
+			if  [ "$hmtuners_third" == "2" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s ${third_client_ip}:${third_client_port} -s ${third_client_ip}:${third_client_port}"
+			fi
+			if  [ "$hmtuners_third" == "3" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s ${third_client_ip}:${third_client_port} -s ${third_client_ip}:${third_client_port} -s ${third_client_ip}:${third_client_port}"
+			fi
+			if  [ "$hmtuners_third" == "4" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s ${third_client_ip}:${third_client_port} -s ${third_client_ip}:${third_client_port} -s ${third_client_ip}:${third_client_port} -s ${third_client_ip}:${third_client_port}"
+			fi
+		fi
+		if [ "$tuner_type_third" == "0" ] ; then
+			if  [ "$hmtuners_third" == "1" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s dvbc:${third_client_ip}:${third_client_port}"
+			fi
+			if  [ "$hmtuners_third" == "2" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s dvbc:${third_client_ip}:${third_client_port} -s dvbc:${third_client_ip}:${third_client_port}"
+			fi
+			if  [ "$hmtuners_third" == "3" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s dvbc:${third_client_ip}:${third_client_port} -s dvbc:${third_client_ip}:${third_client_port} -s dvbc:${third_client_ip}:${third_client_port}"
+			fi
+			if  [ "$hmtuners_third" == "4" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s dvbc:${third_client_ip}:${third_client_port} -s dvbc:${third_client_ip}:${third_client_port} -s dvbc:${third_client_ip}:${third_client_port} -s dvbc:${third_client_ip}:${third_client_port}"
+			fi
+		fi
+		if [ "$tuner_type_third" == "2" ] ; then
+			if  [ "$hmtuners_third" == "1" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s dvbt:${third_client_ip}:${third_client_port}"
+			fi
+			if  [ "$hmtuners_third" == "2" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s dvbt:${third_client_ip}:${third_client_port} -s dvbt:${third_client_ip}:${third_client_port}"
+			fi
+			if  [ "$hmtuners_third" == "3" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s dvbt:${third_client_ip}:${third_client_port} -s dvbt:${third_client_ip}:${third_client_port} -s dvbt:${third_client_ip}:${third_client_port}"
+			fi
+			if  [ "$hmtuners_third" == "4" ] ; then
+				MINISATIP_ARG="$MINISATIP_ARG -s dvbt:${third_client_ip}:${third_client_port} -s dvbt:${third_client_ip}:${third_client_port} -s dvbt:${third_client_ip}:${third_client_port} -s dvbt:${third_client_ip}:${third_client_port}"
+			fi
+		fi	
+	fi	
+fi		
+
+
+echo "Minisatip was started with this settings: $MINISATIP_ARG" > $ADDON_LOG_FILE
+exec $ADDON_DIR/bin/minisatip -f -R /storage/.kodi/addons/service.minisatip/webif/ $MINISATIP_ARG 2>&1 >> $ADDON_LOG_FILE

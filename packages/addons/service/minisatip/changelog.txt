@@ -1,0 +1,13 @@
+103
+- update to minisatip 0.7.13
+
+102
+- update to minisatip 0.7.4
+- add more options and minisatip client support
+- fix options in addon
+
+101
+- update minisatip 0.5 to 0.7
+
+100
+- initial LibreELEC version
