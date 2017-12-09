@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+  <category label="1000">
+    <setting label="1001" type="lsep" />
+    <setting type="sep" />
+    <setting label="1002" type="lsep" />
+    <setting label="1003" type="action" action="RunScript($CWD/default.py, srp)" default="" /> 
+    <setting label="1004" type="lsep" />
+    <setting label="1005" type="action" action="RunScript($CWD/default.py, snp)" default="" /> 
+    <setting label="" type="lsep" />
+    <setting label="" type="lsep" />
+    <setting label="1006" type="lsep" />
+    <setting label="1007" type="bool" id="piconsup" default="false" />
+  </category>
+  <category label="1008">
+    <setting label="1009" type="bool" id="urldown"/>
+    <setting label="1010" type="enum" id="extfile" lvalues="1011|1012|1013|1014" subsetting="true" default="0" enable="eq(-1,true)" visible="eq(-1,true)"/>
+    <setting label="1015" type="text" id="exturl" defaut="" subsetting="true" enable="eq(-2,true)" visible="eq(-2,true)"/>
+    <setting label="1016" type="folder" id="pathpicons" defaut="" subsetting="true" source="auto" option="writeable" enable="eq(-3,true)" visible="eq(-3,true)" />
+  </category>
+</settings>
