@@ -1,3 +1,6 @@
+Version 2.0.2
+- Open choice channels Vodafone and Nowo
+
 Version 2.0.1
 - Open choice channels TDT and Meo
 - Add new channels: TDT, MEO and NOS ( free channels )
