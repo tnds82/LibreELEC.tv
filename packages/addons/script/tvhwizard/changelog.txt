@@ -1,3 +1,6 @@
+Version 2.0.5
+- Fix update automatic ip
+
 Version 2.0.4
 - Change the order of installation of the addons in tvheadend
 - To not create errors install htsp client first
