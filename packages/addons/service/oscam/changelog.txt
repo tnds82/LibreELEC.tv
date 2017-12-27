@@ -1,3 +1,9 @@
+104-2
+- update OSCam to 11397
+
+104-1
+- update OSCam to 11392
+
 104
 - update OSCam to 11391
 
