@@ -20,7 +20,7 @@ PKG_NAME="repository.linuxserver.docker"
 PKG_VERSION="9.0"
 PKG_REV="102"
 PKG_ARCH="any"
-PKG_ADDON_PROJECTS="Generic RPi RPi2 WeTek_Hub WeTek_Play_2 Odroid_C2"
+PKG_ADDON_PROJECTS="any !WeTek_Core !WeTek_Play"
 PKG_LICENSE="GPL"
 PKG_SITE="https://linuxserver.io"
 PKG_URL=""
@@ -28,7 +28,7 @@ PKG_DEPENDS_TARGET="toolchain"
 PKG_SECTION=""
 PKG_SHORTDESC="LinuxServer.io docker add-on repository"
 PKG_LONGDESC="LinuxServer.io docker add-on repository"
-PKG_AUTORECONF="no"
+PKG_TOOLCHAIN="manual"
 
 PKG_IS_ADDON="yes"
 PKG_ADDON_NAME="LinuxServer.io Repository"
@@ -38,10 +38,6 @@ make_target() {
   $SED -e "s|@PKG_VERSION@|$PKG_VERSION|g" \
        -e "s|@PKG_REV@|$PKG_REV|g" \
        -i addon.xml
-}
-
-makeinstall_target() {
-  : # nop
 }
 
 addon() {

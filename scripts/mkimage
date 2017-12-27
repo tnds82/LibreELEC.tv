@@ -70,6 +70,7 @@ trap cleanup SIGINT
   FAT_SERIAL_NUMBER="${UUID_1}${UUID_2}"
   UUID_SYSTEM="${UUID_1}-${UUID_2}"
   FAT_VOLUME_LABEL="LIBREELEC"
+  STORAGE_VOLUME_LABEL="STORAGE"
 
 # create an image
   echo
@@ -193,7 +194,7 @@ elif [ "$BOOTLOADER" = "bcm2835-bootloader" ]; then
   # create bootloader configuration
     echo "image: creating bootloader configuration..."
     cat << EOF > "$LE_TMP"/cmdline.txt
-boot=/dev/mmcblk0p1 disk=/dev/mmcblk0p2 quiet $EXTRA_CMDLINE
+boot=UUID=$UUID_SYSTEM disk=UUID=$UUID_STORAGE quiet $EXTRA_CMDLINE
 EOF
 
     mcopy "$LE_TMP/cmdline.txt" ::
@@ -225,11 +226,11 @@ EOF
       mcopy -s $RELEASE_DIR/3rdparty/bootloader/overlays ::
     fi
 
-elif [ "$BOOTLOADER" = "u-boot" -a \( -n "$UBOOT_SYSTEM" -o "$PROJECT" = "Odroid_C2" \) ]; then
+elif [ "$BOOTLOADER" = "u-boot" -a \( -n "$UBOOT_SYSTEM" -o "$UBOOT_VERSION" = "vendor" \) ]; then
   # create bootloader configuration
     echo "image: creating bootloader configuration..."
 
-    if [ "$PROJECT" != "Odroid_C2" ]; then
+    if [ "$UBOOT_VERSION" != "vendor" ]; then
       DTB="$($SCRIPTS/uboot_helper $PROJECT $DEVICE $UBOOT_SYSTEM dtb)"
 
       if [ -f "$RELEASE_DIR/3rdparty/bootloader/$DTB" ]; then
@@ -262,6 +263,11 @@ EOF
     mcopy $RELEASE_DIR/target/KERNEL.md5 "::/$KERNEL_NAME.md5"
     mcopy $RELEASE_DIR/target/SYSTEM.md5 ::/SYSTEM.md5
 
+    # copy Amlogic device tree image
+    if [ -f "$RELEASE_DIR/3rdparty/bootloader/dtb.img" ]; then
+      mcopy $RELEASE_DIR/3rdparty/bootloader/dtb.img ::
+    fi
+
 elif [ "$BOOTLOADER" = "u-boot" ]; then
   echo "to make an image using u-boot UBOOT_SYSTEM must be set"
   cleanup
@@ -276,7 +282,7 @@ fi # bootloader
 # create filesystem on part2
   echo "image: creating filesystem on part2..."
   mke2fs -F -q -t ext4 -m 0 "$LE_TMP/part2.ext4"
-  tune2fs -U $UUID_STORAGE "$LE_TMP/part2.ext4" >"$SAVE_ERROR" 2>&1 || show_error
+  tune2fs -L "$STORAGE_VOLUME_LABEL" -U $UUID_STORAGE "$LE_TMP/part2.ext4" >"$SAVE_ERROR" 2>&1 || show_error
   e2fsck -n "$LE_TMP/part2.ext4" >"$SAVE_ERROR" 2>&1 || show_error
   sync
 

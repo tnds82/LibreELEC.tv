@@ -17,8 +17,8 @@
 ################################################################################
 
 PKG_NAME="audioencoder.flac"
-PKG_VERSION="add8481"
-PKG_SHA256="0afb2faeb025bec534df099b497dd085f05cb66e237d8259aa9c577dd14cfb05"
+PKG_VERSION="817e0de"
+PKG_SHA256="c122f4e09d38cfde167386376ed55760414ad4a742ea56f62e99d8306fe9194b"
 PKG_REV="2"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
@@ -28,7 +28,6 @@ PKG_DEPENDS_TARGET="toolchain kodi-platform flac"
 PKG_SECTION=""
 PKG_SHORTDESC="audioencoder.flac: A audioencoder addon for Kodi"
 PKG_LONGDESC="audioencoder.flac is a audioencoder addon for Kodi"
-PKG_AUTORECONF="no"
 
 PKG_IS_ADDON="yes"
 PKG_ADDON_TYPE="xbmc.audioencoder"

@@ -17,8 +17,8 @@
 ################################################################################
 
 PKG_NAME="kodi"
-PKG_VERSION="055f6ee"
-PKG_SHA256="bbdca237bafcdcf28c0d4a3e6309ca616ab9ca4a35f3fcef5de8bac3ad2f6cc6"
+PKG_VERSION="c356fa8"
+PKG_SHA256="a2ee06b44d6d3e6306aef3df15c57e1a14022bb80a0cb25f2c98caa4cdf4fe56"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://www.kodi.tv"
@@ -28,7 +28,6 @@ PKG_DEPENDS_TARGET="toolchain JsonSchemaBuilder:host TexturePacker:host Python2 
 PKG_SECTION="mediacenter"
 PKG_SHORTDESC="kodi: Kodi Mediacenter"
 PKG_LONGDESC="Kodi Media Center (which was formerly named Xbox Media Center or XBMC) is a free and open source cross-platform media player and home entertainment system software with a 10-foot user interface designed for the living-room TV. Its graphical user interface allows the user to easily manage video, photos, podcasts, and music from a computer, optical disk, local network, and the internet using a remote control."
-PKG_AUTORECONF="no"
 
 get_graphicdrivers
 
@@ -221,6 +220,7 @@ PKG_CMAKE_OPTS_TARGET="-DNATIVEPREFIX=$TOOLCHAIN \
                        -DENABLE_EVENTCLIENTS=ON \
                        -DENABLE_LDGOLD=ON \
                        -DENABLE_DEBUGFISSION=OFF \
+                       -DENABLE_APP_AUTONAME=OFF \
                        $KODI_ARCH \
                        $KODI_NEON \
                        $KODI_VDPAU \
@@ -265,7 +265,13 @@ post_makeinstall_target() {
 
   mkdir -p $INSTALL/usr/lib/kodi
     cp $PKG_DIR/scripts/kodi-config $INSTALL/usr/lib/kodi
+    cp $PKG_DIR/scripts/kodi-safe-mode $INSTALL/usr/lib/kodi
     cp $PKG_DIR/scripts/kodi.sh $INSTALL/usr/lib/kodi
+
+    # Configure safe mode triggers - default 5 restarts within 900 seconds/15 minutes
+    $SED -e "s|@KODI_MAX_RESTARTS@|${KODI_MAX_RESTARTS:-5}|g" \
+         -e "s|@KODI_MAX_SECONDS@|${KODI_MAX_SECONDS:-900}|g" \
+         -i $INSTALL/usr/lib/kodi/kodi.sh
 
   mkdir -p $INSTALL/usr/sbin
     cp $PKG_DIR/scripts/service-addon-wrapper $INSTALL/usr/sbin
@@ -319,6 +325,11 @@ post_makeinstall_target() {
   xmlstarlet ed -L --subnode "/addons" -t elem -n "addon" -v "repository.libreelec.tv" $ADDON_MANIFEST
   xmlstarlet ed -L --subnode "/addons" -t elem -n "addon" -v "repository.retroplayer.libreelec.tv" $ADDON_MANIFEST
   xmlstarlet ed -L --subnode "/addons" -t elem -n "addon" -v "service.libreelec.settings" $ADDON_MANIFEST
+
+  if [ "$DRIVER_ADDONS_SUPPORT" = "yes" ]; then
+    xmlstarlet ed -L --subnode "/addons" -t elem -n "addon" -v "script.program.driverselect" $ADDON_MANIFEST
+  fi 
+
   if [ "$DEVICE" = "Slice" -o "$DEVICE" = "Slice3" ]; then
     xmlstarlet ed -L --subnode "/addons" -t elem -n "addon" -v "service.slice" $ADDON_MANIFEST
   fi

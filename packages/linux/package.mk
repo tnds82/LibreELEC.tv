@@ -27,27 +27,28 @@ PKG_NEED_UNPACK="$LINUX_DEPENDS"
 PKG_SECTION="linux"
 PKG_SHORTDESC="linux26: The Linux kernel 2.6 precompiled kernel binary image and modules"
 PKG_LONGDESC="This package contains a precompiled kernel image and the modules."
-PKG_AUTORECONF="no"
 PKG_IS_KERNEL_PKG="yes"
 
 case "$LINUX" in
   amlogic-3.10)
-    PKG_VERSION="544ea88"
-    PKG_SHA256="67fca9225ebdd9ea6579eb3eac723fa38a9465c74b182725c319d1e16e47b712"
+    PKG_VERSION="24a7272"
+    PKG_SHA256="7219a9d0ba7b3ded590f335671671431b15fff64dc05b83565e2867c4f7b2e60"
     PKG_URL="https://github.com/LibreELEC/linux-amlogic/archive/$PKG_VERSION.tar.gz"
     PKG_SOURCE_DIR="$PKG_NAME-amlogic-$PKG_VERSION*"
     PKG_PATCH_DIRS="amlogic-3.10"
+    PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET aml-dtbtools:host"
     ;;
   amlogic-3.14)
-    PKG_VERSION="70b711b"
-    PKG_SHA256="a073907fa726c61f697eb52a52c3f15a0d557b017d08fe6a8faf8abaa70bf86e"
+    PKG_VERSION="2e193b8"
+    PKG_SHA256="cc6139490d461c1c5c0fad1003d3f94153272a11db9a786362fb2a0daa04b926"
     PKG_URL="https://github.com/LibreELEC/linux-amlogic/archive/$PKG_VERSION.tar.gz"
     PKG_SOURCE_DIR="$PKG_NAME-amlogic-$PKG_VERSION*"
     PKG_PATCH_DIRS="amlogic-3.14"
+    PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET aml-dtbtools:host"
     ;;
   *)
-    PKG_VERSION="4.14"
-    PKG_SHA256="f81d59477e90a130857ce18dc02f4fbe5725854911db1e7ba770c7cd350f96a7"
+    PKG_VERSION="4.14.4"
+    PKG_SHA256="2a91bff790da9a27e392469f7cc65ae7380e4204fc118be28ec799eb87e6a79e"
     PKG_URL="https://www.kernel.org/pub/linux/kernel/v4.x/$PKG_NAME-$PKG_VERSION.tar.xz"
     PKG_PATCH_DIRS="default"
     ;;
@@ -103,6 +104,7 @@ post_patch() {
   cp $KERNEL_CFG_FILE $PKG_BUILD/.config
   if [ ! "$BUILD_ANDROID_BOOTIMG" = "yes" ]; then
     sed -i -e "s|^CONFIG_INITRAMFS_SOURCE=.*$|CONFIG_INITRAMFS_SOURCE=\"$BUILD/image/initramfs.cpio\"|" $PKG_BUILD/.config
+    sed -i -e '/^CONFIG_INITRAMFS_SOURCE=*./ a CONFIG_INITRAMFS_ROOT_UID=0\nCONFIG_INITRAMFS_ROOT_GID=0' $PKG_BUILD/.config
   fi
 
   # set default hostname based on $DISTRONAME
@@ -187,9 +189,24 @@ make_target() {
   LDFLAGS="" make $KERNEL_TARGET $KERNEL_MAKE_EXTRACMD
 
   if [ "$BUILD_ANDROID_BOOTIMG" = "yes" ]; then
+    DTB_BLOBS=($(ls arch/$TARGET_KERNEL_ARCH/boot/dts/amlogic/*.dtb 2>/dev/null || true))
+    DTB_BLOBS_COUNT="${#DTB_BLOBS[@]}"
+    DTB_BLOB_OUTPUT="arch/$TARGET_KERNEL_ARCH/boot/dtb.img"
+    ANDROID_BOOTIMG_SECOND="--second $DTB_BLOB_OUTPUT"
+
+    if [ "$DTB_BLOBS_COUNT" -gt 1 ]; then
+      $TOOLCHAIN/bin/dtbTool -o arch/$TARGET_KERNEL_ARCH/boot/dtb.img -p scripts/dtc/ arch/$TARGET_KERNEL_ARCH/boot/dts/amlogic/
+    elif [ "$DTB_BLOBS_COUNT" -eq 1 ]; then
+      cp -PR $DTB_BLOBS $DTB_BLOB_OUTPUT
+    else
+      ANDROID_BOOTIMG_SECOND=""
+    fi
+
     LDFLAGS="" mkbootimg --kernel arch/$TARGET_KERNEL_ARCH/boot/$KERNEL_TARGET --ramdisk $BUILD/image/initramfs.cpio \
-      $ANDROID_BOOTIMG_OPTIONS --output arch/$TARGET_KERNEL_ARCH/boot/boot.img
+      $ANDROID_BOOTIMG_SECOND $ANDROID_BOOTIMG_OPTIONS --output arch/$TARGET_KERNEL_ARCH/boot/boot.img
+
     mv -f arch/$TARGET_KERNEL_ARCH/boot/boot.img arch/$TARGET_KERNEL_ARCH/boot/$KERNEL_TARGET
+
   fi
 }
 

@@ -27,7 +27,7 @@ PKG_DEPENDS_TARGET="toolchain xorg-server"
 PKG_SECTION="x11/driver"
 PKG_SHORTDESC="xf86-video-amdgpu - AMD Radeon video driver for the Xorg X server"
 PKG_LONGDESC="AMD Xorg video driver"
-PKG_AUTORECONF="yes"
+PKG_TOOLCHAIN="autotools"
 
 PKG_CONFIGURE_OPTS_TARGET="--enable-udev \
                            --enable-glamor \
@@ -35,4 +35,6 @@ PKG_CONFIGURE_OPTS_TARGET="--enable-udev \
 
 post_makeinstall_target() {
   rm -r $INSTALL/usr/share
+  mkdir -p $INSTALL/etc/X11
+    cp $PKG_BUILD/conf/10-amdgpu.conf $INSTALL/etc/X11/xorg-amdgpu.conf
 }

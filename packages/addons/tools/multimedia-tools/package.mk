@@ -18,7 +18,7 @@
 
 PKG_NAME="multimedia-tools"
 PKG_VERSION=""
-PKG_REV="105"
+PKG_REV="107"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE=""
@@ -33,7 +33,6 @@ PKG_ADDON_NAME="Multimedia Tools"
 PKG_ADDON_TYPE="xbmc.python.script"
 PKG_ADDON_PROVIDES=""
 
-PKG_AUTORECONF="no"
 
 PKG_DEPENDS_TARGET="toolchain \
                     alsa-utils \
