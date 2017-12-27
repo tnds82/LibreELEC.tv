@@ -36,13 +36,15 @@ case "$LINUX" in
     PKG_URL="https://github.com/LibreELEC/linux-amlogic/archive/$PKG_VERSION.tar.gz"
     PKG_SOURCE_DIR="$PKG_NAME-amlogic-$PKG_VERSION*"
     PKG_PATCH_DIRS="amlogic-3.10"
+    PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET aml-dtbtools:host"
     ;;
   amlogic-3.14)
-    PKG_VERSION="2e193b8"
-    PKG_SHA256="cc6139490d461c1c5c0fad1003d3f94153272a11db9a786362fb2a0daa04b926"
+    PKG_VERSION="da53aa7"
+    PKG_SHA256="f79650b9c31f668e48d7a8bd6c419deed11ba8ea728a613b902445ad8feefa89"
     PKG_URL="https://github.com/LibreELEC/linux-amlogic/archive/$PKG_VERSION.tar.gz"
     PKG_SOURCE_DIR="$PKG_NAME-amlogic-$PKG_VERSION*"
     PKG_PATCH_DIRS="amlogic-3.14"
+    PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET aml-dtbtools:host"
     ;;
   *)
     PKG_VERSION="4.14.4"
@@ -187,9 +189,24 @@ make_target() {
   LDFLAGS="" make $KERNEL_TARGET $KERNEL_MAKE_EXTRACMD
 
   if [ "$BUILD_ANDROID_BOOTIMG" = "yes" ]; then
+    DTB_BLOBS=($(ls arch/$TARGET_KERNEL_ARCH/boot/dts/amlogic/*.dtb 2>/dev/null || true))
+    DTB_BLOBS_COUNT="${#DTB_BLOBS[@]}"
+    DTB_BLOB_OUTPUT="arch/$TARGET_KERNEL_ARCH/boot/dtb.img"
+    ANDROID_BOOTIMG_SECOND="--second $DTB_BLOB_OUTPUT"
+
+    if [ "$DTB_BLOBS_COUNT" -gt 1 ]; then
+      $TOOLCHAIN/bin/dtbTool -o arch/$TARGET_KERNEL_ARCH/boot/dtb.img -p scripts/dtc/ arch/$TARGET_KERNEL_ARCH/boot/dts/amlogic/
+    elif [ "$DTB_BLOBS_COUNT" -eq 1 ]; then
+      cp -PR $DTB_BLOBS $DTB_BLOB_OUTPUT
+    else
+      ANDROID_BOOTIMG_SECOND=""
+    fi
+
     LDFLAGS="" mkbootimg --kernel arch/$TARGET_KERNEL_ARCH/boot/$KERNEL_TARGET --ramdisk $BUILD/image/initramfs.cpio \
-      $ANDROID_BOOTIMG_OPTIONS --output arch/$TARGET_KERNEL_ARCH/boot/boot.img
+      $ANDROID_BOOTIMG_SECOND $ANDROID_BOOTIMG_OPTIONS --output arch/$TARGET_KERNEL_ARCH/boot/boot.img
+
     mv -f arch/$TARGET_KERNEL_ARCH/boot/boot.img arch/$TARGET_KERNEL_ARCH/boot/$KERNEL_TARGET
+
   fi
 }
 

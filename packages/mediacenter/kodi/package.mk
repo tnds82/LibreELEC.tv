@@ -36,6 +36,11 @@ PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET dbus"
 if [ "$DISPLAYSERVER" = "x11" ]; then
   PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET libX11 libXext libdrm libXrandr"
   KODI_XORG="-DCORE_PLATFORM_NAME=x11"
+elif [ "$DISPLAYSERVER" = "weston" ]; then
+  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET wayland waylandpp"
+  CFLAGS="$CFLAGS -DMESA_EGL_NO_X11_HEADERS"
+  CXXFLAGS="$CXXFLAGS -DMESA_EGL_NO_X11_HEADERS"
+  KODI_XORG="-DCORE_PLATFORM_NAME=wayland -DWAYLAND_RENDER_SYSTEM=gles"
 fi
 
 if [ ! "$OPENGL" = "no" ]; then
@@ -85,7 +90,7 @@ fi
 
 if [ "$KODI_DVDCSS_SUPPORT" = yes ]; then
   KODI_DVDCSS="-DENABLE_DVDCSS=ON \
-               -DLIBDVDCSS_URL=$ROOT/$SOURCES/libdvdcss/libdvdcss-$(get_pkg_version libdvdcss).tar.gz"
+               -DLIBDVDCSS_URL=$SOURCES/libdvdcss/libdvdcss-$(get_pkg_version libdvdcss).tar.gz"
 else
   KODI_DVDCSS="-DENABLE_DVDCSS=OFF"
 fi
@@ -197,8 +202,8 @@ if [ ! "$KODIPLAYER_DRIVER" = default ]; then
 fi
 
 KODI_LIBDVD="$KODI_DVDCSS \
-             -DLIBDVDNAV_URL=$ROOT/$SOURCES/libdvdnav/libdvdnav-$(get_pkg_version libdvdnav).tar.gz \
-             -DLIBDVDREAD_URL=$ROOT/$SOURCES/libdvdread/libdvdread-$(get_pkg_version libdvdread).tar.gz"
+             -DLIBDVDNAV_URL=$SOURCES/libdvdnav/libdvdnav-$(get_pkg_version libdvdnav).tar.gz \
+             -DLIBDVDREAD_URL=$SOURCES/libdvdread/libdvdread-$(get_pkg_version libdvdread).tar.gz"
 
 PKG_CMAKE_OPTS_TARGET="-DNATIVEPREFIX=$TOOLCHAIN \
                        -DWITH_TEXTUREPACKER=$TOOLCHAIN/bin/TexturePacker \
@@ -265,7 +270,13 @@ post_makeinstall_target() {
 
   mkdir -p $INSTALL/usr/lib/kodi
     cp $PKG_DIR/scripts/kodi-config $INSTALL/usr/lib/kodi
+    cp $PKG_DIR/scripts/kodi-safe-mode $INSTALL/usr/lib/kodi
     cp $PKG_DIR/scripts/kodi.sh $INSTALL/usr/lib/kodi
+
+    # Configure safe mode triggers - default 5 restarts within 900 seconds/15 minutes
+    $SED -e "s|@KODI_MAX_RESTARTS@|${KODI_MAX_RESTARTS:-5}|g" \
+         -e "s|@KODI_MAX_SECONDS@|${KODI_MAX_SECONDS:-900}|g" \
+         -i $INSTALL/usr/lib/kodi/kodi.sh
 
   mkdir -p $INSTALL/usr/sbin
     cp $PKG_DIR/scripts/service-addon-wrapper $INSTALL/usr/sbin
@@ -319,6 +330,11 @@ post_makeinstall_target() {
   xmlstarlet ed -L --subnode "/addons" -t elem -n "addon" -v "repository.libreelec.tv" $ADDON_MANIFEST
   xmlstarlet ed -L --subnode "/addons" -t elem -n "addon" -v "repository.retroplayer.libreelec.tv" $ADDON_MANIFEST
   xmlstarlet ed -L --subnode "/addons" -t elem -n "addon" -v "service.libreelec.settings" $ADDON_MANIFEST
+
+  if [ "$DRIVER_ADDONS_SUPPORT" = "yes" ]; then
+    xmlstarlet ed -L --subnode "/addons" -t elem -n "addon" -v "script.program.driverselect" $ADDON_MANIFEST
+  fi 
+
   if [ "$DEVICE" = "Slice" -o "$DEVICE" = "Slice3" ]; then
     xmlstarlet ed -L --subnode "/addons" -t elem -n "addon" -v "service.slice" $ADDON_MANIFEST
   fi

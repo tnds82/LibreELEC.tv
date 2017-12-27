@@ -22,7 +22,7 @@ PKG_VERSION="17.10.0"
 PKG_SHA256="90f54b988d5241ee0472800e139e0628ae8a58dac168bb32fdb031383f3b46be"
 PKG_REV="117"
 PKG_ARCH="any"
-PKG_ADDON_PROJECTS="Generic RPi RPi2 WeTek_Hub WeTek_Play_2 Odroid_C2"
+PKG_ADDON_PROJECTS="any !WeTek_Core !WeTek_Play"
 PKG_LICENSE="ASL"
 PKG_SITE="http://www.docker.com/"
 PKG_URL="https://github.com/docker/docker-ce/archive/v${PKG_VERSION}-ce.tar.gz"
@@ -56,9 +56,9 @@ configure_target() {
         arm1176jzf-s)
           export GOARM=6
           ;;
-        cortex-a7|cortex-a9)
-         export GOARM=7
-         ;;
+        *)
+          export GOARM=7
+          ;;
       esac
       ;;
     aarch64)

@@ -30,11 +30,14 @@ if [ -n "$PKG_ARCH" ]; then
   listcontains "$PKG_ARCH" "$TARGET_ARCH" || listcontains "$PKG_ARCH" "any" || exit 0
 fi
 
-if [ -n "$PKG_ADDON_PROJECTS" -a ! "$PKG_ADDON_PROJECTS" = "any" ]; then
-  if ! listcontains "${PKG_ADDON_PROJECTS}" "${DEVICE:-${PROJECT}}"; then
-    echo "*** ERROR: $PKG_ADDON_ID: '${DEVICE:-${PROJECT}}' not supported ***"
-    exit 0
-  fi
+not_supported() {
+  echo "*** ERROR: $PKG_ADDON_ID: '${DEVICE:-$PROJECT}' not supported ***"
+  exit 0
+}
+
+if [ -n "$PKG_ADDON_PROJECTS" ]; then
+  listcontains "$PKG_ADDON_PROJECTS" "!${DEVICE:-$PROJECT}" && not_supported
+  listcontains "$PKG_ADDON_PROJECTS" "${DEVICE:-$PROJECT}" || listcontains "$PKG_ADDON_PROJECTS" "any" || not_supported
 fi
 
 $SCRIPTS/checkdeps
@@ -43,7 +46,7 @@ pack_addon() {
   scripts/install_addon $PKG_NAME $PKG_ADDON_ID || exit
 
   if [ "$2" != "-test" ] ; then
-    ADDON_INSTALL_DIR="$TARGET/$ADDONS/$ADDON_VERSION/${DEVICE:-$PROJECT}/$TARGET_ARCH/$PKG_ADDON_ID"
+    ADDON_INSTALL_DIR="$TARGET_IMG/$ADDONS/$ADDON_VERSION/${DEVICE:-$PROJECT}/$TARGET_ARCH/$PKG_ADDON_ID"
     ADDONVER="$(xmlstarlet sel -t -v "/addon/@version" $ADDON_BUILD/$PKG_ADDON_ID/addon.xml)"
 
     if [ -f $ADDON_INSTALL_DIR/$PKG_ADDON_ID-$ADDONVER.zip ] ; then
@@ -84,7 +87,7 @@ pack_addon() {
 }
 
 if [ "$PKG_IS_ADDON" = "yes" ] ; then
-  setup_toolchain $TARGET
+  setup_toolchain target 
 
   $SCRIPTS/build $@
 
