@@ -17,8 +17,8 @@
 ################################################################################
 
 PKG_NAME="minisatip"
-PKG_VERSION="38f99f6"
-PKG_REV="103"
+PKG_VERSION="f0e61fd"
+PKG_REV="104"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="https://github.com/catalinii/minisatip"
