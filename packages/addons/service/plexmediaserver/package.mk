@@ -17,9 +17,9 @@
 ################################################################################
 
 PKG_NAME="plexmediaserver"
-PKG_VERSION="1.10.0.4523"
-PKG_VERSION_NUMBER="648bc61d4"
-PKG_REV="105"
+PKG_VERSION="1.10.1.4602"
+PKG_VERSION_NUMBER="f54242b6b"
+PKG_REV="106"
 PKG_ARCH="x86_64 arm"
 PKG_LICENSE="GPL"
 PKG_SITE="http://plex.tv"

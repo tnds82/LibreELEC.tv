@@ -1,3 +1,6 @@
+106
+-update to Plex Media Server 1.10.1.4602
+
 105
 - update to Plex Media Server 1.10.0.4523
 
