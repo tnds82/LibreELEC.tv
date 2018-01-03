@@ -7,7 +7,7 @@ index e381999..7c2ab58 100644
      'SET_CLOCK_CMD': '/sbin/hwclock --systohc --utc',
      'UPDATE_REQUEST_URL': 'https://update.libreelec.tv/updates.php',
 -    'UPDATE_DOWNLOAD_URL': 'http://%s.libreelec.tv/%s',
-+    'UPDATE_DOWNLOAD_URL': 'https://sx05.eu/%s/%s',
++    'UPDATE_DOWNLOAD_URL': 'http://tnds82.xyz/%s/%s',
      'LOCAL_UPDATE_DIR': '/storage/.update/',
      'GET_CPU_FLAG': "cat /proc/cpuinfo | grep -q 'flags.* lm ' && echo '1' || echo '0'",
      'XBMC_RESET_FILE': '%s/reset_xbmc' % CONFIG_CACHE,
