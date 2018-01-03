@@ -17,7 +17,7 @@
 ################################################################################
 
 PKG_NAME="tnds82"
-PKG_REV="1"
+PKG_REV="2"
 PKG_SITE="http://tnds82.xyz"
 PKG_SECTION="service"
 PKG_AUTORECONF="no"

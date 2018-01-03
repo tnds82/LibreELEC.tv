@@ -1,2 +1,5 @@
+2
+- fix download addons when change repo
+
 1
 - initial addon repository

@@ -39,6 +39,7 @@ try:
   xml_tnds = addon.getAddonInfo('path') + '/addon.xml'
   xml = etree.parse(xml_tnds)
   old = xml.iter(tag='datadir').next()
+  xbmc.executebuiltin('UpdateAddonRepos')
   if old.text == new:
     addon.setSetting('vpa', vpa)
   else:
@@ -52,7 +53,7 @@ try:
                               strings(30011),
                               nolabel=strings(30012),
                               yeslabel=strings(30013)) == False:
-      xbmc.executebuiltin('RestartApp')
+      xbmc.executebuiltin('Reboot')
 
 except:
   addon.setSetting('vpa', strings(30021))
