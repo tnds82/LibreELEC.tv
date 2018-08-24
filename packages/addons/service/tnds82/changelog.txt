@@ -1,3 +1,6 @@
+3
+- Rework repo addon
+
 2
 - fix download addons when change repo
 

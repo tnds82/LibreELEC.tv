@@ -1,59 +1,71 @@
-#!/usr/bin/env python
-################################################################################
-#      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016-2017 Team LibreELEC
-#      Copyright (C) 2017 Tnds82 (tndsrepo@gmail.com)
-#
-#  LibreELEC is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  LibreELEC is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with LibreELEC.  If not, see <http://www.gnu.org/licenses/>.
-################################################################################
-
-from urlparse import urlparse
+import os.path
+import subprocess
 import xbmc
 import xbmcaddon
 import xbmcgui
 import xml.etree.ElementTree as etree
 
-REPO_LE = 'repository.libreelec.tv'
-REPO_TNDS = 'http://tnds82.xyz/tnds_addons/'
 
-try:
-  addon = xbmcaddon.Addon()
-  strings = addon.getLocalizedString
+KNOWN_REPOSITORIES = [
+    'repository.libreelec.tv',
+    'repository.coreelec',
+    'repository.rbrepo',
+    ]
 
-  xml_le = xbmcaddon.Addon(REPO_LE).getAddonInfo('path') + '/addon.xml'
-  path = urlparse(etree.parse(xml_le).iter(tag='datadir').next().text).path.strip('/').split('/')
-  vpa = path[-3] + '/' +  path[-2] + '/' +  path[-1] + '/'
-  new = REPO_TNDS + vpa
-  
-  xml_tnds = addon.getAddonInfo('path') + '/addon.xml'
-  xml = etree.parse(xml_tnds)
-  old = xml.iter(tag='datadir').next()
-  xbmc.executebuiltin('UpdateAddonRepos')
-  if old.text == new:
-    addon.setSetting('vpa', vpa)
-  else:
-    addon.setSetting('vpa', strings(30020))
-    old.text = new
-    xml.iter(tag='info').next().text = new + 'addons.xml'
-    xml.iter(tag='checksum').next().text = new + 'addons.xml.md5'
-    xml.write(xml_tnds)
-    if xbmcgui.Dialog().yesno(addon.getAddonInfo('name'),
-                              strings(30010),
-                              strings(30011),
-                              nolabel=strings(30012),
-                              yeslabel=strings(30013)) == False:
-      xbmc.executebuiltin('Reboot')
+URL = 'https://addons.tnds82.xyz/tnds_addons/{}/{}/{}/'
 
-except:
-  addon.setSetting('vpa', strings(30021))
+
+def get_addon_xml(*id):
+   return os.path.join(xbmcaddon.Addon(*id).getAddonInfo('path'), 'addon.xml')
+
+
+if __name__ == '__main__':
+    strings = xbmcaddon.Addon().getLocalizedString
+    vpa_old = xbmcaddon.Addon().getSetting('vpa')
+    xbmcaddon.Addon().setSetting('le', strings(30010))
+    xbmcaddon.Addon().setSetting('vpa', strings(30010))
+
+    release = None
+    for repository in KNOWN_REPOSITORIES:
+        try:
+            release = etree.parse(get_addon_xml(repository)).iter(tag='datadir').next().text.strip('/').split('/')[-3:]
+            break
+        except:
+            pass
+
+    if release is not None:
+        xbmcaddon.Addon().setSetting('le', strings(30011).format(*release))
+        if release[2] == 'aarch64':
+            if release[1] in ['WeTek_Hub', 'WeTek_Play_2']:
+                release[1] = 'Odroid_C2'
+        elif release[2] == 'arm':
+            if release[1] in ['Odroid_C2', 'S905', 'S912', 'Slice3']:
+                release[1] = 'RPi2'
+            elif release[1] in ['Slice']:
+                release[1] = 'RPi'
+            elif release[1] in ['S805', 'WeTek_Core', 'WeTek_Hub', 'WeTek_Play_2']:
+                release[1] = 'WeTek_Play'
+        elif release[2] == 'x86_64':
+            release[1] = 'Generic'
+
+        url = URL.format(*release)
+        xml = get_addon_xml()
+        tree = etree.parse(xml)
+        tag = tree.iter(tag='datadir').next()
+
+        if tag.text == url:
+            vpa_new = strings(30011).format(*release)
+            xbmcaddon.Addon().setSetting('vpa', vpa_new)
+            if vpa_new != vpa_old:
+                xbmc.executebuiltin('UpdateAddonRepos')
+        else:
+            tag.text = url
+            tree.iter(tag='info').next().text = url + 'addons.xml'
+            tree.iter(tag='checksum').next().text = url + 'addons.xml.md5'
+            tree.write(xml)
+            xbmcaddon.Addon().setSetting('vpa', strings(30012).format(*release))
+            if xbmcgui.Dialog().yesno(xbmcaddon.Addon().getAddonInfo('name'),
+                                      strings(30013),
+                                      nolabel=strings(30014),
+                                      yeslabel=strings(30015)) == False:
+                subprocess.call(['systemctl', 'restart', 'kodi'])

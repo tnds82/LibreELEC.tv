@@ -12,9 +12,9 @@
     <provides>@PKG_ADDON_PROVIDES@</provides>
   </extension>
   <extension point="xbmc.addon.repository">
-    <datadir zip="true">http://tnds82.xyz/tnds_addons/@VPA@/</datadir>
-    <info>http://tnds82.xyz/tnds_addons/@VPA@/addons.xml</info>
-    <checksum>http://tnds82.xyz/tnds_addons/@VPA@/addons.xml.md5</checksum>
+    <datadir zip="true">https://addons.tnds82.xyz/tnds_addons/@VPA@/</datadir>
+    <info>https://addons.tnds82.xyz/tnds_addons/@VPA@/addons.xml</info>
+    <checksum>https://addons.tnds82.xyz/tnds_addons/@VPA@/addons.xml.md5</checksum>
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary>@PKG_SHORTDESC@</summary>
