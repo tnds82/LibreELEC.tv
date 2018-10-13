@@ -2,22 +2,20 @@
 # Copyright (C) 2016-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="tvheadend42"
-PKG_VERSION="db177a6047769caff02fbf65de7eef00a930a027"
-PKG_SHA256="2d301e54e45dc054181b837a80382d9dec9a659b996aa7411b31d16063046022"
-PKG_VERSION_NUMBER="4.2.6-62"
-PKG_REV="116"
-PKG_ARCH="any"
+PKG_VERSION="0b8d903f230c29fd8a213e8a06a5a11bcc1ecae8"
+PKG_VERSION_NUMBER="4.3-1466"
+PKG_REV="117"
 PKG_LICENSE="GPL"
 PKG_SITE="http://www.tvheadend.org"
 PKG_URL="https://github.com/tvheadend/tvheadend/archive/$PKG_VERSION.tar.gz"
 PKG_DEPENDS_TARGET="toolchain avahi comskip curl dvb-apps ffmpegx libdvbcsa libhdhomerun \
-                    libiconv openssl pngquant:host Python2:host tvh-dtv-scan-tables"
+                    libiconv openssl pcre2 pngquant:host Python2:host tvh-dtv-scan-tables"
 PKG_SECTION="service"
 PKG_SHORTDESC="Tvheadend: a TV streaming server for Linux"
 PKG_LONGDESC="Tvheadend ($PKG_VERSION_NUMBER): is a TV streaming server for Linux supporting DVB-S/S2, DVB-C, DVB-T/T2, IPTV, SAT>IP, ATSC and ISDB-T"
 
 PKG_IS_ADDON="yes"
-PKG_ADDON_NAME="Tvheadend Server 4.2"
+PKG_ADDON_NAME="Tvheadend Server 4.3"
 PKG_ADDON_TYPE="xbmc.service"
 
 # basic transcoding options
@@ -39,11 +37,25 @@ PKG_TVH_TRANSCODING="\
   --enable-libx264 \
   --enable-libx265"
 
+# hw specific transcoding options
+if [ "$TARGET_ARCH" = x86_64 ]; then
+  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET libva"
+  PKG_TVH_TRANSCODING="$PKG_TVH_TRANSCODING \
+    --enable-vaapi"
+fi
+
 # specific transcoding options
 if [[ "$TARGET_ARCH" != "x86_64" ]]; then
   PKG_TVH_TRANSCODING="$PKG_TVH_TRANSCODING \
     --disable-libvpx \
     --disable-libx265"
+fi
+
+if [[ "$PROJECT" =~ "RPi" ]]; then
+  PKG_TVH_TRANSCODING="$PKG_TVH_TRANSCODING \
+    --disable-libx265 \
+    --enable-mmal \
+    --enable-omx"
 fi
 
 PKG_CONFIGURE_OPTS_TARGET="--prefix=/usr \
@@ -56,13 +68,11 @@ PKG_CONFIGURE_OPTS_TARGET="--prefix=/usr \
                            --disable-dbus_1 \
                            --enable-dvbcsa \
                            --enable-dvben50221 \
-                           --disable-dvbscan \
                            --enable-hdhomerun_client \
                            --disable-hdhomerun_static \
                            --enable-epoll \
                            --enable-inotify \
                            --enable-pngquant \
-                           --disable-libmfx_static \
                            --disable-nvenc \
                            --disable-uriparser \
                            --enable-tvhcsa \

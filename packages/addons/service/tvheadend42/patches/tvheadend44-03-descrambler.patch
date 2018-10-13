@@ -1,0 +1,29 @@
+diff --git a/data/conf/descrambler b/data/conf/descrambler
+index 53d75a1..d9ea9e1 100644
+--- a/data/conf/descrambler
++++ b/data/conf/descrambler
+@@ -62,6 +62,24 @@
+       "_caid": "09CD",
+       "mask": "FFFF",
+       "quickecm": 1
++    },
++    {
++      "name": "MEO",
++      "caid": "1814",
++      "mask": "FFFF",
++      "constcw": 1
++    },
++    {
++      "name": "NOS",
++      "caid": "1802",
++      "mask": "FFFF",
++      "constcw": 1
++    },
++    {
++      "name": "NOWO",
++      "caid": "0B00",
++      "mask": "FFFF",
++      "constcw": 1
+     }
+   ]
+ }
