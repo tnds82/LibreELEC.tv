@@ -1,3 +1,10 @@
+108
+- update OScam to 11434
+
+107
+- update OScam t0 11433
+- add descrambler
+
 106
 - update OScam to 11431
 
