@@ -12,13 +12,7 @@ PKG_SHORTDESC="$PKG_ADDON_NAME: add-on repository"
 PKG_LONGDESC="$PKG_ADDON_NAME: add-on repository, provides Tvhwizard, Tvheadend42, OSCam, Plex Media Server, Lamp, 3rd Party Repositorys."
 PKG_DISCLAIMER="Keep it legal and carry on"
 
-make_target() {
-  :
-}
-
-makeinstall_target() {
-  :
-}
+PKG_TOOLCHAIN="manual"
 
 addon() {
   mkdir -p "$ADDON_BUILD/$PKG_ADDON_ID"
