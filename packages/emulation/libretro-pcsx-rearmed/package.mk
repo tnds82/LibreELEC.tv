@@ -1,24 +1,9 @@
-################################################################################
-#      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016-present Team LibreELEC
-#
-#  LibreELEC is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  LibreELEC is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with LibreELEC.  If not, see <http://www.gnu.org/licenses/>.
-################################################################################
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2016-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="libretro-pcsx-rearmed"
-PKG_VERSION="09d454e"
-PKG_SHA256="1fb2a82fc7c4e455ac9e9786d9e263dd4ef2a877783d8c1503c8f12b730330c5"
+PKG_VERSION="0370856deb325e759179c6835897e2553cef31c2"
+PKG_SHA256="e4971b2624100a4389e81ac51f2b43ab2784993e6803b47f8cdf7b96c86d8d8e"
 PKG_ARCH="arm"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/pcsx_rearmed"
@@ -29,39 +14,29 @@ PKG_SECTION="emulation"
 PKG_SHORTDESC="game.libretro.pcsx-rearmed: PCSX Rearmed for Kodi"
 PKG_LONGDESC="game.libretro.pcsx-rearmed: PCSX Rearmed for Kodi"
 PKG_TOOLCHAIN="manual"
+PKG_BUILD_FLAGS="-gold"
 
 PKG_LIBNAME="pcsx_rearmed_libretro.so"
 PKG_LIBPATH="$PKG_LIBNAME"
 PKG_LIBVAR="PCSX-REARMED_LIB"
 
-pre_make_target() {
-  strip_gold
-}
-
 make_target() {
   cd $PKG_BUILD
-  case $PROJECT in
-    RPi)
-      case $DEVICE in
-        RPi)
-          make -f Makefile.libretro platform=armv6-hardfloat-arm1176jzf-s
-          ;;
-        RPi2)
-          make -f Makefile.libretro platform=armv7-neon-hardfloat-cortex-a7
-          ;;
-      esac
+  
+  if target_has_feature neon; then
+    export HAVE_NEON=1
+   else
+    export HAVE_NEON=0
+  fi
+  
+  case $TARGET_ARCH in
+    aarch64)
+      make -f Makefile.libretro platform=aarch64
       ;;
-    imx6)
-      make -f Makefile.libretro platform=armv7-neon-hardfloat-cortex-a9
+    arm)
+      make -f Makefile.libretro USE_DYNAREC=1
       ;;
-    WeTek_Play|WeTek_Core|Odroid_C2|WeTek_Hub|WeTek_Play_2)
-      if [ "$TARGET_ARCH" = "aarch64" ]; then
-        make -f Makefile.libretro platform=aarch64
-      else
-        make -f Makefile.libretro platform=armv7-neon-hardfloat-cortex-a9
-      fi
-      ;;
-    Generic)
+    x86-64)
       make -f Makefile.libretro
       ;;
   esac

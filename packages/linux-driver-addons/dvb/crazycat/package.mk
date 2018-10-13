@@ -1,37 +1,23 @@
-################################################################################
-#      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016-present Team LibreELEC
-#
-#  LibreELEC is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  LibreELEC is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with LibreELEC.  If not, see <http://www.gnu.org/licenses/>.
-################################################################################
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2016-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="crazycat"
-PKG_VERSION="2017-11-13"
-PKG_SHA256="14d951eb8d40cee40d601d7c737bca07171d8b4f201d63d5e70a24c4841f9d73"
+PKG_VERSION="835dc72da3ee63df7f4057bd0507887454c005d1"
+PKG_SHA256="3d68d368a9eda15688c6686caa854a045a753740ec93553d80a4bcfc14c2950a"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
-PKG_SITE="https://github.com/crazycat69/linux_media"
-PKG_URL="$DISTRO_SRC/$PKG_NAME-$PKG_VERSION.tar.xz"
-PKG_DEPENDS_TARGET="toolchain linux"
-PKG_BUILD_DEPENDS_TARGET="toolchain linux"
-PKG_NEED_UNPACK="$LINUX_DEPENDS"
+PKG_SITE="https://bitbucket.org/CrazyCat/media_build"
+PKG_URL="https://bitbucket.org/CrazyCat/media_build/get/$PKG_VERSION.tar.gz"
+PKG_SOURCE_DIR="CrazyCat-media_build-*"
+PKG_DEPENDS_TARGET="toolchain linux media_tree_cc"
+PKG_NEED_UNPACK="$LINUX_DEPENDS media_tree_cc"
 PKG_SECTION="driver.dvb"
-PKG_LONGDESC="DVB driver for TBS cards with CrazyCats additions."
+PKG_LONGDESC="DVB driver for TBS cards with CrazyCats additions"
 
-PKG_IS_ADDON="yes"
+PKG_IS_ADDON="embedded"
+PKG_IS_KERNEL_PKG="yes"
 PKG_ADDON_IS_STANDALONE="yes"
-PKG_ADDON_NAME="DVB drivers for TBS (CrazyCat)"
+PKG_ADDON_NAME="DVB drivers for TBS"
 PKG_ADDON_TYPE="xbmc.service"
 PKG_ADDON_VERSION="${ADDON_VERSION}.${PKG_REV}"
 
@@ -41,21 +27,19 @@ pre_make_target() {
 }
 
 make_target() {
-  make untar
+  cp -RP $(get_build_dir media_tree_cc)/* $PKG_BUILD/linux
 
-  # copy config file
-  if [ "$PROJECT" = Generic ]; then
-    if [ -f $PKG_DIR/config/generic.config ]; then
-      cp $PKG_DIR/config/generic.config v4l/.config
-    fi
-  else
-    if [ -f $PKG_DIR/config/usb.config ]; then
-      cp $PKG_DIR/config/usb.config v4l/.config
-    fi
+  # make staging config (all + experimental)
+  kernel_make VER=$KERNEL_VER SRCDIR=$(kernel_path) stagingconfig
+
+  # hack to workaround media_build bug
+  if [ "$PROJECT" = Rockchip ]; then
+    sed -e 's/CONFIG_DVB_CXD2820R=m/# CONFIG_DVB_CXD2820R is not set/g' -i v4l/.config
+    sed -e 's/CONFIG_DVB_LGDT3306A=m/# CONFIG_DVB_LGDT3306A is not set/g' -i v4l/.config
   fi
 
   # add menuconfig to edit .config
-  make VER=$KERNEL_VER SRCDIR=$(kernel_path)
+  kernel_make VER=$KERNEL_VER SRCDIR=$(kernel_path)
 }
 
 makeinstall_target() {

@@ -1,24 +1,9 @@
-################################################################################
-#      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016-present Team LibreELEC
-#
-#  LibreELEC is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  LibreELEC is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with LibreELEC.  If not, see <http://www.gnu.org/licenses/>.
-################################################################################
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2016-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="digital_devices"
-PKG_VERSION="0f05b19"
-PKG_SHA256="0f12fa00133eaeb83c4e380cd6e3174d7b399e7e9e5ba8eac0c1ada7579c2c20"
+PKG_VERSION="03ce6c980c437b9545f1c0f609425424dd0c7f71"
+PKG_SHA256="6189d7833cd6bfa3a7a6b432bd4e8aea462b970eb32eabf0a4ac1cbf087bdde6"
 PKG_ARCH="x86_64"
 PKG_LICENSE="GPL"
 PKG_SITE="https://github.com/DigitalDevices/dddvb/"
@@ -30,7 +15,7 @@ PKG_NEED_UNPACK="$LINUX_DEPENDS"
 PKG_SECTION="driver.dvb"
 PKG_LONGDESC="DVB driver for Digital Devices cards"
 
-PKG_IS_ADDON="yes"
+PKG_IS_ADDON="embedded"
 PKG_ADDON_IS_STANDALONE="yes"
 PKG_ADDON_NAME="DVB drivers for DigitalDevices"
 PKG_ADDON_TYPE="xbmc.service"

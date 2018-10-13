@@ -1,24 +1,9 @@
-################################################################################
-#      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2017-present Team LibreELEC
-#
-#  LibreELEC is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  LibreELEC is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with LibreELEC.  If not, see <http://www.gnu.org/licenses/>.
-################################################################################
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2017-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="ncurses"
-PKG_VERSION="6.0-20171007"
-PKG_SHA256="d74ce1f651824b6254a6d913d312e4ab32874812bb066288ef87b0b0482c4db5"
+PKG_VERSION="6.1-20180203"
+PKG_SHA256="fac9db9460f271ee632af386a5b502d43a25d7cf14138e3d3166d4bedc4f6cb0"
 PKG_ARCH="any"
 PKG_LICENSE="MIT"
 PKG_SITE="http://www.gnu.org/software/ncurses/"
@@ -27,6 +12,8 @@ PKG_DEPENDS_TARGET="toolchain zlib"
 PKG_SECTION="devel"
 PKG_SHORTDESC="ncurses: The ncurses (new curses) library"
 PKG_LONGDESC="The ncurses (new curses) library is a free software emulation of curses in System V Release 4.0, and more. It uses terminfo format, supports pads and color and multiple highlights and forms characters and function-key mapping, and has all the other SYSV-curses enhancements over BSD curses."
+# causes some segmentation fault's (dialog) when compiled with gcc's link time optimization.
+PKG_BUILD_FLAGS="+pic"
 
 PKG_CONFIGURE_OPTS_TARGET="--without-ada \
                            --without-cxx \
@@ -72,12 +59,6 @@ PKG_CONFIGURE_OPTS_TARGET="--without-ada \
                            --disable-warnings \
                            --disable-home-terminfo \
                            --disable-assertions"
-
-pre_configure_target() {
-  # causes some segmentation fault's (dialog) when compiled with gcc's link time optimization.
-  strip_lto
-    CFLAGS="$CFLAGS -fPIC"
-}
 
 post_makeinstall_target() {
   cp misc/ncurses-config $TOOLCHAIN/bin

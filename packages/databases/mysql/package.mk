@@ -1,24 +1,9 @@
-################################################################################
-#      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016-present Team LibreELEC
-#
-#  LibreELEC is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  LibreELEC is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with LibreELEC.  If not, see <http://www.gnu.org/licenses/>.
-################################################################################
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2016-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="mysql"
-PKG_VERSION="5.7.18"
-PKG_SHA256="0b5d71ed608656cd8181d3bb0434d3e36bac192899038dbdddf5a7594aaea1a2"
+PKG_VERSION="5.7.20"
+PKG_SHA256="5397549bb7c238f396c123db2df4cad2191b11adf8986de7fe63bff8e2786487"
 PKG_ARCH="any"
 PKG_LICENSE="LGPL"
 PKG_SITE="http://www.mysql.com"
@@ -54,12 +39,6 @@ PKG_CMAKE_OPTS_HOST="-DCMAKE_BUILD_TYPE=Release \
                      -DLOCAL_BOOST_DIR=$(get_build_dir boost) \
                      -DWITH_UNIT_TESTS=OFF \
                      -DWITH_ZLIB=bundled"
-
-if [ "$DEBUG" = yes -a "$TARGET_ARCH" = aarch64 ]; then
-  pre_configure_target() {
-    strip_lto
-  }
-fi
 
 make_host() {
   ninja comp_err

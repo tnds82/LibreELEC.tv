@@ -1,24 +1,10 @@
-################################################################################
-#      This file is part of OpenELEC - http://www.openelec.tv
-#      Copyright (C) 2009-2016 Stephan Raue (stephan@openelec.tv)
-#
-#  OpenELEC is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  OpenELEC is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
-################################################################################
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2009-2016 Stephan Raue (stephan@openelec.tv)
+# Copyright (C) 2018-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="glibc"
-PKG_VERSION="2.26"
-PKG_SHA256="e54e0a934cd2bc94429be79da5e9385898d2306b9eaf3c92d5a77af96190f6bd"
+PKG_VERSION="2.28"
+PKG_SHA256="b1900051afad76f7a4f73e71413df4826dce085ef8ddb785a945b66d7d513082"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://www.gnu.org/software/libc/"
@@ -28,6 +14,7 @@ PKG_DEPENDS_INIT="glibc"
 PKG_SECTION="toolchain/devel"
 PKG_SHORTDESC="glibc: The GNU C library"
 PKG_LONGDESC="The Glibc package contains the main C library. This library provides the basic routines for allocating memory, searching directories, opening and closing files, reading and writing files, string handling, pattern matching, arithmetic, and so on."
+PKG_BUILD_FLAGS="-gold"
 
 PKG_CONFIGURE_OPTS_TARGET="BASH_SHELL=/bin/sh \
                            ac_cv_path_PERL=no \
@@ -46,14 +33,16 @@ PKG_CONFIGURE_OPTS_TARGET="BASH_SHELL=/bin/sh \
                            --enable-kernel=3.0.0 \
                            --without-cvs \
                            --without-gd \
-                           --enable-obsolete-rpc \
-                           --enable-obsolete-nsl \
                            --disable-build-nscd \
                            --disable-nscd \
                            --enable-lock-elision \
                            --disable-timezone-tools"
 
-if [ "$DEBUG" = yes ]; then
+# busybox:init needs it
+# testcase: boot with /storage as nfs-share (set cmdline.txt -> "ip=dhcp boot=UUID=2407-5145 disk=NFS=[nfs-share] quiet")
+PKG_CONFIGURE_OPTS_TARGET+=" --enable-obsolete-rpc"
+
+if build_with_debug; then
   PKG_CONFIGURE_OPTS_TARGET="$PKG_CONFIGURE_OPTS_TARGET --enable-debug"
 else
   PKG_CONFIGURE_OPTS_TARGET="$PKG_CONFIGURE_OPTS_TARGET --disable-debug"
@@ -69,12 +58,6 @@ pre_build_target() {
 }
 
 pre_configure_target() {
-# Fails to compile with GCC's link time optimization.
-  strip_lto
-
-# glibc dont support GOLD linker.
-  strip_gold
-
 # Filter out some problematic *FLAGS
   export CFLAGS=`echo $CFLAGS | sed -e "s|-ffast-math||g"`
   export CFLAGS=`echo $CFLAGS | sed -e "s|-Ofast|-O2|g"`
@@ -98,7 +81,7 @@ pre_configure_target() {
   export BUILD_CC=$HOST_CC
   export OBJDUMP_FOR_HOST=objdump
 
-cat >config.cache <<EOF
+  cat >config.cache <<EOF
 libc_cv_forced_unwind=yes
 libc_cv_c_cleanup=yes
 libc_cv_ssp=no
@@ -106,13 +89,21 @@ libc_cv_ssp_strong=no
 libc_cv_slibdir=/usr/lib
 EOF
 
-echo "libdir=/usr/lib" >> configparms
-echo "slibdir=/usr/lib" >> configparms
-echo "sbindir=/usr/bin" >> configparms
-echo "rootsbindir=/usr/bin" >> configparms
-echo "build-programs=yes" >> configparms
+  cat >configparms <<EOF
+libdir=/usr/lib
+slibdir=/usr/lib
+sbindir=/usr/bin
+rootsbindir=/usr/bin
+build-programs=yes
+EOF
 
-GLIBC_INCLUDE_BIN="getent ldd locale"
+  # binaries to install into target
+  GLIBC_INCLUDE_BIN="getent ldd locale"
+
+  # Generic "installer" needs localedef to define drawing chars
+  if [ "$PROJECT" = "Generic" ]; then
+    GLIBC_INCLUDE_BIN+=" localedef"
+  fi
 }
 
 post_makeinstall_target() {
@@ -122,14 +113,7 @@ post_makeinstall_target() {
 # cleanup
 # remove any programs we don't want/need, keeping only those we want
   for f in $(find $INSTALL/usr/bin -type f); do
-    fb="$(basename "${f}")"
-    for ib in $GLIBC_INCLUDE_BIN; do
-      if [ "${ib}" == "${fb}" ]; then
-        fb=
-        break
-      fi
-    done
-    [ -n "${fb}" ] && rm -rf ${f}
+    listcontains "${GLIBC_INCLUDE_BIN}" "$(basename "${f}")" || rm -fr "${f}"
   done
 
   rm -rf $INSTALL/usr/lib/audit

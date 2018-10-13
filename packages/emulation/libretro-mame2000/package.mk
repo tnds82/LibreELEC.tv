@@ -1,41 +1,18 @@
-################################################################################
-#      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016-present Team LibreELEC
-#
-#  LibreELEC is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  LibreELEC is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with LibreELEC.  If not, see <http://www.gnu.org/licenses/>.
-################################################################################
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2016-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="libretro-mame2000"
-PKG_VERSION="1083de2"
-PKG_SHA256="9942b393d94ea0ddf2c24ee98e2c695cf2fa4217283c33522c9d0db8e219cfee"
-PKG_ARCH="any"
+PKG_VERSION="bd3833c41f6894ba1c5d2f3f35b29190658517a0"
+PKG_SHA256="99d25517612f28be117c8a68c581d152a4ea07355eaa7748584c2a84c70f04fb"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/mame2000-libretro"
 PKG_URL="https://github.com/libretro/mame2000-libretro/archive/$PKG_VERSION.tar.gz"
-PKG_SOURCE_DIR="mame2000-libretro-$PKG_VERSION*"
-PKG_DEPENDS_TARGET="toolchain kodi-platform"
-PKG_SECTION="emulation"
-PKG_SHORTDESC="2000 version of MAME (0.37b5) for libretro"
+PKG_DEPENDS_TARGET="toolchain"
 PKG_LONGDESC="2000 version of MAME (0.37b5) for libretro"
 
 PKG_LIBNAME="mame2000_libretro.so"
 PKG_LIBPATH="$PKG_LIBNAME"
 PKG_LIBVAR="MAME2000_LIB"
-
-configure_target() {
-  strip_lto
-}
 
 make_target() {
   if [ "$TARGET_ARCH" = "arm" ]; then

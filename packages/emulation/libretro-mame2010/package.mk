@@ -1,32 +1,13 @@
-################################################################################
-#      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016-present Team LibreELEC
-#
-#  LibreELEC is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  LibreELEC is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with LibreELEC.  If not, see <http://www.gnu.org/licenses/>.
-################################################################################
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2016-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="libretro-mame2010"
-PKG_VERSION="3a9d2ff"
-PKG_SHA256="e60cad55518281516778b943723b6d1ae4a17b096124f108dd27520862175f5b"
-PKG_ARCH="any"
+PKG_VERSION="70732f9137f6bb2bde4014746ea8bc613173dd1e"
+PKG_SHA256="36ab11541233c9a4240baf6f0a529d8d335dce23f25b66b950e18373fd8e65fb"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/mame2010-libretro"
 PKG_URL="https://github.com/libretro/mame2010-libretro/archive/$PKG_VERSION.tar.gz"
-PKG_SOURCE_DIR="mame2010-libretro-$PKG_VERSION*"
-PKG_DEPENDS_TARGET="toolchain kodi-platform"
-PKG_SECTION="emulation"
-PKG_SHORTDESC="Late 2010 version of MAME (0.139) for libretro"
+PKG_DEPENDS_TARGET="toolchain"
 PKG_LONGDESC="Late 2010 version of MAME (0.139) for libretro"
 
 PKG_LIBNAME="mame2010_libretro.so"
@@ -37,32 +18,24 @@ pre_make_target() {
   export CFLAGS="$CFLAGS -fpermissive"
   export CXXFLAGS="$CXXFLAGS -fpermissive"
   export LD="$CXX"
-  strip_lto
 }
 
 make_target() {
-  case $PROJECT in
-    RPi)
-      case $DEVICE in
-        RPi)
-          make platform=armv6-hardfloat-arm1176jzf-s
-          ;;
-        RPi2)
-          make platform=armv7-neon-hardfloat-cortex-a7
-          ;;
-      esac
+  case $TARGET_CPU in
+    arm1176jzf-s)
+      make platform=armv6-hardfloat-$TARGET_CPU
       ;;
-    imx6)
-      make platform=armv7-neon-hardfloat-cortex-a9
+    cortex-a7|cortex-a9)
+      make platform=armv7-neon-hardfloat-$TARGET_CPU
       ;;
-    WeTek_Play|WeTek_Core|Odroid_C2|WeTek_Hub|WeTek_Play_2)
+    *cortex-a53|cortex-a17)
       if [ "$TARGET_ARCH" = "aarch64" ]; then
         make platform=aarch64
       else
         make platform=armv7-neon-hardfloat-cortex-a9
       fi
       ;;
-    Generic)
+    x86-64)
       make
       ;;
   esac

@@ -32,7 +32,10 @@
         # vfpv3xd vfpv3xd-fp16 neon neon-fp16 vfpv4 vfpv4-d16 fpv4-sp-d16
         # neon-vfpv4.
         TARGET_FPU="neon-fp16"
-        TARGET_FEATURES="32bit neon"
+        TARGET_FEATURES="32bit"
+
+        # Use linaro toolchain to build kernel
+        KERNEL_LINARO_TOOLCHAIN="arm-linux-gnueabihf"
         ;;
     esac
 
@@ -59,6 +62,9 @@
 
   # Additional kernel make parameters (for example to specify the u-boot loadaddress)
     KERNEL_MAKE_EXTRACMD=""
+
+  # Additional kernel dependencies
+    KERNEL_EXTRA_DEPENDS_TARGET=""
 
   # Kernel to use. values can be:
   # default:  default mainline kernel
@@ -131,9 +137,13 @@
   # build with installer (yes / no)
     INSTALLER_SUPPORT="no"
 
-  # extra build dependeices
-    EXTRA_DEPS="mkimage"
-    EXTRA_DEPS_PKG="u-boot-tools"
-
   # kernel image name
     KERNEL_NAME="kernel.img"
+
+  # build and install driver addons (yes / no)
+    DRIVER_ADDONS_SUPPORT="no"
+
+  # driver addons to install:
+  # for a list of additinoal drivers see packages/linux-driver-addons
+  # Space separated list is supported,
+    DRIVER_ADDONS="crazycat"

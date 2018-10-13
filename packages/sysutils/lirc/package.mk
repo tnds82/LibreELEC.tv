@@ -1,20 +1,5 @@
-################################################################################
-#      This file is part of OpenELEC - http://www.openelec.tv
-#      Copyright (C) 2009-2016 Stephan Raue (stephan@openelec.tv)
-#
-#  OpenELEC is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  OpenELEC is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
-################################################################################
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2009-2016 Stephan Raue (stephan@openelec.tv)
 
 PKG_NAME="lirc"
 PKG_VERSION="0.10.0"
@@ -32,9 +17,9 @@ PKG_TOOLCHAIN="autotools"
 PKG_PYTHON_WANTED=Python2
 
 PKG_CONFIGURE_OPTS_TARGET="--enable-devinput \
-                           --localstatedir=/ \
                            --with-gnu-ld \
-                           --without-x"
+                           --without-x \
+                           --runstatedir=/run"
 
 pre_configure_target() {
   export HAVE_WORKING_POLL=yes
@@ -55,14 +40,12 @@ post_makeinstall_target() {
   rm -rf $INSTALL/etc
 
   mkdir -p $INSTALL/etc/lirc
-    cp -r $PKG_DIR/config/* $INSTALL/etc/lirc
+    cp -r $PKG_DIR/config/lirc_options.conf $INSTALL/etc/lirc
+    ln -s /storage/.config/lircd.conf $INSTALL/etc/lirc/lircd.conf
 
   mkdir -p $INSTALL/usr/lib/libreelec
     cp $PKG_DIR/scripts/lircd_helper $INSTALL/usr/lib/libreelec
     cp $PKG_DIR/scripts/lircd_uinput_helper $INSTALL/usr/lib/libreelec
-
-  mkdir -p $INSTALL/usr/lib/udev
-    cp $PKG_DIR/scripts/lircd_wakeup_enable $INSTALL/usr/lib/udev
 
   mkdir -p $INSTALL/usr/share/services
     cp -P $PKG_DIR/default.d/*.conf $INSTALL/usr/share/services

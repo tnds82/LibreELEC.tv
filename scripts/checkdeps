@@ -1,24 +1,9 @@
 #!/bin/bash
 
-################################################################################
-#      This file is part of OpenELEC - http://www.openelec.tv
-#      Copyright (C) 2009-2016 Stephan Raue (stephan@openelec.tv)
-#
-#  OpenELEC is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  OpenELEC is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
-################################################################################
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2009-2016 Stephan Raue (stephan@openelec.tv)
 
-. config/options $1
+. config/options ""
 
 get_deps() {
   need=()
@@ -27,15 +12,19 @@ get_deps() {
   for i in "${!deps[@]}"; do
     dep=${deps[$i]}
     dep_pkg=${deps_pkg[$i]}
-    [ -z "$(which $dep 2>/dev/null)" ] && need+=($dep) && need_pkg+=("$dep_pkg")
+    if ! command -v "$dep" >/dev/null; then
+      need+=($dep)
+      need_pkg+=("$dep_pkg")
+    fi
   done
 
   for i in "${!files[@]}"; do
     file=${files[$i]}
     file_pkg=${files_pkg[$i]}
-    installed=N
-    [ $installed == N -a -f "$file" ] && installed=Y
-    [ $installed == N ] && need+=($file) && need_pkg+=("$file_pkg")
+    if [ ! -f "$file" ]; then
+      need+=($file)
+      need_pkg+=("$file_pkg")
+    fi
   done
 
   for i in "${!perl_mod[@]}"; do
@@ -53,18 +42,20 @@ get_yes_no()
 {
   local ans
   read -p "Would you like to install the needed tools ? (y/n) " ans
-  [ "${ans,,}" == "y" ] && return 0
-  [ "${ans,,}" == "yes" ] && return 0
+  [ "${ans,,}" = "y" ] && return 0
+  [ "${ans,,}" = "yes" ] && return 0
   return 1
 }
 
 if  [ -f /etc/lsb-release ]; then
-  DISTRO=$(grep DISTRIB_ID /etc/lsb-release | cut -d "=" -f 2 | tr A-Z a-z)
+  DISTRO=$(grep DISTRIB_ID /etc/lsb-release | cut -d "=" -f 2)
 fi
 
 if  [ -f /etc/os-release ]; then
-  DISTRO=$(grep ^ID= /etc/os-release | cut -d "=" -f 2 | tr A-Z a-z)
+  DISTRO=$(grep ^ID= /etc/os-release | cut -d "=" -f 2)
 fi
+
+DISTRO=${DISTRO,,}
 
 deps=(wget bash bc gcc sed patch lsdiff tar bzip2 gzip perl gawk gperf zip unzip diff lzop)
 deps_pkg=(wget bash bc gcc sed patch patchutils tar bzip2 gzip perl gawk gperf zip unzip diffutils lzop)
@@ -78,12 +69,18 @@ case "$DISTRO" in
     fedora|centos|rhel)
       deps+=(g++ mkfontscale mkfontdir bdftopcf xsltproc java python)
       deps_pkg+=(gcc-c++ xorg-x11-font-utils xorg-x11-font-utils xorg-x11-font-utils libxslt java-1.7.0-openjdk python2)
-      [[ ! $(rpm -qa glibc-static) ]] && deps+=(glibc-static) && deps_pkg+=(glibc-static)
-      [[ ! $(rpm -qa libstdc++-static) ]] && deps+=(libstdc++-static) && deps_pkg+=(libstdc++-static)
+      if [[ ! $(rpm -qa glibc-static) ]]; then
+        deps+=(glibc-static)
+        deps_pkg+=(glibc-static)
+      fi
+      if [[ ! $(rpm -qa libstdc++-static) ]]; then
+        deps+=(libstdc++-static)
+        deps_pkg+=(libstdc++-static)
+      fi
       files_pkg=(glibc-headers ncurses-devel)
       perl_pkg=(perl-JSON perl-XML-parser)
       ;;
-    gentoo)
+    gentoo|sabayon)
       deps+=(g++ mkfontscale mkfontdir bdftopcf xsltproc java python)
       deps_pkg+=("gcc[cxx]" mkfontscale mkfontdir bdftopcf libxslt virtual/jre python)
       files_pkg=(glibc ncurses)
@@ -97,7 +94,10 @@ case "$DISTRO" in
     opensuse)
       deps+=( g++ mkfontscale mkfontdir bdftopcf xsltproc java python)
       deps_pkg+=(gcc-c++ mkfontscale mkfontdir bdftopcf libxslt-tools java-1_8_0-openjdk python)
-      [[ ! $(rpm -qa glibc-devel-static) ]] && deps+=(glibc-devel-static) && deps_pkg+=(glibc-devel-static)
+      if [[ ! $(rpm -qa glibc-devel-static) ]]; then
+        deps+=(glibc-devel-static)
+        deps_pkg+=(glibc-devel-static)
+      fi
       perl_pkg=(perl-JSON perl-XML-Parser)
       ;;
     *)
@@ -142,6 +142,9 @@ if [ "${#need[@]}" -gt 0 ]; then
       ;;
     gentoo)
       get_yes_no && sudo emerge --ask --deep "${need_pkg[@]}"
+      ;;
+    sabayon)
+      get_yes_no && sudo equo install --ask "${need_pkg[@]}"
       ;;
     mageia)
       get_yes_no && sudo urpmi "${need_pkg[@]}"

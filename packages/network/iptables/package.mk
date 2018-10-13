@@ -1,20 +1,5 @@
-################################################################################
-#      This file is part of OpenELEC - http://www.openelec.tv
-#      Copyright (C) 2009-2016 Stephan Raue (stephan@openelec.tv)
-#
-#  OpenELEC is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  OpenELEC is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
-################################################################################
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2009-2016 Stephan Raue (stephan@openelec.tv)
 
 PKG_NAME="iptables"
 PKG_VERSION="1.6.1"
@@ -30,3 +15,20 @@ PKG_LONGDESC="Iptables is used to set up, maintain, and inspect the tables of IP
 PKG_TOOLCHAIN="autotools"
 
 PKG_CONFIGURE_OPTS_TARGET="--with-kernel=$(kernel_path)"
+
+
+post_makeinstall_target() {
+  mkdir -p $INSTALL/usr/config/iptables/
+    cp -PR $PKG_DIR/config/README $INSTALL/usr/config/iptables/
+
+  mkdir -p $INSTALL/etc/iptables/
+    cp -PR $PKG_DIR/config/* $INSTALL/etc/iptables/
+
+  mkdir -p $INSTALL/usr/lib/libreelec
+    cp $PKG_DIR/scripts/iptables_helper $INSTALL/usr/lib/libreelec
+}
+
+post_install() {
+  enable_service iptables.service
+}
+

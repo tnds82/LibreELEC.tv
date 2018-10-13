@@ -58,7 +58,7 @@ detect_crash_loop()
   echo "$NOW_TIME" >> $CRASH_HIST
 
   NUM_RESTARTS=$(wc -l $CRASH_HIST | cut -d' ' -f1)
-  FIRST_RESTART_TIME=$(tail -n $MAX_RESTARTS $CRASH_HIST | head -n 1)
+  FIRST_RESTART_TIME=$(tail -n $KODI_MAX_RESTARTS $CRASH_HIST | head -n 1)
 
   # kodi restart loop detected? fail this kodi install
   if [ $NUM_RESTARTS -ge $KODI_MAX_RESTARTS -a $KODI_MAX_SECONDS -ge $((NOW_TIME - FIRST_RESTART_TIME)) ]; then
@@ -156,5 +156,8 @@ if [ $(( ($RET >= 131 && $RET <= 136) || $RET == 139 )) = "1" ] ; then
   # Enable safe mode if a crash loop is detected
   detect_crash_loop && activate_safe_mode
 fi
+
+# Filter Kodi powerdown/restartapp/reboot codes to satisfy systemd
+[ "$RET" -ge 64 -a "$RET" -le 66 ] && RET=0
 
 exit $RET

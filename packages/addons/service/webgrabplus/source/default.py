@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2016-present Team LibreELEC (https://libreelec.tv)
+
 import subprocess
 import xbmc
 import xbmcaddon
@@ -13,5 +16,5 @@ class Monitor(xbmc.Monitor):
       subprocess.call(['systemctl', 'restart', self.id])
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
    Monitor().waitForAbort()

@@ -1,32 +1,16 @@
-################################################################################
-#      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016-present Team LibreELEC
-#
-#  LibreELEC is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  LibreELEC is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with LibreELEC.  If not, see <http://www.gnu.org/licenses/>.
-################################################################################
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2016-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="game.libretro.genplus"
-PKG_VERSION="2a98daf"
-PKG_SHA256="737e31c9849d8ca503251d12e48d5d103dc7a56ab7e95165838a562b0c18c53c"
-PKG_REV="103"
+PKG_VERSION="67c9c43f3e6327b61efdeba0b51701750dd70cc5"
+PKG_SHA256="38794b49c049bd35ef5138cb74c9e74862580a7aff16ab530dde930fbe09ae78"
+PKG_REV="107"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="https://github.com/kodi-game/game.libretro.genplus"
 PKG_URL="https://github.com/kodi-game/game.libretro.genplus/archive/$PKG_VERSION.tar.gz"
 PKG_DEPENDS_TARGET="toolchain kodi-platform libretro-genplus"
 PKG_SECTION=""
-PKG_SHORTDESC="game.libretro.genplus: Genesis Plus GX emulator for Kodi"
 PKG_LONGDESC="game.libretro.genplus: Genesis Plus GX emulator for Kodi"
 
 PKG_IS_ADDON="yes"

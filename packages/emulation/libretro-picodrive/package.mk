@@ -1,24 +1,9 @@
-################################################################################
-#      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016-present Team LibreELEC
-#
-#  LibreELEC is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  LibreELEC is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with LibreELEC.  If not, see <http://www.gnu.org/licenses/>.
-################################################################################
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2016-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="libretro-picodrive"
-PKG_VERSION="9ae88ef"
-PKG_SHA256="a54ddc7de8261c32e848c583dfb0fe4831d92684b9b67a25e2ccbff6a0f6978c"
+PKG_VERSION="1a49e06"
+PKG_SHA256="3a62c8a43cd66d253a2a9de406b818da9e3d3d363b78d5c29708d1cb99d07348"
 PKG_ARCH="any"
 PKG_LICENSE="MAME"
 PKG_SITE="https://github.com/libretro/picodrive"
@@ -30,6 +15,7 @@ PKG_SECTION="emulation"
 PKG_SHORTDESC="Fast MegaDrive/MegaCD/32X emulator"
 PKG_LONGDESC="Fast MegaDrive/MegaCD/32X emulator"
 PKG_TOOLCHAIN="manual"
+PKG_BUILD_FLAGS="-gold"
 
 PKG_LIBNAME="picodrive_libretro.so"
 PKG_LIBPATH="$PKG_LIBNAME"
@@ -55,10 +41,6 @@ pre_configure_target() {
   # fails to build in subdirs
   cd $PKG_BUILD
   rm -rf .$TARGET_NAME
-}
-
-configure_target() {
-  strip_gold
 }
 
 make_target() {

@@ -1,24 +1,9 @@
-################################################################################
-#      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2017-present Team LibreELEC
-#
-#  LibreELEC is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  LibreELEC is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with LibreELEC.  If not, see <http://www.gnu.org/licenses/>.
-################################################################################
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2017-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="pvr.teleboy"
-PKG_VERSION="e431126"
-PKG_SHA256="c4945fb73890b3be738985f74c0a5b6e0f99ca337e2ba0d97397f23f6ec7423d"
+PKG_VERSION="0f3ccfd885e9058876a4446132a78c6d1c1b3be6"
+PKG_SHA256="7f656209c2de0f25252b226ae9afb952485a001eb9e4c88e3277f5cca5bf37b0"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"

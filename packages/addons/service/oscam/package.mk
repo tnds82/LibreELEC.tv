@@ -1,31 +1,17 @@
-################################################################################
-#      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016-2017 Team LibreELEC
-#
-#  LibreELEC is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  LibreELEC is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with LibreELEC.  If not, see <http://www.gnu.org/licenses/>.
-################################################################################
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2016-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="oscam"
-PKG_VERSION="2563c02"
-PKG_SHA256="2a025a1697dec8a4432bf40be7ba14f71e09879da2826e5789b4cb153e834f87"
-PKG_VERSION_NUMBER="11391"
-PKG_REV="104"
+PKG_VERSION="57496438f69e92ad0b7b7797a05e34f0e512ac07"
+PKG_SHA256="544df425690c8c7157fb9f0e69f497fec67bc3641247d9a45f0eb20c1c1d705b"
+PKG_VERSION_NUMBER="11431"
+PKG_REV="106"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://www.streamboard.tv/oscam/wiki"
 PKG_URL="http://repo.or.cz/oscam.git/snapshot/$PKG_VERSION.tar.gz"
-PKG_DEPENDS_TARGET="toolchain pcsc-lite"
+PKG_SOURCE_DIR="oscam-*"
+PKG_DEPENDS_TARGET="toolchain openssl pcsc-lite"
 PKG_SECTION="service.softcam"
 PKG_SHORTDESC="OSCam: an Open Source Conditional Access Modul"
 PKG_LONGDESC="OSCam($PKG_VERSION_NUMBER) is a software to be used to decrypt digital television channels, as an alternative for a conditional access module."
@@ -35,21 +21,23 @@ PKG_ADDON_NAME="OSCam"
 PKG_ADDON_TYPE="xbmc.service"
 
 PKG_CMAKE_OPTS_TARGET="-DLIBUSBDIR=$SYSROOT_PREFIX/usr \
-                       -DWITH_SSL=0 \
-                       -DHAVE_LIBCRYPTO=0 \
-                       -DHAVE_DVBAPI=1 -DWITH_STAPI=0 \
+                       -DWITH_SSL=1 \
+                       -DHAVE_LIBCRYPTO=1 \
+                       -DHAVE_DVBAPI=1 \
+                       -DWITH_STAPI=0 \
                        -DWEBIF=1 \
                        -DWITH_DEBUG=0 \
                        -DOPTIONAL_INCLUDE_DIR=$SYSROOT_PREFIX/usr/include \
                        -DSTATIC_LIBUSB=1 \
-                       -DCLOCKFIX=0"
+                       -DCLOCKFIX=0 \
+                       -DCARDREADER_DB2COM=OFF"
 
 pre_configure_target() {
   export OSCAM_ADDON_VERSION="$PKG_VERSION_NUMBER"
 }
 
 makeinstall_target() {
-  : # nop
+  :
 }
 
 addon() {

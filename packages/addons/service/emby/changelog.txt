@@ -1,3 +1,28 @@
+124
+- Update to 3.5.3.0
+- Update imagemagick to 7.0.8-11
+
+123
+- Update to 3.5.2.0
+- Update imagemagick to 7.0.8-10 and build it without pango
+
+122
+- Bump addon
+
+121
+- Update to 3.5.1.0 for netcore
+
+120
+- Use ffmpeg instead of ffmpegx
+
+119
+- Update to 3.4.1.6
+- Add script (emby-update) to update Emby
+
+118
+- Update to 3.3.0.0
+- Moved ffmpegx to ffmpeg-tools add-on
+
 117
 - Update to 3.2.34.0
 - Use reworked ffmpegx

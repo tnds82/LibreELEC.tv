@@ -1,24 +1,9 @@
-################################################################################
-#      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2017-present Team LibreELEC
-#
-#  LibreELEC is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  LibreELEC is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with LibreELEC.  If not, see <http://www.gnu.org/licenses/>.
-################################################################################
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2017-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="vfs.rar"
-PKG_VERSION="2904d06"
-PKG_SHA256="0de99949939acad8753156cf5bc87a33a2cdc1459ee15ea450c5fee75dd73b70"
+PKG_VERSION="4b4b61af632b5b244c9f8dcb7575625b98d82550"
+PKG_SHA256="39f8aca312d0689aa87da1df44df505ed80aa4668008fb99cf6510f5f1925f07"
 PKG_REV="2"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"

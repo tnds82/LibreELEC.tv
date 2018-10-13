@@ -1,24 +1,9 @@
-################################################################################
-#      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016-present Team LibreELEC
-#
-#  LibreELEC is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  LibreELEC is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with LibreELEC.  If not, see <http://www.gnu.org/licenses/>.
-################################################################################
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2016-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="pvr.octonet"
-PKG_VERSION="c4af00a"
-PKG_SHA256="4a62a84c957517044e1d44a40ae5db93576e8c0244acebf9c3a37203920202f9"
+PKG_VERSION="1e448193009af33a398ddbcb1dc5f10f95594519"
+PKG_SHA256="acea9593c3b6531f7909ce21f95d35553f796fd7327994792839e79f19f1c9ac"
 PKG_REV="2"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"

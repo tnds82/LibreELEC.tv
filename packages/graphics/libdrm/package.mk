@@ -1,25 +1,11 @@
 
-################################################################################
-#      This file is part of OpenELEC - http://www.openelec.tv
-#      Copyright (C) 2009-2016 Stephan Raue (stephan@openelec.tv)
-#
-#  OpenELEC is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  OpenELEC is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
-################################################################################
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2009-2016 Stephan Raue (stephan@openelec.tv)
+# Copyright (C) 2018-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="libdrm"
-PKG_VERSION="2.4.85"
-PKG_SHA256="64e4cd87eaee38ae60b2984ef02b66159b9bdd33030040db2a04339cf15f6173"
+PKG_VERSION="2.4.93"
+PKG_SHA256="6e84d1dc9548a76f20b59a85cf80a0b230cd8196084f5243469d9e65354fcd3c"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://dri.freedesktop.org"
@@ -28,36 +14,46 @@ PKG_DEPENDS_TARGET="toolchain libpciaccess"
 PKG_SECTION="graphics"
 PKG_SHORTDESC="libdrm: Userspace interface to kernel DRM services"
 PKG_LONGDESC="The userspace interface library to kernel DRM services."
-PKG_TOOLCHAIN="autotools"
+PKG_TOOLCHAIN="meson"
 
 get_graphicdrivers
 
-DRM_CONFIG="--disable-intel --disable-radeon --disable-amdgpu"
-DRM_CONFIG="$DRM_CONFIG --disable-nouveau --disable-vmwgfx --disable-vc4"
+PKG_DRM_CONFIG="-Dnouveau=false \
+                -Domap=false \
+                -Dexynos=false \
+                -Dtegra=false"
 
-for drv in $GRAPHIC_DRIVERS; do
-  [ "$drv" = "i915" -o "$drv" = "i965" ] && \
-    DRM_CONFIG=`echo $DRM_CONFIG | sed -e 's/disable-intel/enable-intel/'`
+listcontains "$GRAPHIC_DRIVERS" "(i915|i965)" &&
+  PKG_DRM_CONFIG+=" -Dintel=true" || PKG_DRM_CONFIG+=" -Dintel=false"
 
-  [ "$drv" = "r200" -o "$drv" = "r300" -o "$drv" = "r600" -o "$drv" = "radeonsi" ] && \
-    DRM_CONFIG=`echo $DRM_CONFIG | sed -e 's/disable-radeon/enable-radeon/'` && \
-    DRM_CONFIG=`echo $DRM_CONFIG | sed -e 's/disable-amdgpu/enable-amdgpu/'`
+listcontains "$GRAPHIC_DRIVERS" "(r200|r300|r600|radeonsi)" &&
+  PKG_DRM_CONFIG+=" -Dradeon=true" || PKG_DRM_CONFIG+=" -Dradeon=false"
 
-  [ "$drv" = "vmware" ] && \
-    DRM_CONFIG=`echo $DRM_CONFIG | sed -e 's/disable-vmwgfx/enable-vmwgfx/'`
+listcontains "$GRAPHIC_DRIVERS" "radeonsi" &&
+  PKG_DRM_CONFIG+=" -Damdgpu=true" || PKG_DRM_CONFIG+=" -Damdgpu=false"
 
-  [ "$drv" = "vc4" ] && \
-    DRM_CONFIG=`echo $DRM_CONFIG | sed -e 's/disable-vc4/enable-vc4/'`
-done
+listcontains "$GRAPHIC_DRIVERS" "vmware" &&
+  PKG_DRM_CONFIG+=" -Dvmwgfx=true" || PKG_DRM_CONFIG+=" -Dvmwgfx=false"
 
-PKG_CONFIGURE_OPTS_TARGET="--disable-udev \
-                           --enable-largefile \
-                           --with-kernel-source=$(kernel_path) \
-                           --disable-libkms \
-                           $DRM_CONFIG \
-                           --disable-nouveau \
-                           --disable-freedreno \
-                           --disable-install-test-programs \
-                           --disable-cairo-tests \
-                           --disable-manpages \
-                           --disable-valgrind"
+listcontains "$GRAPHIC_DRIVERS" "vc4" &&
+  PKG_DRM_CONFIG+=" -Dvc4=true" || PKG_DRM_CONFIG+=" -Dvc4=false"
+
+listcontains "$GRAPHIC_DRIVERS" "freedreno" &&
+  PKG_DRM_CONFIG+=" -Dfreedreno=true" || PKG_DRM_CONFIG+=" -Dfreedreno=false"
+
+listcontains "$GRAPHIC_DRIVERS" "etnaviv" &&
+  PKG_DRM_CONFIG+=" -Detnaviv=true" || PKG_DRM_CONFIG+=" -Detnaviv=false"
+
+PKG_MESON_OPTS_TARGET="-Dlibkms=false \
+                       $PKG_DRM_CONFIG \
+                       -Dcairo-tests=false \
+                       -Dman-pages=false \
+                       -Dvalgrind=false \
+                       -Dfreedreno-kgsl=false \
+                       -Dinstall-test-programs=false \
+                       -Dudev=false"
+
+post_makeinstall_target() {
+  mkdir -p $INSTALL/usr/bin
+    cp -a $PKG_BUILD/.$TARGET_NAME/tests/modetest/modetest $INSTALL/usr/bin/
+}

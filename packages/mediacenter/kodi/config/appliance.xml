@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <settings version="1">
 
+  <section id="games">
+    <category id="gamesgeneral">
+      <group id="1">
+        <setting id="gamesgeneral.enablerewind">
+          <default>false</default>
+        </setting>
+      </group>
+    </category>
+  </section>
+
   <section id="system">
     <category id="display">
       <group id="1">
         <setting id="videoscreen.screen">
           <visible>false</visible>
-        </setting>
-        <setting id="videoscreen.limitedrange">
-          <level>1</level>
         </setting>
       </group>
       <group id="3">

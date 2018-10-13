@@ -1,24 +1,9 @@
-################################################################################
-#      This file is part of OpenELEC - http://www.openelec.tv
-#      Copyright (C) 2009-2016 Stephan Raue (stephan@openelec.tv)
-#
-#  OpenELEC is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  OpenELEC is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
-################################################################################
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2009-2016 Stephan Raue (stephan@openelec.tv)
 
 PKG_NAME="wetekdvb"
-PKG_VERSION="20171207"
-PKG_SHA256="9543e07fc8b8abd94542ea9049a242c9f78b49bef07ca675d86728cf141c3fa2"
+PKG_VERSION="20180222"
+PKG_SHA256="9deb42ede05082279da971edf1ec0133c0f5da6edcae9d69c04f022fc91c7d6c"
 PKG_ARCH="arm aarch64"
 PKG_LICENSE="nonfree"
 PKG_SITE="http://www.wetek.com/"
@@ -32,13 +17,18 @@ PKG_IS_KERNEL_PKG="yes"
 PKG_TOOLCHAIN="manual"
 
 makeinstall_target() {
-  mkdir -p $INSTALL/$(get_full_module_dir)/$PKG_NAME
-  if [ $PROJECT = "WeTek_Play_2" ]; then
-    cp driver/wetekdvb_play2.ko $INSTALL/$(get_full_module_dir)/$PKG_NAME/wetekdvb.ko
-  else
-    cp driver/wetekdvb.ko $INSTALL/$(get_full_module_dir)/$PKG_NAME
-  fi
+  device=${DEVICE:-$PROJECT}
+  [ $device = "S905" ] && device=WeTek_Play_2
+  for overlay_dir in driver/$device/*/; do
+    overlay_dir=`basename $overlay_dir`
+    mkdir -p $INSTALL/$(get_full_module_dir $overlay_dir)/$PKG_NAME
+    cp driver/$device/$overlay_dir/wetekdvb.ko $INSTALL/$(get_full_module_dir $overlay_dir)/$PKG_NAME
+  done
 
   mkdir -p $INSTALL/$(get_full_firmware_dir)
     cp firmware/* $INSTALL/$(get_full_firmware_dir)
+}
+
+post_install() {
+  enable_service wetekdvb.service
 }

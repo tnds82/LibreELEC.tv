@@ -1,26 +1,12 @@
-################################################################################
-#      This file is part of OpenELEC - http://www.openelec.tv
-#      Copyright (C) 2009-2016 Stephan Raue (stephan@openelec.tv)
-#
-#  OpenELEC is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  OpenELEC is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
-################################################################################
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2009-2016 Stephan Raue (stephan@openelec.tv)
+# Copyright (C) 2018-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="systemd"
-PKG_VERSION="235"
-PKG_SHA256="25811f96f5a027bf2a4c9383495cf5b623e385d84da31e473cf375932b3e9c52"
+PKG_VERSION="239"
+PKG_SHA256="8a11b1b07d620f4c06a16e95bba4dd2a97e90efdf2a5ba47ed0a935085787a14"
 PKG_ARCH="any"
-PKG_LICENSE="GPL"
+PKG_LICENSE="LGPL2.1+"
 PKG_SITE="http://www.freedesktop.org/wiki/Software/systemd"
 PKG_URL="https://github.com/systemd/systemd/archive/v$PKG_VERSION.tar.gz"
 PKG_DEPENDS_TARGET="toolchain libcap kmod util-linux entropy"
@@ -31,8 +17,10 @@ PKG_LONGDESC="systemd is a system and session manager for Linux, compatible with
 PKG_MESON_OPTS_TARGET="--libdir=/usr/lib \
                        -Drootprefix=/usr \
                        -Dsplit-usr=false \
+                       -Dsplit-bin=true \
                        -Ddefault-hierarchy=hybrid \
                        -Dtty-gid=5 \
+                       -Dtests=false \
                        -Dseccomp=false \
                        -Dselinux=false \
                        -Dapparmor=false \
@@ -69,12 +57,12 @@ PKG_MESON_OPTS_TARGET="--libdir=/usr/lib \
                        -Dcoredump=false \
                        -Dresolve=false \
                        -Dlogind=true \
-                       -Dhostnamed=false \
+                       -Dhostnamed=true \
                        -Dlocaled=false \
                        -Dmachined=false \
                        -Dnetworkd=false \
                        -Dtimedated=false \
-                       -Dtimesyncd=false \
+                       -Dtimesyncd=true \
                        -Dmyhostname=false \
                        -Dfirstboot=false \
                        -Drandomseed=false \
@@ -103,12 +91,8 @@ PKG_MESON_OPTS_TARGET="--libdir=/usr/lib \
                        -Dumount-path=/usr/bin/umount"
 
 pre_configure_target() {
-  export CFLAGS="$CFLAGS -fno-schedule-insns -fno-schedule-insns2"
+  export CFLAGS="$CFLAGS -fno-schedule-insns -fno-schedule-insns2 -Wno-format-truncation"
   export LC_ALL=en_US.UTF-8
-
-  # meson needs a host compiler and it's detected through the environment. meh.
-  export CC="$HOST_CC"
-  export CXX="$HOST_CXX"
 }
 
 post_makeinstall_target() {
@@ -177,9 +161,16 @@ post_makeinstall_target() {
   rm -rf $INSTALL/usr/lib/systemd/system-generators
   rm -rf $INSTALL/usr/lib/systemd/catalog
 
+  # remove partition
+  rm -rf $INSTALL/usr/lib/systemd/systemd-growfs
+  rm -rf $INSTALL/usr/lib/systemd/systemd-makefs
+
   # distro preset policy
   rm -f $INSTALL/usr/lib/systemd/system-preset/*
   echo "disable *" > $INSTALL/usr/lib/systemd/system-preset/99-default.preset
+
+  rm -f $INSTALL/usr/lib/systemd/user-preset/*
+  echo "disable *" > $INSTALL/usr/lib/systemd/user-preset/90-systemd.preset
 
   # remove networkd
   rm -rf $INSTALL/usr/lib/systemd/network
@@ -193,6 +184,7 @@ post_makeinstall_target() {
 
   # tune logind.conf
   sed -e "s,^.*HandleLidSwitch=.*$,HandleLidSwitch=ignore,g" -i $INSTALL/etc/systemd/logind.conf
+  sed -e "s,^.*HandlePowerKey=.*$,HandlePowerKey=ignore,g" -i $INSTALL/etc/systemd/logind.conf
 
   # replace systemd-machine-id-setup with ours
   rm -rf $INSTALL/usr/lib/systemd/systemd-machine-id-commit
@@ -224,6 +216,10 @@ post_makeinstall_target() {
 
   rm -rf $INSTALL/etc/modules-load.d
   ln -sf /storage/.config/modules-load.d $INSTALL/etc/modules-load.d
+  rm -rf $INSTALL/etc/systemd/logind.conf.d
+  ln -sf /storage/.config/logind.conf.d $INSTALL/etc/systemd/logind.conf.d
+  rm -rf $INSTALL/etc/systemd/sleep.conf.d
+  ln -sf /storage/.config/sleep.conf.d $INSTALL/etc/systemd/sleep.conf.d
   rm -rf $INSTALL/etc/sysctl.d
   ln -sf /storage/.config/sysctl.d $INSTALL/etc/sysctl.d
   rm -rf $INSTALL/etc/tmpfiles.d
@@ -236,6 +232,9 @@ post_makeinstall_target() {
 
 post_install() {
   add_group systemd-journal 190
+
+  add_group systemd-timesync 191
+  add_user systemd-timesync x 191 191 "systemd-timesync" "/" "/bin/false"
 
   add_group systemd-network 193
   add_user systemd-network x 193 193 "systemd-network" "/" "/bin/sh"

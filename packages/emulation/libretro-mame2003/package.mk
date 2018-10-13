@@ -1,32 +1,13 @@
-################################################################################
-#      This file is part of LibreELEC - https://libreelec.tv
-#      Copyright (C) 2016-present Team LibreELEC
-#
-#  LibreELEC is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  LibreELEC is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with LibreELEC.  If not, see <http://www.gnu.org/licenses/>.
-################################################################################
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2016-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="libretro-mame2003"
-PKG_VERSION="69163cc"
-PKG_SHA256="5c505590857319cfb7043883afa1965067bfa8387829ff6cbe462927f1262303"
-PKG_ARCH="any"
+PKG_VERSION="6ca3bdece6f5dac9fbf5be837c7a1a69d99b5bdd"
+PKG_SHA256="b4e7badb774b3e80bda70bb825edeec0a9da99d25c7b3d2cf926d68b3922d437"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/mame2003-libretro"
 PKG_URL="https://github.com/libretro/mame2003-libretro/archive/$PKG_VERSION.tar.gz"
-PKG_SOURCE_DIR="mame2003-libretro-$PKG_VERSION*"
-PKG_DEPENDS_TARGET="toolchain kodi-platform"
-PKG_SECTION="emulation"
-PKG_SHORTDESC="Late 2003 version of MAME (0.78) for libretro"
+PKG_DEPENDS_TARGET="toolchain"
 PKG_LONGDESC="Late 2003 version of MAME (0.78) for libretro"
 
 PKG_LIBNAME="mame2003_libretro.so"
