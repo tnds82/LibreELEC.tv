@@ -1,0 +1,108 @@
+2.0.7
+- update name Tvheadend 4.3
+- fix some issues in oscam dvbapi
+
+2.0.6
+- New url
+- Add new channels DVB-C Nos and DVB-S Hispasat
+
+2.0.5
+- Fix update automatic ip
+
+2.0.4
+- Change the order of installation of the addons in tvheadend
+- To not create errors install htsp client first
+
+2.0.3
+- Fix network Hispasat
+
+2.0.2
+- Open choice channels Vodafone and Nowo
+
+2.0.1
+- Open choice channels TDT and Meo
+- Add new channels: TDT, MEO and NOS ( free channels )
+- Choice without oscam only free channels
+
+2.0.0
+- Tvhwizard: Changed the way it works for something simpler
+- Add new Tuners: K boxes
+- New look and automatic configuration
+
+1.2.1
+- Tvhwizard: Add screenshots
+
+1.2.0
+- Update addon to work with Tvheadend 4.2.2
+- Fix DVB Tuners
+- Fix in Wetek Play dvb-s show lnb choice
+- Fix show icon in popup informations
+
+1.1.9.2
+- Fix open addon in Portuguese language
+
+1.1.9 and 1.1.9.1
+- Add image in menu to instructions
+- Fix instructions open in tvhwizard menu
+
+1.1.8
+- Add Instructions to tvhwizard menu
+
+1.1.7
+- Create instructions for addon tvhwizard
+
+1.1.6
+- Fix Pass-truth and HTSP profile choose in recordings on Config Tvheadend
+
+1.1.5
+- Fix update channels in Portuguese Language
+
+1.1.4
+- Fix picons when update channels
+
+1.1.3
+- Fix install addons from tvhwizard
+
+1.1.2
+- Fix install addons for S905 and work with K1Plus
+
+1.1.1
+- Fix create user client tvh server
+
+1.1.0
+- Fix update, picons and channels version
+- Fix create users tvh server to work with iOS client
+
+1.0.9
+- Fix user and pass in config tvh client
+
+1.0.8
+- Fix show image Wetek Play DVS to choose LNB
+- Support to install addons to S905.aarch64 for K1Plus
+
+1.0.7
+- Fiz autoupdate IP
+
+1.0.6
+- Update addons install
+- Change menus alignment, change icons images
+- New funciont See our IP
+- Remove install secondary addons
+
+1.0.5
+- Add suport WeTek Play 2 in LibreELEC 7.0 (Codesnake version)
+
+1.0.4
+- Fix remove image on Wetek Play dvb-s when you choose tuner
+
+1.0.3
+- Add Recording Tvheadend Config
+
+1.0.2
+- Fix addon update
+
+1.0.1
+- Add Parental Lock to PVR
+
+1.0.0
+- First addon release
