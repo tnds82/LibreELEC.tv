@@ -643,6 +643,7 @@ done
        -e "s|@PKG_ADDON_PROVIDES@|$PKG_ADDON_PROVIDES|g" \
        -e "s|@PKG_ADDON_SCREENSHOT@|$screenshots|g" \
        -e "s|@PKG_ADDON_BROKEN@|$PKG_ADDON_BROKEN|g" \
+       -e "s|@VPA@|$ADDON_VERSION/$PROJECT/$ARCH|g" \
        -i "$addon_xml"
 }
 
