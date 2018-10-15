@@ -65,21 +65,15 @@ if __name__ == '__main__':
                     release[1] = 'Generic'
             elif release[0] == '8.2':
                 if release[2] == 'aarch64':
-                    if release[1] in ['KVIM', 'KVIM2', 'LePotato', 'Odroid_C2', 'S905', 'S912', 'WeTek_Hub', 'WeTek_Play_2']:
-                        release[1] = 'Amlogic'
-                    elif release[1] in ['MiQi', 'RK3328', 'RK3399', 'TinkerBoard']:
-                        release[1] = 'Rockchip'
+                    if release[1] in ['WeTek_Hub', 'WeTek_Play_2']:
+                        release[1] = 'Odroid_C2'
                 elif release[2] == 'arm':
-                    if release[1] in ['KVIM', 'KVIM2', 'LePotato', 'Odroid_C2', 'S905', 'S912', 'WeTek_Hub', 'WeTek_Play_2']:
-                        release[1] = 'Amlogic'
-                    elif release[1] in ['Slice3']:
-                        release[1] = 'RPi2'				
+                    if release[1] in ['WeTek_Play_2', 'Odroid_C2', 'S905', 'S912', 'Slice3']:
+                        release[1] = 'RPi2'
                     elif release[1] in ['Slice']:
                         release[1] = 'RPi'
-                    elif release[1] in ['S805', 'WeTek_Core']:
+                    elif release[1] in ['S805', 'WeTek_Core', 'WeTek_Hub']:
                         release[1] = 'WeTek_Play'
-                    elif release[1] in ['MiQi', 'RK3328', 'RK3399', 'TinkerBoard']:
-                        release[1] = 'Rockchip'
                 elif release[2] == 'x86_64':
                     release[1] = 'Generic'
         elif jeos[0] == 'CoreELEC Add-ons':

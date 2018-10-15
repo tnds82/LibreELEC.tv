@@ -1,5 +1,5 @@
 PKG_NAME="tnds82"
-PKG_REV="3"
+PKG_REV="4"
 PKG_SITE="https://addons.tnds82.xyz"
 PKG_DEPENDS_TARGET="toolchain"
 PKG_SECTION="service"

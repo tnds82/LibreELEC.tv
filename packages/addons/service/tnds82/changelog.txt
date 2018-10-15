@@ -1,3 +1,6 @@
+9.0.4
+- Some fixes
+
 9.0.3
 - Rework repo addon
 
