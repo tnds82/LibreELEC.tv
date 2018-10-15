@@ -13,6 +13,10 @@ msgctxt "#30002"
 msgid "Tnds82"
 msgstr ""
 
+msgctxt "#30003"
+msgid "CoreELEC"
+msgstr ""
+
 msgctxt "#30010"
 msgid "N/A"
 msgstr ""
