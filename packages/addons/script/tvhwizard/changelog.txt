@@ -1,3 +1,6 @@
+2.0.9
+- Fix show picons in Kodi with Tvheadend 4.3
+
 2.0.8
 - Fix tvhwizard to work with new oscam and tvh 4.3
 
