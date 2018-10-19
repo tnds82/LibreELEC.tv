@@ -1,3 +1,6 @@
+2.1.0
+- More permissions for user tvh/kodi
+
 2.0.9
 - Fix show picons in Kodi with Tvheadend 4.3
 
