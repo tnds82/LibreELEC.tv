@@ -6,7 +6,7 @@
   <requires>
     <import addon="os.libreelec.tv" version="@OS_VERSION@"/>
     <import addon="xbmc.python" version="2.1.0" />
-    <import addon="script.module.pyxbmct" version="1.2.0" />
+    <import addon="script.module.pyxbmct" version="1.3.0" />
   </requires>
   <extension point="xbmc.python.script"    library="default.py">
     <provides>executable</provides>
