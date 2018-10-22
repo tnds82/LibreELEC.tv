@@ -1,0 +1,20 @@
+105
+- update to minisatip 0.7.16
+
+104
+- update to minisatip 0.7.13 - git "f0e61fd"
+- fix start minisatip port: 9090
+
+103
+- update to minisatip 0.7.13
+
+102
+- update to minisatip 0.7.4
+- add more options and minisatip client support
+- fix options in addon
+
+101
+- update minisatip 0.5 to 0.7
+
+100
+- initial LibreELEC version

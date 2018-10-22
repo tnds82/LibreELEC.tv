@@ -1,0 +1,10 @@
+<settings>
+    <setting id="wait_for_feinit" value="false" />
+    <setting id="num_adapters" value="1" />
+    <setting id="http_port" value="9090" />
+    <setting id="rtsp_port" value="554" />
+    <setting id="satip_tcp" value="false" />
+    <setting id="cleanpsi" value="false" />
+    <setting id="workaround_sleep" value="false" />
+    <setting id="workaround_sleep_time" value="1" />
+</settings>
