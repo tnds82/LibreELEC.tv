@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="script.tvhwizard"
+       name="Tvh Wizard by Tnds"
+       version="@PKG_VERSION@"
+       provider-name="tnds82">
+  <requires>
+    <import addon="os.libreelec.tv" version="@OS_VERSION@"/>
+    <import addon="xbmc.python" version="2.1.0" />
+    <import addon="script.module.pyxbmct" version="1.2.0" />
+  </requires>
+  <extension point="xbmc.python.script"    library="default.py">
+    <provides>executable</provides>
+  </extension>
+  <extension point="xbmc.service"                library="service.py">
+    <provides>executable</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Tvh Wizard by Tnds ( @PKG_VERSION_NUMBER@ ) : Configuration of TvHeadend 4.3 and OSCam in LibreELEC and CoreELEC</summary>
+    <summary lang="pt">Tvh Wizard by Tnds ( @PKG_VERSION_NUMBER@ ) : Configuracao do TvHeadend 4.3 e OSCam no LibreELEC e CoreELEC</summary>
+    <description lang="en">Tvh Wizard by Tnds ( @PKG_VERSION_NUMBER@ ) : Use this addon to configure TvHeadend 4.3 and OSCam only from LibreELEC or CoreELEC interface with list of updated and organized channels (DVB-C, DVB-S "Hispasat") and the respective Picons. Create user administrator and / or client with password. Add DVBapi client</description>
+    <description lang="pt">Tvh Wizard by Tnds ( @PKG_VERSION_NUMBER@ ) : Usa este addon para configurar o TvHeadend 4.3 e OSCam apenas a partir da Interface do LibreELEC ou CoreELEC com lista de canais actualizadas e organizadas (DVB-C, DVB-S "Hispasat") e os respectivos icons. Cria utilizador administrador e/ou cliente com password. Adiciona cliente DVBapi</description>
+    <disclaimer lang="en">For bugs or suggestions send email: addons@tnds82.xyz</disclaimer>
+    <disclaimer lang="pt">Para reportar erros ou sugestões envie email para: addons@tnds82.xyz</disclaimer>
+    <platform>all</platform>
+    <news>
+@PKG_ADDON_NEWS@
+    </news>
+    <assets>
+    <icon>resources/icon.png</icon>
+    <fanart>resources/fanart.png</fanart>
+@PKG_ADDON_SCREENSHOT@
+    </assets>
+  </extension>
+</addon>
