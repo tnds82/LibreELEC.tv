@@ -17,14 +17,14 @@
 ################################################################################
 
 PKG_NAME="oscam"
-PKG_VERSION="2563c02"
-PKG_VERSION_NUMBER="11391"
-PKG_REV="104"
+PKG_VERSION="5f0a168"
+PKG_VERSION_NUMBER="11434"
+PKG_REV="108"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://www.streamboard.tv/oscam/wiki"
 PKG_URL="http://repo.or.cz/oscam.git/snapshot/$PKG_VERSION.tar.gz"
-PKG_DEPENDS_TARGET="toolchain pcsc-lite"
+PKG_DEPENDS_TARGET="toolchain openssl pcsc-lite"
 PKG_SECTION="service.softcam"
 PKG_SHORTDESC="OSCam: an Open Source Conditional Access Modul"
 PKG_LONGDESC="OSCam($PKG_VERSION_NUMBER) is a software to be used to decrypt digital television channels, as an alternative for a conditional access module."
@@ -35,21 +35,23 @@ PKG_ADDON_NAME="OSCam"
 PKG_ADDON_TYPE="xbmc.service"
 
 PKG_CMAKE_OPTS_TARGET="-DLIBUSBDIR=$SYSROOT_PREFIX/usr \
-                       -DWITH_SSL=0 \
-                       -DHAVE_LIBCRYPTO=0 \
-                       -DHAVE_DVBAPI=1 -DWITH_STAPI=0 \
+                       -DWITH_SSL=1 \
+                       -DHAVE_LIBCRYPTO=1 \
+                       -DHAVE_DVBAPI=1 \
+					   -DWITH_STAPI=0 \
                        -DWEBIF=1 \
                        -DWITH_DEBUG=0 \
                        -DOPTIONAL_INCLUDE_DIR=$SYSROOT_PREFIX/usr/include \
                        -DSTATIC_LIBUSB=1 \
-                       -DCLOCKFIX=0"
+                       -DCLOCKFIX=0 \
+					   -DCARDREADER_DB2COM=OFF"
 
 pre_configure_target() {
   export OSCAM_ADDON_VERSION="$PKG_VERSION_NUMBER"
 }
 
 makeinstall_target() {
-  : # nop
+  :
 }
 
 addon() {

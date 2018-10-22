@@ -1,0 +1,13 @@
+diff --git a/module-dvbapi.h b/module-dvbapi.h
+index 57ce902..72d786c 100644
+--- a/module-dvbapi.h
++++ b/module-dvbapi.h
+@@ -26,7 +26,7 @@
+ #define ECMINFO_FILE    "/tmp/ecm.info"
+ #endif
+ 
+-#define MAX_DEMUX 16
++#define MAX_DEMUX 64
+ #define MAX_CAID 50
+ #define ECM_PIDS 30
+ #define MAX_FILTER 32
