@@ -1,0 +1,23 @@
+107
+- update to Plex Media Server 1.13.8.5395
+
+106
+-update to Plex Media Server 1.10.1.4602
+
+105
+- update to Plex Media Server 1.10.0.4523
+
+104
+- update to Plex Media Server 1.9.7.4460
+
+103
+- update to Plex Media Server 1.5.6.3790
+
+102
+- update to Plex Media Server 1.5.5.3634
+
+101
+- update to Plex Media Server 1.5.3.3580
+
+100
+- Initial addon
