@@ -2,10 +2,10 @@
 # Copyright (C) 2009-2016 Stephan Raue (stephan@openelec.tv)
 
 PKG_NAME="tvhwizard"
-PKG_VERSION="2.0.8a"
-PKG_VERSION_NUMBER="2.0.8a"
+PKG_VERSION="2.0.89a"
+PKG_VERSION_NUMBER="2.0.9a"
 PKG_REV=""
-PKG_SHA256="037c3b6ac74576e98eacb5bf43ad1dd77f0e2e0c56aab5678aafc6c7cdc1c676"
+PKG_SHA256="c3a1ca6a4b78c0ca026bf29ef39f8cf48dd4e6afc61fb4fcbe2b8f56c6a2884e"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="https://addons.tnds82.xyz"
