@@ -2,9 +2,9 @@
 # Copyright (C) 2016-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="plexmediaserver"
-PKG_VERSION="1.13.8.5395"
-PKG_VERSION_NUMBER="10d48da0d"
-PKG_REV="107"
+PKG_VERSION="1.13.9.5456"
+PKG_VERSION_NUMBER="ecd600442"
+PKG_REV="108"
 PKG_ARCH="x86_64 arm"
 PKG_LICENSE="GPL"
 PKG_SITE="http://plex.tv"
