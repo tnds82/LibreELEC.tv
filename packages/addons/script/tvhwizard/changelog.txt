@@ -1,3 +1,6 @@
+2.1.0a
+- Fix automatic update ip when is changed
+
 2.0.9a
 - Fix update ip in tvheadend
 
