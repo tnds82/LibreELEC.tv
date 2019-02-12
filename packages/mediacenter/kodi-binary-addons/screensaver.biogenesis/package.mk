@@ -3,13 +3,13 @@
 # Copyright (C) 2018-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="screensaver.biogenesis"
-PKG_VERSION="7c2694dfb5891bdfc95b2624235fcb6fceccd7c1"
-PKG_SHA256="2502dd6273dc396a5bf9ae6daad5248fdd03571152bffbb67f3b1f762d319f49"
+PKG_VERSION="ee3641ac59496e1d1c9901f3a4253b883303fada"
+PKG_SHA256="a99542d3c11bcc60ddf419c207e567333084dd72629a8fced17d8a38e85dd7fd"
 PKG_REV="2"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
-PKG_SITE="https://github.com/notspiff/screensaver.biogenesis"
-PKG_URL="https://github.com/notspiff/screensaver.biogenesis/archive/$PKG_VERSION.tar.gz"
+PKG_SITE="https://github.com/xbmc/screensaver.biogenesis"
+PKG_URL="https://github.com/xbmc/screensaver.biogenesis/archive/$PKG_VERSION.tar.gz"
 PKG_DEPENDS_TARGET="toolchain kodi-platform"
 PKG_SECTION=""
 PKG_SHORTDESC="screensaver.biogenesis"

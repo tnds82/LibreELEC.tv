@@ -2,9 +2,9 @@
 # Copyright (C) 2018-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="game.libretro.pokemini"
-PKG_VERSION="84a1066"
-PKG_SHA256="f8ba6e469fde8f354181e7802d89fbe99aad377315cf116760dda4a0a335ed32"
-PKG_REV="101"
+PKG_VERSION="a9051faf055ca937bbc437c6ea4007fd5dfb166e"
+PKG_SHA256="df9c3ddcbb1758adea217bca23cd0f83ef1f248d9bbdd2614fc9fadffd36a559"
+PKG_REV="106"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="https://github.com/kodi-game/game.libretro.pokemini"

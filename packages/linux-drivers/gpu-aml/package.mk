@@ -8,19 +8,18 @@ PKG_SITE="http://openlinux.amlogic.com:8000/download/ARM/gpu/"
 PKG_VERSION="fe7a4d8"
 PKG_SHA256="518f855a2b191e50d09c2d0b3e671b5ed4b5e4db06aa3a718e29ef30cc0d9a57"
 PKG_URL="https://github.com/khadas/android_hardware_arm_gpu/archive/$PKG_VERSION.tar.gz"
-PKG_SOURCE_DIR="android_hardware_arm_gpu-$PKG_VERSION*"
 PKG_DEPENDS_TARGET="toolchain linux"
 PKG_NEED_UNPACK="$LINUX_DEPENDS"
-PKG_SECTION="driver"
-PKG_SHORTDESC="gpu-aml: Linux drivers for Mali GPUs found in Amlogic Meson SoCs"
 PKG_LONGDESC="gpu-aml: Linux drivers for Mali GPUs found in Amlogic Meson SoCs"
 PKG_TOOLCHAIN="manual"
 PKG_IS_KERNEL_PKG="yes"
 
-PKG_UTGARD_VERSION="r5p1"
-PKG_UTGARD_BUILD_DIR="$PKG_BUILD/utgard/$PKG_UTGARD_VERSION"
-PKG_MIDGARD_VERSION="r16p0"
-PKG_MIDGARD_BUILD_DIR="$PKG_BUILD/midgard/$PKG_MIDGARD_VERSION/kernel/drivers/gpu/arm/midgard"
+configure_package() {
+  PKG_UTGARD_VERSION="r5p1"
+  PKG_UTGARD_BUILD_DIR="$PKG_BUILD/utgard/$PKG_UTGARD_VERSION"
+  PKG_MIDGARD_VERSION="r16p0"
+  PKG_MIDGARD_BUILD_DIR="$PKG_BUILD/midgard/$PKG_MIDGARD_VERSION/kernel/drivers/gpu/arm/midgard"
+}
 
 pre_configure_target() {
   sed -e "s|shell date|shell date -R|g" -i $PKG_BUILD/utgard/*/Kbuild

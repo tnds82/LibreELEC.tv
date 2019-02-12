@@ -1,22 +1,22 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 # Copyright (C) 2009-2016 Stephan Raue (stephan@openelec.tv)
+# Copyright (C) 2019-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="lirc"
 PKG_VERSION="0.10.0"
 PKG_SHA256="e57c2de8b1b91325d23f1c14fc553ec7912b0add7891e653d048300d38c3f553"
-PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://www.lirc.org"
 PKG_URL="https://sourceforge.net/projects/lirc/files/LIRC/$PKG_VERSION/$PKG_NAME-$PKG_VERSION.tar.bz2"
 PKG_DEPENDS_TARGET="toolchain libftdi1 libusb-compat libxslt"
-PKG_SECTION="sysutils/remote"
-PKG_SHORTDESC="lirc: Linux Infrared Remote Control"
-PKG_LONGDESC="LIRC is a package that allows you to decode and send infra-red signals of many (but not all) commonly used remote controls."
+PKG_LONGDESC="LIRC is a package that allows you to decode and send infra-red signals."
 PKG_TOOLCHAIN="autotools"
 
 PKG_PYTHON_WANTED=Python2
 
-PKG_CONFIGURE_OPTS_TARGET="--enable-devinput \
+PKG_CONFIGURE_OPTS_TARGET="ac_cv_header_alsa_asoundlib_h=no \
+                           ac_cv_lib_asound_snd_async_del_handler=no \
+                           --enable-devinput \
                            --with-gnu-ld \
                            --without-x \
                            --runstatedir=/run"

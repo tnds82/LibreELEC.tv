@@ -2,34 +2,38 @@
 
 # SPDX-License-Identifier: GPL-2.0-or-later
 # Copyright (C) 2009-2016 Stephan Raue (stephan@openelec.tv)
+# Copyright (C) 2018-present Team LibreELEC (https://libreelec.tv)
 
-. config/options $1
+. config/options "$1"
 
 if [ -z "$1" ]; then
-  echo "usage: $0 package_name"
-  exit 1
+  die "usage: $0 package_name [parent_pkg]"
 fi
 
-if [ ! -f $PKG_DIR/package.mk ]; then
-  printf "$(print_color CLR_ERROR "$1: no package.mk file found")\n"
-  exit 1
+if [ -z "${PKG_NAME}" ]; then
+  die "$(print_color CLR_ERROR "${1}: no package.mk file found")"
 fi
+PARENT_PKG="${2:-${PKG_NAME}}"
 
-$SCRIPTS/get $1
+pkg_lock "${PKG_NAME}" "unpack" "${PARENT_PKG}"
 
-STAMP=$PKG_BUILD/.libreelec-unpack
+pkg_lock_status "ACTIVE" "${PKG_NAME}" "unpack"
+
+$SCRIPTS/get "${PKG_NAME}"
+
+STAMP="$PKG_BUILD/.libreelec-unpack"
 
 mkdir -p $BUILD
 
 # Perform a wildcard match on the package to ensure old versions are cleaned too
 PKG_DEEPHASH=
-for i in $BUILD/$1-*; do
+for i in $BUILD/${PKG_NAME}-*; do
   if [ -d $i -a -f "$i/.libreelec-unpack" ] ; then
     . "$i/.libreelec-unpack"
-    if [ "$STAMP_PKG_NAME" = "$1" ]; then
+    if [ "$STAMP_PKG_NAME" = "${PKG_NAME}" ]; then
       [ -z "${PKG_DEEPHASH}" ] && PKG_DEEPHASH=$(calculate_stamp)
       if [ ! "$PKG_DEEPHASH" = "$STAMP_PKG_DEEPHASH" ] ; then
-        $SCRIPTS/clean $1
+        $SCRIPTS/clean "${PKG_NAME}"
       fi
     fi
   fi
@@ -37,61 +41,64 @@ done
 
 if [ -d "$PKG_BUILD" -a ! -f "$STAMP" ]; then
   # stale pkg build dir
-  $SCRIPTS/clean $1
+  $SCRIPTS/clean "${PKG_NAME}"
 fi
 
-[ -f "$STAMP" ] && exit 0
+if [ -f "$STAMP" ]; then
+  pkg_lock_status "UNLOCK" "${PKG_NAME}" "unpack" "already unpacked"
+  exit 0
+fi
 
-if [ -d "$SOURCES/$1" -o -d "$PKG_DIR/sources" ]; then
-  printf "%${BUILD_INDENT}c $(print_color CLR_UNPACK "UNPACK")   $1\n" ' '>&$SILENT_OUT
-  export BUILD_INDENT=$((${BUILD_INDENT:-1}+$BUILD_INDENT_SIZE))
+if [ -d "$SOURCES/${PKG_NAME}" -o -d "$PKG_DIR/sources" ]; then
+  build_msg "CLR_UNPACK" "UNPACK" "${PKG_NAME}" "indent"
 
-  # unset functions
-  unset -f pre_unpack
-  unset -f unpack
-  unset -f post_unpack
-  unset -f pre_patch
-  unset -f post_patch
+  # unpack into a unique location as unpacking into a single ${BUILD} directory is not thread-safe
+  PKG_UNPACK_DIR="${BUILD}/.unpack/${PKG_NAME}"
+  rm -fr "${PKG_UNPACK_DIR}"
+  mkdir -p "${PKG_UNPACK_DIR}"
 
-  . $PKG_DIR/package.mk
+  pkg_call_exists pre_unpack && pkg_call pre_unpack
 
-  if [ "$(type -t pre_unpack)" = "function" ]; then
-    pre_unpack
-  fi
-
-  if [ "$(type -t unpack)" = "function" ]; then
-    unpack
+  if pkg_call_exists unpack; then
+    pkg_call unpack
   else
     if [ -n "$PKG_URL" ]; then
-      $SCRIPTS/extract $1 $BUILD
+      ${SCRIPTS}/extract "${PKG_NAME}" "${PKG_UNPACK_DIR}"
     fi
   fi
 
-  if [ ! -d $BUILD/$PKG_NAME-$PKG_VERSION ]; then
-    if [ -n "$PKG_SOURCE_DIR" ]; then
-      mv $BUILD/$PKG_SOURCE_DIR $BUILD/$PKG_NAME-$PKG_VERSION
-    elif [ -d $BUILD/$PKG_NAME-$PKG_VERSION* ]; then
-      mv $BUILD/$PKG_NAME-$PKG_VERSION* $BUILD/$PKG_NAME-$PKG_VERSION
+  _pkg_build="$(basename "${PKG_BUILD}")"
+  [ -d "${PKG_UNPACK_DIR}/${_pkg_build}"* ] && mv "${PKG_UNPACK_DIR}/${_pkg_build}"* "${PKG_BUILD}"
+
+  if [ ! -d "${PKG_BUILD}" ]; then
+    if [ -n "${PKG_SOURCE_DIR}" ]; then
+      if [ -d "${PKG_UNPACK_DIR}"/${PKG_SOURCE_DIR} ]; then
+        mv "${PKG_UNPACK_DIR}"/${PKG_SOURCE_DIR} "${PKG_BUILD}"
+      else
+        # fallback
+        mv "${BUILD}"/${PKG_SOURCE_DIR} "${PKG_BUILD}"
+      fi
+    elif [ -d "${PKG_BUILD}"* ]; then
+      mv "${PKG_BUILD}"* "${PKG_BUILD}"
     fi
   fi
+
+  # cleanup
+  rm -fr "${PKG_UNPACK_DIR}"
 
   if [ -d "$PKG_DIR/sources" ]; then
-    [ ! -d "$BUILD/${PKG_NAME}-${PKG_VERSION}" ] && mkdir -p $BUILD/${PKG_NAME}-${PKG_VERSION}
-    cp -PRf $PKG_DIR/sources/* $BUILD/${PKG_NAME}-${PKG_VERSION}
+    [ ! -d "$PKG_BUILD" ] && mkdir -p "$PKG_BUILD"
+    cp -PRf "$PKG_DIR/sources/"* "$PKG_BUILD"
   fi
 
   if [ -z "$PKG_URL" ]; then
-    mkdir -p "${BUILD}/${PKG_NAME}-${PKG_VERSION}"
+    mkdir -p "${PKG_BUILD}"
   fi
 
-  if [ "$(type -t post_unpack)" = "function" ]; then
-    post_unpack
-  fi
+  pkg_call_exists post_unpack && pkg_call post_unpack
 
   if [ "${PKG_SKIP_PATCHES}" != "yes" ]; then
-    if [ "$(type -t pre_patch)" = "function" ]; then
-      pre_patch
-    fi
+    pkg_call_exists pre_patch && pkg_call pre_patch
 
     if [ "$TARGET_ARCH" = "x86_64" ]; then
       PATCH_ARCH="x86"
@@ -151,23 +158,21 @@ if [ -d "$SOURCES/$1" -o -d "$PKG_DIR/sources" ]; then
       fi
 
       if [ -f "$i" ]; then
-        printf "%${BUILD_INDENT}c $(print_color CLR_APPLY_PATCH "APPLY PATCH") $(print_color CLR_PATCH_DESC "${PATCH_DESC}")   ${i#$ROOT/}\n" ' '>&$SILENT_OUT
+        build_msg "CLR_APPLY_PATCH" "APPLY PATCH $(print_color "CLR_PATCH_DESC" "${PATCH_DESC}")" "${i#${ROOT}/}"
         if grep -qE '^GIT binary patch$|^rename from|^rename to' $i; then
-          cat $i | git apply --directory=`echo "$PKG_BUILD" | cut -f1 -d\ ` -p1 --verbose --whitespace=nowarn --unsafe-paths >&$VERBOSE_OUT
+          cat $i | git apply --directory=$(echo "$PKG_BUILD" | cut -f1 -d\ ) -p1 --verbose --whitespace=nowarn --unsafe-paths >&$VERBOSE_OUT
         else
-          cat $i | patch -d `echo "$PKG_BUILD" | cut -f1 -d\ ` -p1 >&$VERBOSE_OUT
+          cat $i | patch -d $(echo "$PKG_BUILD" | cut -f1 -d\ ) -p1 >&$VERBOSE_OUT
         fi
       fi
     done
 
-    if [ "$(type -t post_patch)" = "function" ]; then
-      post_patch
-    fi
+    pkg_call_exists post_patch && pkg_call post_patch
   fi
 
   if [ ! "$PKG_NAME" = "configtools" ] ; then
-    for config in `find $PKG_BUILD -name config.guess | sed 's/config.guess//'`; do
-      printf "%${BUILD_INDENT}c $(print_color CLR_FIXCONFIG "FIXCONFIG")   $config\n" ' '
+    for config in $(find "$PKG_BUILD" -name config.guess | sed 's/config.guess//'); do
+      build_msg "CLR_FIXCONFIG" "FIXCONFIG" "${config}"
 
       [ -f "$config/config.guess" -a -f $TOOLCHAIN/configtools/config.guess ] && \
         cp -f $TOOLCHAIN/configtools/config.guess $config
@@ -178,12 +183,14 @@ if [ -d "$SOURCES/$1" -o -d "$PKG_DIR/sources" ]; then
 fi
 
 if [ "$PKG_SECTION" != "virtual" ]; then
-  mkdir -p $PKG_BUILD
+  mkdir -p "$PKG_BUILD"
 
-  rm -f $STAMPS/$1/build_*
+  rm -f $STAMPS/${PKG_NAME}/build_*
 
   PKG_DEEPHASH=$(calculate_stamp)
   for i in PKG_NAME PKG_DEEPHASH; do
     echo "STAMP_$i=\"${!i}\"" >> $STAMP
   done
 fi
+
+pkg_lock_status "UNLOCK" "${PKG_NAME}" "unpack" "unpacked"

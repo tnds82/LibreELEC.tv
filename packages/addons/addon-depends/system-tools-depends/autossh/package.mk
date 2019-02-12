@@ -2,15 +2,13 @@
 # Copyright (C) 2016-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="autossh"
-PKG_VERSION="1.4f"
-PKG_SHA256="0172e5e1bea40c642e0ef025334be3aadd4ff3b4d62c0b177ed88a8384e2f8f2"
-PKG_ARCH="any"
+PKG_VERSION="1.4g"
+PKG_SHA256="5fc3cee3361ca1615af862364c480593171d0c54ec156de79fc421e31ae21277"
 PKG_LICENSE="GPL"
 PKG_SITE="http://www.harding.motd.ca/"
 PKG_URL="http://www.harding.motd.ca/autossh/autossh-${PKG_VERSION}.tgz"
 PKG_DEPENDS_TARGET="toolchain"
-PKG_SECTION="tools"
-PKG_LONGDESC="Automatically restart SSH sessions and tunnels"
+PKG_LONGDESC="Automatically restart SSH sessions and tunnels."
 PKG_TOOLCHAIN="autotools"
 
 PKG_CONFIGURE_OPTS_TARGET="ac_cv_func_malloc_0_nonnull=yes \

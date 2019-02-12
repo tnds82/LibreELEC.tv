@@ -2,9 +2,9 @@
 # Copyright (C) 2016-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="game.libretro.mupen64plus"
-PKG_VERSION="011865ad2ad79bfa10844f435230d24855076f4a"
-PKG_SHA256="f749bcfd7fadd0fad5e88331c79cca0bdb1f8108acce6292963bed345437a3a1"
-PKG_REV="107"
+PKG_VERSION="ccb64c136f9c26f43694ffc610f97ae52b6daae6"
+PKG_SHA256="aeab6ba90cbaac0b4bd2971f41e31a3b9cf1ada87ca176a6cdff342fd833b844"
+PKG_REV="112"
 # no openGL suport in retroplayer yet
 PKG_ARCH="none"
 PKG_LICENSE="GPL"

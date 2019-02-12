@@ -1,17 +1,15 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 # Copyright (C) 2009-2016 Lukas Rusak (lrusak@libreelec.tv)
+# Copyright (C) 2016-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="libnetwork"
-PKG_VERSION="7b2b1fe"
-PKG_SHA256="2eee331b6ded567a36e7db708405b34032b93938682cf049025f48b96d755bf6"
-PKG_ARCH="any"
+PKG_VERSION="2cfbf9b1f98162a55829a21cc603c76072a75382"
+PKG_SHA256="12986c29a112f989886ceec675f5b11ccd001dcdb1c17a49835970c56aa406d0"
 PKG_LICENSE="APL"
 PKG_SITE="https://github.com/docker/libnetwork"
 PKG_URL="https://github.com/docker/libnetwork/archive/${PKG_VERSION}.tar.gz"
 PKG_DEPENDS_TARGET="toolchain go:host"
-PKG_SECTION="system"
-PKG_SHORTDESC="Libnetwork provides a native Go implementation for connecting containers"
-PKG_LONGDESC="Libnetwork provides a native Go implementation for connecting containers"
+PKG_LONGDESC="A native Go implementation for connecting containers."
 PKG_TOOLCHAIN="manual"
 
 pre_make_target() {
@@ -42,9 +40,16 @@ pre_make_target() {
   export CGO_CFLAGS=$CFLAGS
   export LDFLAGS="-extld $CC"
   export GOLANG=$TOOLCHAIN/lib/golang/bin/go
-  export GOPATH=$PKG_BUILD.gopath
+  export GOPATH=$PKG_BUILD/.gopath
   export GOROOT=$TOOLCHAIN/lib/golang
   export PATH=$PATH:$GOROOT/bin
+
+  mkdir -p $PKG_BUILD/.gopath
+  if [ -d $PKG_BUILD/vendor ]; then
+    mv $PKG_BUILD/vendor $PKG_BUILD/.gopath/src
+  fi
+
+  ln -fs $PKG_BUILD $PKG_BUILD/.gopath/src/github.com/docker/libnetwork
 }
 
 make_target() {

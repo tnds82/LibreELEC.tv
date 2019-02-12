@@ -2,10 +2,10 @@
 # Copyright (C) 2016-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="tvheadend42"
-PKG_VERSION="db177a6047769caff02fbf65de7eef00a930a027"
-PKG_SHA256="2d301e54e45dc054181b837a80382d9dec9a659b996aa7411b31d16063046022"
-PKG_VERSION_NUMBER="4.2.6-62"
-PKG_REV="116"
+PKG_VERSION="5c218500579d5bd1c1f7e7a4b5f7f0fb35baa626"
+PKG_SHA256="a9fe5a4c36aa185e3f0a73a709f0dc05794ae9c12f5d888985b559ff68a2508d"
+PKG_VERSION_NUMBER="4.2.7-44"
+PKG_REV="118"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="http://www.tvheadend.org"
@@ -46,37 +46,37 @@ if [[ "$TARGET_ARCH" != "x86_64" ]]; then
     --disable-libx265"
 fi
 
-PKG_CONFIGURE_OPTS_TARGET="--prefix=/usr \
-                           --arch=$TARGET_ARCH \
-                           --cpu=$TARGET_CPU \
-                           --cc=$CC \
-                           $PKG_TVH_TRANSCODING \
-                           --enable-avahi \
-                           --enable-bundle \
-                           --disable-dbus_1 \
-                           --enable-dvbcsa \
-                           --enable-dvben50221 \
-                           --disable-dvbscan \
-                           --enable-hdhomerun_client \
-                           --disable-hdhomerun_static \
-                           --enable-epoll \
-                           --enable-inotify \
-                           --enable-pngquant \
-                           --disable-libmfx_static \
-                           --disable-nvenc \
-                           --disable-uriparser \
-                           --enable-tvhcsa \
-                           --enable-trace \
-                           --nowerror \
-                           --disable-bintray_cache \
-                           --python=$TOOLCHAIN/bin/python"
-
 post_unpack() {
   sed -e 's/VER="0.0.0~unknown"/VER="'$PKG_VERSION_NUMBER' ~ LibreELEC Tvh-addon v'$ADDON_VERSION'.'$PKG_REV'"/g' -i $PKG_BUILD/support/version
   sed -e 's|'/usr/bin/pngquant'|'$TOOLCHAIN/bin/pngquant'|g' -i $PKG_BUILD/support/mkbundle
 }
 
 pre_configure_target() {
+  PKG_CONFIGURE_OPTS_TARGET="--prefix=/usr \
+                             --arch=$TARGET_ARCH \
+                             --cpu=$TARGET_CPU \
+                             --cc=$CC \
+                             $PKG_TVH_TRANSCODING \
+                             --enable-avahi \
+                             --enable-bundle \
+                             --disable-dbus_1 \
+                             --enable-dvbcsa \
+                             --disable-dvben50221 \
+                             --disable-dvbscan \
+                             --enable-hdhomerun_client \
+                             --disable-hdhomerun_static \
+                             --enable-epoll \
+                             --enable-inotify \
+                             --enable-pngquant \
+                             --disable-libmfx_static \
+                             --disable-nvenc \
+                             --disable-uriparser \
+                             --enable-tvhcsa \
+                             --enable-trace \
+                             --nowerror \
+                             --disable-bintray_cache \
+                             --python=$TOOLCHAIN/bin/python"
+
 # fails to build in subdirs
   cd $PKG_BUILD
   rm -rf .$TARGET_NAME
@@ -85,6 +85,9 @@ pre_configure_target() {
   PKG_CONFIG_PATH="$(get_build_dir ffmpegx)/.INSTALL_PKG/usr/local/lib/pkgconfig"
   CFLAGS="$CFLAGS -I$(get_build_dir ffmpegx)/.INSTALL_PKG/usr/local/include"
   LDFLAGS="$LDFLAGS -L$(get_build_dir ffmpegx)/.INSTALL_PKG/usr/local/lib"
+
+# pass gnutls to build
+  LDFLAGS="$LDFLAGS -L$(get_build_dir gnutls)/.INSTALL_PKG/usr/lib"
 
 # pass libhdhomerun to build
   CFLAGS="$CFLAGS -I$(get_build_dir libhdhomerun)"
@@ -106,15 +109,23 @@ addon() {
 
   cp $PKG_DIR/addon.xml $ADDON_BUILD/$PKG_ADDON_ID
 
+  # copy gnutls lib that is needed for ffmpeg
+  mkdir -p $ADDON_BUILD/$PKG_ADDON_ID/lib
+  cp -PL $(get_build_dir gnutls)/.INSTALL_PKG/usr/lib/libgnutls.so.30 $ADDON_BUILD/$PKG_ADDON_ID/lib
+  cp -PL $(get_build_dir nettle)/.install_pkg/usr/lib/libnettle.so.6 $ADDON_BUILD/$PKG_ADDON_ID/lib
+  cp -PL $(get_build_dir nettle)/.install_pkg/usr/lib/libhogweed.so.4 $ADDON_BUILD/$PKG_ADDON_ID/lib
+  cp -PL $(get_build_dir libidn2)/.install_pkg/usr/lib/libidn2.so.4 $ADDON_BUILD/$PKG_ADDON_ID/lib
+  cp -PL $(get_build_dir gmp)/.install_pkg/usr/lib/libgmp.so.10 $ADDON_BUILD/$PKG_ADDON_ID/lib
+
   # set only version (revision will be added by buildsystem)
-  $SED -e "s|@ADDON_VERSION@|$ADDON_VERSION|g" \
-       -i $ADDON_BUILD/$PKG_ADDON_ID/addon.xml
+  sed -e "s|@ADDON_VERSION@|$ADDON_VERSION|g" \
+      -i $ADDON_BUILD/$PKG_ADDON_ID/addon.xml
 
   cp -P $PKG_BUILD/build.linux/tvheadend $ADDON_BUILD/$PKG_ADDON_ID/bin
   cp -P $PKG_BUILD/capmt_ca.so $ADDON_BUILD/$PKG_ADDON_ID/bin
   cp -P $(get_build_dir comskip)/.install_pkg/usr/bin/comskip $ADDON_BUILD/$PKG_ADDON_ID/bin
 
-  #dvb-scan files
+  # dvb-scan files
   mkdir -p $ADDON_BUILD/$PKG_ADDON_ID/dvb-scan
   cp -r $(get_build_dir tvh-dtv-scan-tables)/atsc \
         $(get_build_dir tvh-dtv-scan-tables)/dvb-* \

@@ -3,7 +3,7 @@
 
 PKG_NAME="system-tools"
 PKG_VERSION="1.0"
-PKG_REV="109"
+PKG_REV="111"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="https://libreelec.tv"
@@ -22,7 +22,6 @@ PKG_DEPENDS_TARGET="toolchain \
                     diffutils \
                     dstat \
                     dtach \
-                    efibootmgr \
                     encfs \
                     evtest \
                     fdupes \
@@ -38,7 +37,6 @@ PKG_DEPENDS_TARGET="toolchain \
                     lm_sensors \
                     lshw \
                     mc \
-                    mrxvt \
                     mtpfs \
                     nmon \
                     p7zip \
@@ -51,6 +49,10 @@ PKG_DEPENDS_TARGET="toolchain \
                     unrar \
                     usb-modeswitch \
                     vim"
+
+if [ "$TARGET_ARCH" = "x86_64" ]; then
+  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET efibootmgr mrxvt"
+fi
 
 addon() {
   mkdir -p $ADDON_BUILD/$PKG_ADDON_ID/lib/
@@ -72,7 +74,7 @@ addon() {
     cp -P $(get_build_dir dtach)/.$TARGET_NAME/dtach $ADDON_BUILD/$PKG_ADDON_ID/bin
 
     # efibootmgr
-    cp -P $(get_build_dir efibootmgr)/src/efibootmgr/efibootmgr $ADDON_BUILD/$PKG_ADDON_ID/bin 2>/dev/null || :
+    cp -P $(get_build_dir efibootmgr)/src/efibootmgr $ADDON_BUILD/$PKG_ADDON_ID/bin 2>/dev/null || :
 
     # encfs
     cp -P $(get_build_dir encfs)/.$TARGET_NAME/encfs $ADDON_BUILD/$PKG_ADDON_ID/bin
@@ -117,6 +119,7 @@ addon() {
 
     # jq
     cp -P $(get_build_dir jq)/.$TARGET_NAME/jq $ADDON_BUILD/$PKG_ADDON_ID/bin
+    cp -P $(get_build_dir oniguruma)/.install_pkg/usr/lib/libonig.so $ADDON_BUILD/$PKG_ADDON_ID/lib
 
     # lm_sensors
     cp -P $(get_build_dir lm_sensors)/prog/sensors/sensors $ADDON_BUILD/$PKG_ADDON_ID/bin 2>/dev/null || :

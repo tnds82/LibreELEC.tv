@@ -3,13 +3,13 @@
 # Copyright (C) 2018-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="screensaver.stars"
-PKG_VERSION="530cf20c49fb8b0f3556c4a3f16d079d71f8c7f9"
-PKG_SHA256="a1b9da2425be6dbf36a7218f66462656610dda8f644e9c497a0a93e2571cb5db"
+PKG_VERSION="e1cd718a192dedade03a9ef856efb3e3c5cdbc75"
+PKG_SHA256="1ab9b090323bc5dd702a180f4be01c9529d605c4ae2b1ef4049aa7a4c91c7e72"
 PKG_REV="2"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
-PKG_SITE="https://github.com/notspiff/screensaver.stars"
-PKG_URL="https://github.com/notspiff/screensaver.stars/archive/$PKG_VERSION.tar.gz"
+PKG_SITE="https://github.com/xbmc/screensaver.stars"
+PKG_URL="https://github.com/xbmc/screensaver.stars/archive/$PKG_VERSION.tar.gz"
 PKG_DEPENDS_TARGET="toolchain kodi-platform"
 PKG_SECTION=""
 PKG_SHORTDESC="screensaver.stars"

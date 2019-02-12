@@ -2,17 +2,13 @@
 # Copyright (C) 2016-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="kernel-firmware"
-PKG_VERSION="fea76a04f25fd0a217c0d566ff5ff8f23ad3e648"
-PKG_SHA256="952acdc725fb510eb55927f1b1581bac6e4967bedb82716800b4378711e92dbd"
-PKG_ARCH="any"
+PKG_VERSION="0f22c8527439eaaf5c3fcf87b31c89445b6fa84d"
+PKG_SHA256="ac8edc72ea744c2992dbdd231ccb385c60a0027f9796be468ba9104f22d76c62"
 PKG_LICENSE="other"
 PKG_SITE="https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/"
 PKG_URL="https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/snapshot/$PKG_VERSION.tar.gz"
-PKG_SOURCE_DIR="$PKG_VERSION"
 PKG_NEED_UNPACK="${PROJECT_DIR}/${PROJECT}/packages/${PKG_NAME} ${PROJECT_DIR}/${PROJECT}/devices/${DEVICE}/packages/${PKG_NAME}"
 PKG_DEPENDS_TARGET="toolchain"
-PKG_SECTION="linux-firmware"
-PKG_SHORTDESC="kernel-firmware: kernel related firmware"
 PKG_LONGDESC="kernel-firmware: kernel related firmware"
 PKG_TOOLCHAIN="manual"
 
@@ -27,29 +23,37 @@ makeinstall_target() {
   fi
 
   for fwlist in ${FW_LISTS}; do
-    [ -f ${fwlist} ] || continue
+    [ -f "${fwlist}" ] || continue
+
     while read -r fwline; do
       [ -z "${fwline}" ] && continue
       [[ ${fwline} =~ ^#.* ]] && continue
       [[ ${fwline} =~ ^[[:space:]] ]] && continue
 
-      for fwfile in $(cd ${PKG_BUILD} && eval "find ${fwline}"); do
-        [ -d ${PKG_BUILD}/${fwfile} ] && continue
+      while read -r fwfile; do
+        [ -d "${PKG_BUILD}/${fwfile}" ] && continue
 
-        if [ -f ${PKG_BUILD}/${fwfile} ]; then
-          mkdir -p $(dirname ${FW_TARGET_DIR}/${fwfile})
-            cp -Lv ${PKG_BUILD}/${fwfile} ${FW_TARGET_DIR}/${fwfile}
+        if [ -f "${PKG_BUILD}/${fwfile}" ]; then
+          mkdir -p "$(dirname "${FW_TARGET_DIR}/${fwfile}")"
+            cp -Lv "${PKG_BUILD}/${fwfile}" "${FW_TARGET_DIR}/${fwfile}"
         else
           echo "ERROR: Firmware file ${fwfile} does not exist - aborting"
           exit 1
         fi
-      done
-    done < ${fwlist}
+      done <<< "$(cd ${PKG_BUILD} && eval "find "${fwline}"")"
+    done < "${fwlist}"
   done
 
-  # The following files are RPi specific and installed by brcmfmac_sdio-firmware-rpi instead
-  rm -fr $FW_TARGET_DIR/brcm/brcmfmac43430*-sdio.bin
-  rm -fr $FW_TARGET_DIR/brcm/brcmfmac43455*-sdio.bin
+  # The following files are RPi specific and installed by brcmfmac_sdio-firmware-rpi instead.
+  # They are also not required at all if the kernel is not suitably configured.
+  if listcontains "${FIRMWARE}" "brcmfmac_sdio-firmware-rpi" || \
+     ! grep -q "^CONFIG_BRCMFMAC_SDIO=y" $(kernel_config_path); then
+    rm -fr $FW_TARGET_DIR/brcm/brcmfmac43430*-sdio.*
+    rm -fr $FW_TARGET_DIR/brcm/brcmfmac43455*-sdio.*
+  fi
+
+  # brcm pcie firmware is only needed by x86_64
+  [ "$TARGET_ARCH" != "x86_64" ] && rm -fr $FW_TARGET_DIR/brcm/*-pcie.*
 
   # Cleanup - which may be project or device specific
   find_file_path scripts/cleanup.sh && ${FOUND_PATH} ${FW_TARGET_DIR} || true

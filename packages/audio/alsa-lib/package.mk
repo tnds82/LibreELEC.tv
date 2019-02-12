@@ -3,14 +3,12 @@
 # Copyright (C) 2016-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="alsa-lib"
-PKG_VERSION="1.1.6"
-PKG_SHA256="5f2cd274b272cae0d0d111e8a9e363f08783329157e8dd68b3de0c096de6d724"
-PKG_ARCH="any"
+PKG_VERSION="1.1.8"
+PKG_SHA256="3cdc3a93a6427a26d8efab4ada2152e64dd89140d981f6ffa003e85be707aedf"
 PKG_LICENSE="GPL"
 PKG_SITE="http://www.alsa-project.org/"
 PKG_URL="ftp://ftp.alsa-project.org/pub/lib/alsa-lib-$PKG_VERSION.tar.bz2"
 PKG_DEPENDS_TARGET="toolchain"
-PKG_SECTION="audio"
 PKG_LONGDESC="ALSA (Advanced Linux Sound Architecture) is the next generation Linux Sound API."
 PKG_TOOLCHAIN="autotools"
 PKG_BUILD_FLAGS="+pic"

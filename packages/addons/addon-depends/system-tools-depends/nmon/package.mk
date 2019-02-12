@@ -2,15 +2,13 @@
 # Copyright (C) 2016-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="nmon"
-PKG_VERSION="411b08f"
+PKG_VERSION="411b08f1c98bca8b24670fc2d9ee6325b4fcb3d2"
 PKG_SHA256="aa88257728e820db10b1f04792dfcc1b8a483de51bfda70db016da016a4879a2"
-PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="https://github.com/axibase/nmon"
 PKG_URL="https://github.com/axibase/nmon/archive/$PKG_VERSION.tar.gz"
 PKG_DEPENDS_TARGET="toolchain ncurses"
-PKG_SECTION="tools"
-PKG_SHORTDESC="Systems administrator, tuner, benchmark tool gives you a huge amount of important performance information in one go"
+PKG_LONGDESC="Systems administrator, tuner, benchmark tool gives you a huge amount of important performance information in one go."
 PKG_TOOLCHAIN="manual"
 
 make_target() {

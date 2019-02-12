@@ -3,15 +3,12 @@
 # Copyright (C) 2017-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="bcm2835-driver"
-PKG_VERSION="404dfef3b364b4533f70659eafdcefa3b68cd7ae"
-PKG_SHA256="cebc11e59fda3dcbf439f19ca7d65252f84cbb3106114a49f4c3ad36260fef43"
-PKG_ARCH="any"
+PKG_VERSION="81cca1a9380c828299e884dba5efd0d4acb39e8d"
+PKG_SHA256="1db684b2be246b755a086603caad99c7ac9721da5ac390099e681e07b7b84931"
 PKG_LICENSE="nonfree"
 PKG_SITE="http://www.broadcom.com"
 PKG_URL="$DISTRO_SRC/$PKG_NAME-$PKG_VERSION.tar.xz"
 PKG_DEPENDS_TARGET="toolchain dtc"
-PKG_SECTION="graphics"
-PKG_SHORTDESC="OpenMAX-bcm2835: OpenGL-ES and OpenMAX driver for BCM2835"
 PKG_LONGDESC="OpenMAX-bcm2835: OpenGL-ES and OpenMAX driver for BCM2835"
 PKG_TOOLCHAIN="manual"
 
@@ -34,9 +31,6 @@ make_target() {
 }
 
 makeinstall_target() {
-  mkdir -p $INSTALL/usr/sbin
-    cp -PRv $FLOAT/opt/vc/sbin/vcfiled $INSTALL/usr/sbin
-
   mkdir -p $INSTALL/usr/lib
     cp -PRv $FLOAT/opt/vc/lib/*.so $INSTALL/usr/lib
     ln -sf /usr/lib/libbrcmEGL.so $INSTALL/usr/lib/libEGL.so

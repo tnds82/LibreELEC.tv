@@ -1,17 +1,15 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 # Copyright (C) 2009-2016 Lukas Rusak (lrusak@libreelec.tv)
+# Copyright (C) 2016-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="containerd"
-PKG_VERSION="06b9cb3"
-PKG_SHA256="4d2b6e30bcc6c4bb901d6b9f19b5ac1d4a2d9b17075a9b1f110102920d01f64a"
-PKG_ARCH="any"
+PKG_VERSION="1.2.2"
+PKG_SHA256="91d480816986d74ff4fa7dd0412c787615fa705975b18fa4079c333b137c653f"
 PKG_LICENSE="APL"
 PKG_SITE="https://containerd.tools/"
-PKG_URL="https://github.com/docker/containerd/archive/${PKG_VERSION}.tar.gz"
+PKG_URL="https://github.com/containerd/containerd/archive/v$PKG_VERSION.tar.gz"
 PKG_DEPENDS_TARGET="toolchain go:host"
-PKG_SECTION="system"
-PKG_SHORTDESC="containerd is a daemon to control runC"
-PKG_LONGDESC="containerd is a daemon to control runC, built for performance and density. containerd leverages runC's advanced features such as seccomp and user namespace support as well as checkpoint and restore for cloning and live migration of containers."
+PKG_LONGDESC="A daemon to control runC, built for performance and density."
 PKG_TOOLCHAIN="manual"
 
 pre_make_target() {
@@ -40,7 +38,10 @@ pre_make_target() {
   export CGO_ENABLED=1
   export CGO_NO_EMULATION=1
   export CGO_CFLAGS=$CFLAGS
-  export LDFLAGS="-w -extldflags -static -X github.com/docker/containerd.GitCommit=${PKG_VERSION} -extld $CC"
+  export CONTAINERD_VERSION=v${PKG_VERSION}
+  export CONTAINERD_REVISION=${PKG_VERSION}
+  export CONTAINERD_PKG=github.com/containerd/containerd
+  export LDFLAGS="-w -extldflags -static -X ${CONTAINERD_PKG}/version.Version=${CONTAINERD_VERSION} -X ${CONTAINERD_PKG}/version.Revision=${CONTAINERD_REVISION} -X ${CONTAINERD_PKG}/version.Package=${CONTAINERD_PKG} -extld $CC"
   export GOLANG=$TOOLCHAIN/lib/golang/bin/go
   export GOPATH=$PKG_BUILD/.gopath
   export GOROOT=$TOOLCHAIN/lib/golang
@@ -56,6 +57,6 @@ pre_make_target() {
 
 make_target() {
   mkdir -p bin
-  $GOLANG build -v -o bin/containerd      -a -tags "static_build" -ldflags "$LDFLAGS" ./containerd
-  $GOLANG build -v -o bin/containerd-shim -a -tags "static_build" -ldflags "$LDFLAGS" ./containerd-shim
+  $GOLANG build -v -o bin/containerd      -a -tags "static_build no_btrfs" -ldflags "$LDFLAGS" ./cmd/containerd
+  $GOLANG build -v -o bin/containerd-shim -a -tags "static_build no_btrfs" -ldflags "$LDFLAGS" ./cmd/containerd-shim
 }

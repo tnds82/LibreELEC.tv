@@ -17,6 +17,22 @@ noobs:
 amlpkg:
 	./scripts/image amlpkg
 
+# legacy sequential build targets
+system-st:
+	./scripts/image_st
+
+release-st:
+	./scripts/image_st release
+
+image-st:
+	./scripts/image_st mkimage
+
+noobs-st:
+	./scripts/image_st noobs
+
+amlpkg-st:
+	./scripts/image_st amlpkg
+
 clean:
 	rm -rf $(BUILD_DIRS)/* $(BUILD_DIRS)/.stamps
 
@@ -24,4 +40,4 @@ distclean:
 	rm -rf ./.ccache ./$(BUILD_DIRS)
 
 src-pkg:
-	tar cvjf sources.tar.bz2 sources .stamps
+	tar cvJf sources.tar.xz sources .stamps

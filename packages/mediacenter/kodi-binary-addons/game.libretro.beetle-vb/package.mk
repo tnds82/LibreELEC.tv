@@ -2,9 +2,9 @@
 # Copyright (C) 2016-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="game.libretro.beetle-vb"
-PKG_VERSION="307b9c2"
-PKG_SHA256="cf4e002fcea1b662018171fde277db3318f8567ccf337d763411ad75bddd42d1"
-PKG_REV="107"
+PKG_VERSION="c20659f965a89eac2288dbf82c47901810589999"
+PKG_SHA256="f9a5a879dbbc771d7cc1ca2bed8f594724e9ea1351a1e731a446c1c4b6c791e5"
+PKG_REV="112"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="https://github.com/kodi-game/game.libretro.beetle-vb"

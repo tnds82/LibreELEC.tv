@@ -3,13 +3,13 @@
 # Copyright (C) 2018-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="screensaver.greynetic"
-PKG_VERSION="6aefc4bb9f1da4179d98f55a3664bd2fc8f67c4a"
-PKG_SHA256="b23ff0b2db842eebb58c147057ac835184f121c065ce0d33c2d03534ea95d28f"
+PKG_VERSION="29693bdc474d09a1fe7ac846ad6f62b8841851fd"
+PKG_SHA256="ae47f8450c427edd484ab12f25bf0a5dc4ef8b8bfcca463b1cebfdfb91104619"
 PKG_REV="2"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
-PKG_SITE="https://github.com/notspiff/screensaver.greynetic"
-PKG_URL="https://github.com/notspiff/screensaver.greynetic/archive/$PKG_VERSION.tar.gz"
+PKG_SITE="https://github.com/xbmc/screensaver.greynetic"
+PKG_URL="https://github.com/xbmc/screensaver.greynetic/archive/$PKG_VERSION.tar.gz"
 PKG_DEPENDS_TARGET="toolchain kodi-platform"
 PKG_SECTION=""
 PKG_SHORTDESC="screensaver.greynetic"
